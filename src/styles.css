@@ -8,23 +8,59 @@ body {
 
 .container {
     margin-top: 100px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 input, button {
-    font-size: 16px;
+    font-size: 14px; /* Reduced font size */
     margin: 10px;
     padding: 10px;
-    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 button {
     background: #007bff;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 50%;
     cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button:hover {
     background: #0056b3;
+}
+
+.bpm-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bpm-controls button {
+    margin: 0 5px;
+}
+
+.bpm-controls input {
+    width: 60px;
+    text-align: center;
+}
+
+#start-stop {
+    margin-top: 20px; /* Add margin to position the button */
+    width: auto; /* Adjust width to fit text */
+    height: auto; /* Adjust height to fit text */
+    padding: 10px 20px; /* Add padding for better appearance */
+    border-radius: 5px; /* Make the button rectangular */
 }

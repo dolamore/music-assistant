@@ -3,12 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.skypack.dev; style-src 'self'; connect-src 'self' https://cdn.skypack.dev; worker-src 'self' blob:;">
     <title>Metronome</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.skypack.dev; style-src 'self'; worker-src 'self' blob:;">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<label for="bpm"></label><input type="number" id="bpm" value="120">
-<button id="start-stop">Start</button>
+<div class="container">
+    <label for="bpm">BPM:</label>
+    <div class="bpm-controls">
+        <button id="decrease-bpm-1">-1 BPM</button>
+        <button id="decrease-bpm-5">-5 BPM</button>
+        <input type="number" id="bpm" value="120">
+        <button id="increase-bpm-1">+1 BPM</button>
+        <button id="increase-bpm-5">+5 BPM</button>
+    </div>
+    <button id="start-stop">Start</button>
+</div>
 <script type="module" src="render.js"></script>
 </body>
 </html>
