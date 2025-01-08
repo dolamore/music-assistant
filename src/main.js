@@ -5,14 +5,16 @@ let mainWindow;
 
 app.on('ready', async () => {
     mainWindow = new BrowserWindow({
-        width: 400,
-        height: 500,
+        width: 500,
+        height: 300,
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
         },
     });
-    mainWindow.webContents.openDevTools();
+
+    // Uncomment the following line to open DevTools
+//    mainWindow.webContents.openDevTools();
 
     await mainWindow.loadFile(path.join(app.getAppPath(), 'src', 'index.html'));
 });

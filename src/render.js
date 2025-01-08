@@ -24,6 +24,13 @@ document.getElementById('bpm').addEventListener('input', (e) => {
     if (isPlaying) startMetronome();
 });
 
+// Prevent non-numeric input
+document.getElementById('bpm').addEventListener('keypress', (e) => {
+    if (!/[0-9]/.test(e.key)) {
+        e.preventDefault();
+    }
+});
+
 // Increase BPM by 1
 document.getElementById('increase-bpm-1').addEventListener('click', () => {
     bpm += 1;
