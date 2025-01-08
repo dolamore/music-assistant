@@ -1,66 +1,49 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    margin-top: 100px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
 }
 
-input, button {
-    font-size: 14px; /* Reduced font size */
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+div {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    font-size: 1em;
 }
 
 button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 5px;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background: #0056b3;
+    background-color: #0056b3;
 }
 
-.bpm-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+button.note {
+    background-color: #28a745;
 }
 
-.bpm-controls button {
-    margin: 0 5px;
-}
-
-.bpm-controls input {
-    width: 60px;
-    text-align: center;
-}
-
-#start-stop {
-    margin-top: 20px; /* Add margin to position the button */
-    width: auto; /* Adjust width to fit text */
-    height: auto; /* Adjust height to fit text */
-    padding: 10px 20px; /* Add padding for better appearance */
-    border-radius: 5px; /* Make the button rectangular */
+button.note:hover {
+    background-color: #218838;
 }
