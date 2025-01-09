@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.skypack.dev; style-src 'self'; connect-src 'self' https://cdn.skypack.dev; worker-src 'self' blob:;">
     <title>Metronome</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
+<div class="bpm-container">
     <label for="bpm">BPM:</label>
     <div class="bpm-controls">
-        <button id="decrease-bpm-1">-1 BPM</button>
-        <button id="decrease-bpm-5">-5 BPM</button>
+        <button id="decrease-bpm-5">-5</button>
+        <button id="decrease-bpm-1">-1</button>
         <input type="number" id="bpm" value="120">
-        <button id="increase-bpm-1">+1 BPM</button>
-        <button id="increase-bpm-5">+5 BPM</button>
+        <button id="increase-bpm-1">+1</button>
+        <button id="increase-bpm-5">+5</button>
     </div>
+</div>
+<div>
     <button id="start-stop">Start</button>
 </div>
-<script type="module" src="render.js"></script>
+<div class="note-container">
+    <div class="note" data-note="0" data-sound="1"></div>
+    <div class="note" data-note="1" data-sound="1"></div>
+    <div class="note" data-note="2" data-sound="1"></div>
+    <div class="note" data-note="3" data-sound="1"></div>
+</div>
+<script src="render.js" type="module"></script>
 </body>
 </html>

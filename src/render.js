@@ -1,18 +1,13 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
 
-const click = new Tone.NoiseSynth({
-    noise: {
-        type: 'white',
-        playbackRate: 1
-    },
-    envelope: {
-        attack: 0.001,
-        decay: 0.1,
-        sustain: 0,
-        release: 0.1
-    }
-}).toDestination();
+const sounds = [
+    new Tone.Synth().toDestination(),
+    new Tone.Synth({ oscillator: { type: 'square' } }).toDestination(),
+    new Tone.Synth({ oscillator: { type: 'triangle' } }).toDestination(),
+    new Tone.Synth({ oscillator: { type: 'sawtooth' } }).toDestination()
+];
 
+let selectedSounds = [0, 0, 0, 0]; // Default to the first sound for all notes
 let bpm = 120;
 let isPlaying = false;
 let loop;
@@ -22,6 +17,13 @@ document.getElementById('bpm').addEventListener('input', (e) => {
     bpm = parseInt(e.target.value, 10) || 120;
     if (loop) loop.stop();
     if (isPlaying) startMetronome();
+});
+
+// Prevent non-numeric input
+document.getElementById('bpm').addEventListener('keypress', (e) => {
+    if (!/[0-9]/.test(e.key)) {
+        e.preventDefault();
+    }
 });
 
 // Increase BPM by 1
@@ -66,13 +68,29 @@ document.getElementById('start-stop').addEventListener('click', async () => {
     }
 });
 
+// Select sound for each quarter note
+document.querySelectorAll('.note').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const noteIndex = parseInt(e.target.dataset.note, 10);
+        selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
+        e.target.dataset.sound = selectedSounds[noteIndex] + 1;
+    });
+});
+
 // Start metronome
 function startMetronome() {
     isPlaying = true;
     Tone.Transport.bpm.value = bpm;
 
+    let count = 0;
     loop = new Tone.Loop((time) => {
-        click.triggerAttackRelease('8n', time);
+        const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
+        currentNote.classList.add('playing');
+        sounds[selectedSounds[count % 4]].triggerAttackRelease('C4', '8n', time);
+        setTimeout(() => {
+            currentNote.classList.remove('playing');
+        }, (60000 / bpm) / 2); // Remove class after half a beat
+        count++;
     }, "4n").start(0);  // Every quarter note
 
     Tone.Transport.start();

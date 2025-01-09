@@ -1,45 +1,27 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    margin-top: 100px;
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-input, button {
-    font-size: 14px; /* Reduced font size */
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
     justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
 }
 
-button:hover {
-    background: #0056b3;
+div {
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.bpm-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .bpm-controls {
@@ -48,19 +30,67 @@ button:hover {
     justify-content: center;
 }
 
-.bpm-controls button {
-    margin: 0 5px;
-}
-
-.bpm-controls input {
+input[type="number"] {
     width: 60px;
+    padding: 5px;
+    font-size: 1em;
     text-align: center;
 }
 
-#start-stop {
-    margin-top: 20px; /* Add margin to position the button */
-    width: auto; /* Adjust width to fit text */
-    height: auto; /* Adjust height to fit text */
-    padding: 10px 20px; /* Add padding for better appearance */
-    border-radius: 5px; /* Make the button rectangular */
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.note-container {
+    display: flex;
+    gap: 10px;
+}
+
+.note {
+    width: 50px;
+    height: 200px;
+    background-color: #ccc;
+    position: relative;
+}
+
+.note.playing::before {
+    background-color: #ff0000; /* Change to desired highlight color */
+}
+
+.note::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    background-color: #007bff;
+    transition: height 0.3s;
+}
+
+.note[data-sound="1"]::before {
+    height: 25%;
+}
+
+.note[data-sound="2"]::before {
+    height: 50%;
+}
+
+.note[data-sound="3"]::before {
+    height: 75%;
+}
+
+.note[data-sound="4"]::before {
+    height: 100%;
 }
