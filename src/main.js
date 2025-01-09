@@ -5,8 +5,8 @@ let mainWindow;
 
 app.on('ready', async () => {
     mainWindow = new BrowserWindow({
-        width: 500,
-        height: 300,
+        width: 600,
+        height: 400,
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,

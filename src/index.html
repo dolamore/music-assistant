@@ -7,23 +7,24 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div>
+<div class="bpm-container">
     <label for="bpm">BPM:</label>
-    <input type="number" id="bpm" value="120">
-    <button id="increase-bpm-1">+1</button>
-    <button id="increase-bpm-5">+5</button>
-    <button id="decrease-bpm-1">-1</button>
-    <button id="decrease-bpm-5">-5</button>
+    <div class="bpm-controls">
+        <button id="decrease-bpm-5">-5</button>
+        <button id="decrease-bpm-1">-1</button>
+        <input type="number" id="bpm" value="120">
+        <button id="increase-bpm-1">+1</button>
+        <button id="increase-bpm-5">+5</button>
+    </div>
 </div>
 <div>
     <button id="start-stop">Start</button>
 </div>
-<div>
-    <label>Quarter Notes:</label>
-    <button class="note" data-note="0">Note 1</button>
-    <button class="note" data-note="1">Note 2</button>
-    <button class="note" data-note="2">Note 3</button>
-    <button class="note" data-note="3">Note 4</button>
+<div class="note-container">
+    <div class="note" data-note="0" data-sound="1"></div>
+    <div class="note" data-note="1" data-sound="1"></div>
+    <div class="note" data-note="2" data-sound="1"></div>
+    <div class="note" data-note="3" data-sound="1"></div>
 </div>
 <script src="render.js" type="module"></script>
 </body>

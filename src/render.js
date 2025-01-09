@@ -73,7 +73,7 @@ document.querySelectorAll('.note').forEach(button => {
     button.addEventListener('click', (e) => {
         const noteIndex = parseInt(e.target.dataset.note, 10);
         selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
-        e.target.textContent = `Note ${noteIndex + 1} (Sound ${selectedSounds[noteIndex] + 1})`;
+        e.target.dataset.sound = selectedSounds[noteIndex] + 1;
     });
 });
 
@@ -84,7 +84,12 @@ function startMetronome() {
 
     let count = 0;
     loop = new Tone.Loop((time) => {
+        const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
+        currentNote.classList.add('playing');
         sounds[selectedSounds[count % 4]].triggerAttackRelease('C4', '8n', time);
+        setTimeout(() => {
+            currentNote.classList.remove('playing');
+        }, (60000 / bpm) / 2); // Remove class after half a beat
         count++;
     }, "4n").start(0);  // Every quarter note
 
