@@ -112,5 +112,26 @@ button:hover {
 }
 
 .sound-settings {
+    display: grid;
+    grid-template-columns: 100px repeat(5, 1fr);
+    gap: 10px;
     margin-bottom: 10px;
+}
+
+.labels {
+    display: contents;
+    font-weight: bold;
+}
+
+.sound-row {
+    display: contents;
+}
+
+.sound-row label {
+    grid-column: 1;
+}
+
+.sound-row select,
+.sound-row input {
+    width: 100%;
 }
