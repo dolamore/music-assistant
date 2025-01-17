@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metronome</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
 </head>
 <body>
 <div class="bpm-container">
@@ -19,12 +20,83 @@
 </div>
 <div>
     <button id="start-stop">Start</button>
+    <button id="settings">Settings</button>
 </div>
 <div class="note-container">
     <div class="note" data-note="0" data-sound="1"></div>
     <div class="note" data-note="1" data-sound="1"></div>
     <div class="note" data-note="2" data-sound="1"></div>
     <div class="note" data-note="3" data-sound="1"></div>
+</div>
+<div id="settings-panel" class="hidden">
+    <h2>Sound Settings</h2>
+    <div class="sound-settings">
+        <div class="labels">
+            <span>Note</span>
+            <span>Sound</span>
+            <span>Frequency</span>
+            <span>Detune</span>
+            <span>Phase</span>
+            <span>Volume</span>
+        </div>
+        <div class="sound-row">
+            <label for="sound-0">Note 1:</label>
+            <select id="sound-0">
+                <option value="0">No Sound</option>
+                <option value="1">Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-0" type="number" placeholder="Frequency">
+            <input id="detune-0" type="number" placeholder="Detune">
+            <input id="phase-0" type="number" placeholder="Phase">
+            <input id="volume-0" type="number" placeholder="Volume">
+        </div>
+        <div class="sound-row">
+            <label for="sound-1">Note 2:</label>
+            <select id="sound-1">
+                <option value="0">No Sound</option>
+                <option value="1">Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-1" type="number" placeholder="Frequency">
+            <input id="detune-1" type="number" placeholder="Detune">
+            <input id="phase-1" type="number" placeholder="Phase">
+            <input id="volume-1" type="number" placeholder="Volume">
+        </div>
+        <div class="sound-row">
+            <label for="sound-2">Note 3:</label>
+            <select id="sound-2">
+                <option value="0">No Sound</option>
+                <option value="1">Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-2" type="number" placeholder="Frequency">
+            <input id="detune-2" type="number" placeholder="Detune">
+            <input id="phase-2" type="number" placeholder="Phase">
+            <input id="volume-2" type="number" placeholder="Volume">
+        </div>
+        <div class="sound-row">
+            <label for="sound-3">Note 4:</label>
+            <select id="sound-3">
+                <option value="0">No Sound</option>
+                <option value="1">Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-3" type="number" placeholder="Frequency">
+            <input id="detune-3" type="number" placeholder="Detune">
+            <input id="phase-3" type="number" placeholder="Phase">
+            <input id="volume-3" type="number" placeholder="Volume">
+        </div>
+    </div>
+    <button id="save-settings">Save</button>
 </div>
 <script src="render.js" type="module"></script>
 </body>

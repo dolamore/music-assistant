@@ -6,7 +6,7 @@ let mainWindow;
 app.on('ready', async () => {
     mainWindow = new BrowserWindow({
         width: 600,
-        height: 400,
+        height: 600,
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
@@ -14,7 +14,7 @@ app.on('ready', async () => {
     });
 
     // Uncomment the following line to open DevTools
-//    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     await mainWindow.loadFile(path.join(app.getAppPath(), 'src', 'index.html'));
 });
