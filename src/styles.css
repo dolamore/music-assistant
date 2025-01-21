@@ -151,6 +151,7 @@ button:hover {
     background-color: #007bff;
     left: 0;
     z-index: 3; /* Ensure it is above the flashing bar */
+    transition: none;
 }
 
 .flashing-bar {

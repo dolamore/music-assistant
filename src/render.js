@@ -19,6 +19,8 @@ let bpm = 120;
 let isPlaying = false;
 let loop;
 let isPendulumMode = false;
+let metronomeBuffer = [];
+let pendulumBuffer = [];
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
@@ -37,83 +39,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    function movePendulum() {
-        if (isPendulumMode) {
+    window.addEventListener('resize', () => {
+        if (isPlaying && isPendulumMode) {
             const barElement = document.querySelector('.horizontal-bar');
             const pendulumElement = document.querySelector('.pendulum');
-            let barWidth = barElement.clientWidth - pendulumElement.clientWidth; // Adjust bar width
-            let pixelsPerBeat = barWidth; // Distance the pendulum should move per beat
-            let position = 0;
-            let direction = 1; // 1 for forward, -1 for backward
+            if (barElement && pendulumElement) {
+                const barWidth = barElement.clientWidth;
+                const pendulumWidth = pendulumElement.clientWidth;
+                const maxPosition = barWidth - pendulumWidth;
 
-            function updatePendulumPosition() {
-                if (!isPendulumMode) return;
-
-                position += direction * pixelsPerBeat;
-
-                if (position >= barWidth || position <= 0) {
-                    direction *= -1; // Reverse direction
-                    position = Math.max(0, Math.min(barWidth, position)); // Ensure position stays within bounds
-                }
-
-                pendulumElement.style.left = `${position}px`;
+                // Пересчитайте позиции или обновите параметры
+                pendulumElement.style.left = `${Math.min(maxPosition, lastPosition)}px`;
             }
-
-            function syncPendulum() {
-                updatePendulumPosition();
-            }
-
-            Tone.Transport.scheduleRepeat(syncPendulum, "4n"); // Schedule the sync for each quarter note
-            Tone.Transport.start(); // Ensure the transport is started
         }
-    }
+    });
 
-    function startMetronome() {
-        isPlaying = true;
-        isPendulumMode = true;
-        Tone.Transport.bpm.value = bpm;
-
-        const flashingBar = document.querySelector('.flashing-bar');
-
-        let count = 0;
-        loop = new Tone.Loop((time) => {
-            const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
-            currentNote.classList.add('playing');
-            if (sounds[selectedSounds[count % 4]]) {
-                const synth = sounds[selectedSounds[count % 4]];
-                const settings = soundSettings[count % 4];
-                synth.oscillator.frequency.value = settings.frequency;
-                synth.oscillator.detune.value = settings.detune;
-                synth.oscillator.phase = settings.phase;
-                synth.volume.value = settings.volume;
-                synth.triggerAttackRelease('C4', '8n', time);
-            }
-
-            // Flash the bar
-            flashingBar.style.opacity = 1;
-            setTimeout(() => {
-                flashingBar.style.opacity = 0;
-                currentNote.classList.remove('playing');
-            }, 100); // Flash duration
-            count++;
-        }, "4n").start(0);  // Every quarter note
-
-        Tone.Transport.start();
-        document.getElementById('start-stop').textContent = 'Stop';
-        movePendulum();
-    }
-
-    function stopMetronome() {
-        isPlaying = false;
-        isPendulumMode = false;
-        if (loop) loop.stop();
-        Tone.Transport.stop();
-        document.getElementById('start-stop').textContent = 'Start';
-
-        // Reset pendulum position
-        const pendulumElement = document.querySelector('.pendulum');
-        pendulumElement.style.left = '0px';
-    }
 
     const settingsButton = document.getElementById('settings');
     if (settingsButton) {
@@ -156,9 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('bpm').addEventListener('input', (e) => {
-        bpm = parseInt(e.target.value, 10) || 120;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = parseInt(e.target.value, 10) || 120;
+        handleBpmChange(newBpm);
     });
 
     document.getElementById('bpm').addEventListener('keypress', (e) => {
@@ -168,32 +107,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('increase-bpm-1').addEventListener('click', () => {
-        bpm += 1;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm + 1;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
     document.getElementById('increase-bpm-5').addEventListener('click', () => {
-        bpm += 5;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm + 5;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
     document.getElementById('decrease-bpm-1').addEventListener('click', () => {
-        bpm -= 1;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm - 1;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
     document.getElementById('decrease-bpm-5').addEventListener('click', () => {
-        bpm -= 5;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm - 5;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
+
 
     document.getElementById('start-stop').addEventListener('click', async () => {
         await Tone.start();
@@ -222,4 +158,128 @@ function render() {
         note.dataset.sound = selectedSounds[index];
         note.classList.toggle('playing', isPlaying && (index === (Tone.Transport.position.split(':')[1] % 4)));
     });
+}
+
+function generateMetronomeSequence() {
+    const sequence = [];
+    for (let i = 0; i < 4; i++) {
+        const sound = sounds[selectedSounds[i]];
+        const settings = soundSettings[i];
+        sequence.push({sound, settings});
+    }
+    return sequence;
+}
+
+function getMetronomeSequence() {
+    if (metronomeBuffer.length === 0) {
+        metronomeBuffer = generateMetronomeSequence();
+    }
+    return metronomeBuffer;
+}
+
+let pendulumAnimationFrame; // Чтобы остановить текущую анимацию
+
+function movePendulum() {
+    const pendulumElement = document.querySelector('.pendulum');
+    const barElement = document.querySelector('.horizontal-bar');
+
+    if (!pendulumElement || !barElement) {
+        console.error('Pendulum or bar element not found.');
+        return;
+    }
+
+    const barWidth = barElement.clientWidth;
+    const pendulumWidth = pendulumElement.clientWidth;
+    const maxPosition = barWidth - pendulumWidth; // Амплитуда движения
+    const beatDuration = (60 / bpm) * 1000; // Длительность одного бита в миллисекундах
+    const pendulumPeriod = beatDuration * 2; // Полный цикл (туда и обратно)
+
+    let startTime = performance.now();
+
+    function updatePendulumPosition(currentTime) {
+        if (!isPlaying) return; // Прерываем анимацию, если метроном остановлен
+
+        const elapsed = (currentTime - startTime) % pendulumPeriod;
+        const normalizedTime = elapsed / pendulumPeriod; // От 0 до 1
+
+        const position = normalizedTime <= 0.5
+            ? normalizedTime * 2 * maxPosition // Движение вправо
+            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Движение влево
+
+        pendulumElement.style.left = `${position}px`;
+
+        pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+    }
+
+    startTime = performance.now();
+    pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+
+    // Синхронизация с метрономом
+    Tone.Transport.scheduleRepeat(() => {
+        startTime = performance.now(); // Сброс времени анимации при каждом бите
+    }, "2n");
+}
+
+function resetPendulumAnimation() {
+    cancelAnimationFrame(pendulumAnimationFrame); // Останавливаем текущую анимацию
+    movePendulum(); // Перезапускаем анимацию с новыми настройками
+}
+
+
+function startMetronome() {
+    isPlaying = true;
+    isPendulumMode = true;
+    Tone.Transport.bpm.value = bpm;
+
+    const flashingBar = document.querySelector('.flashing-bar');
+    const sequence = getMetronomeSequence();
+
+    let count = 0;
+    loop = new Tone.Loop((time) => {
+        const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
+        currentNote.classList.add('playing');
+        const {sound, settings} = sequence[count % 4];
+        if (sound) {
+            sound.oscillator.frequency.value = settings.frequency;
+            sound.oscillator.detune.value = settings.detune;
+            sound.oscillator.phase = settings.phase;
+            sound.volume.value = settings.volume;
+            sound.triggerAttackRelease('C4', '8n', time);
+        }
+
+        // Flash the bar
+        flashingBar.style.opacity = 1;
+        setTimeout(() => {
+            flashingBar.style.opacity = 0;
+            currentNote.classList.remove('playing');
+        }, 100); // Flash duration
+        count++;
+    }, "4n").start(0);  // Every quarter note
+
+    Tone.Transport.start();
+    document.getElementById('start-stop').textContent = 'Stop';
+    movePendulum(); // Запускаем маятник
+}
+
+
+function stopMetronome() {
+    isPlaying = false;
+    isPendulumMode = false;
+    if (loop) loop.stop();
+    Tone.Transport.stop();
+    document.getElementById('start-stop').textContent = 'Start';
+
+    // Сбросить маятник в начальное положение
+    const pendulumElement = document.querySelector('.pendulum');
+    pendulumElement.style.left = '0px';
+}
+
+function handleBpmChange(newBpm) {
+    bpm = newBpm;
+    if (loop) loop.stop();  // Останавливаем текущий цикл метронома
+    if (isPlaying) {
+        stopMetronome();  // Останавливаем метроном
+        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
+        startMetronome();  // Перезапускаем метроном с новым BPM
+    }
 }
