@@ -20,13 +20,20 @@ let isPlaying = false;
 let loop;
 let isPendulumMode = false;
 let metronomeBuffer = [];
-let pendulumBuffer = [];
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
 
     document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
-        document.querySelector('.horizontal-bar').classList.toggle('hidden', !e.target.checked);
+        const pendulumElement = document.querySelector('.pendulum');
+        const barElement = document.querySelector('.horizontal-bar');
+        if (e.target.checked) {
+            pendulumElement.style.opacity = '1';
+            barElement.style.opacity = '1';
+        } else {
+            pendulumElement.style.opacity = '0';
+            barElement.style.opacity = '0';
+        }
     });
 
     document.getElementById('toggle-flashing-bar').addEventListener('change', function (e) {
@@ -190,21 +197,21 @@ function movePendulum() {
 
     const barWidth = barElement.clientWidth;
     const pendulumWidth = pendulumElement.clientWidth;
-    const maxPosition = barWidth - pendulumWidth; // Амплитуда движения
-    const beatDuration = (60 / bpm) * 1000; // Длительность одного бита в миллисекундах
-    const pendulumPeriod = beatDuration * 2; // Полный цикл (туда и обратно)
+    const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
+    const beatDuration = (60 / bpm) * 1000; // Duration of one beat in milliseconds
+    const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
 
     let startTime = performance.now();
 
     function updatePendulumPosition(currentTime) {
-        if (!isPlaying) return; // Прерываем анимацию, если метроном остановлен
+        if (!isPlaying) return; // Stop animation if metronome is stopped
 
         const elapsed = (currentTime - startTime) % pendulumPeriod;
-        const normalizedTime = elapsed / pendulumPeriod; // От 0 до 1
+        const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
 
         const position = normalizedTime <= 0.5
-            ? normalizedTime * 2 * maxPosition // Движение вправо
-            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Движение влево
+            ? normalizedTime * 2 * maxPosition // Move right
+            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
 
         pendulumElement.style.left = `${position}px`;
 
@@ -214,9 +221,9 @@ function movePendulum() {
     startTime = performance.now();
     pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
 
-    // Синхронизация с метрономом
+    // Synchronize with metronome
     Tone.Transport.scheduleRepeat(() => {
-        startTime = performance.now(); // Сброс времени анимации при каждом бите
+        startTime = performance.now(); // Reset animation time on each beat
     }, "2n");
 }
 
