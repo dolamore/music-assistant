@@ -47,17 +47,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('resize', () => {
-        if (isPlaying && isPendulumMode) {
-            const barElement = document.querySelector('.horizontal-bar');
-            const pendulumElement = document.querySelector('.pendulum');
-            if (barElement && pendulumElement) {
-                const barWidth = barElement.clientWidth;
-                const pendulumWidth = pendulumElement.clientWidth;
-                const maxPosition = barWidth - pendulumWidth;
-
-                // Пересчитайте позиции или обновите параметры
-                pendulumElement.style.left = `${Math.min(maxPosition, lastPosition)}px`;
-            }
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
         }
     });
 
@@ -228,8 +219,11 @@ function movePendulum() {
 }
 
 function resetPendulumAnimation() {
-    cancelAnimationFrame(pendulumAnimationFrame); // Останавливаем текущую анимацию
-    movePendulum(); // Перезапускаем анимацию с новыми настройками
+    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
+    const pendulumElement = document.querySelector('.pendulum');
+    if (pendulumElement) {
+        pendulumElement.style.left = '0px'; // Reset pendulum to initial position
+    }
 }
 
 
@@ -289,4 +283,10 @@ function handleBpmChange(newBpm) {
         resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
         startMetronome();  // Перезапускаем метроном с новым BPM
     }
+}
+
+function restartMetronomeAndPendulum() {
+    stopMetronome();
+    resetPendulumAnimation();
+    startMetronome();
 }
