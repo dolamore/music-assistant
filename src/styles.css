@@ -135,3 +135,33 @@ button:hover {
 .sound-row input {
     width: 100%;
 }
+
+.horizontal-bar {
+    position: relative; /* Ensure it is positioned correctly */
+    width: 100%;
+    height: 50px;
+    background-color: #ccc;
+    z-index: 2; /* Ensure it is above the flashing bar */
+}
+
+.pendulum {
+    position: absolute; /* Ensure it is positioned correctly */
+    width: 25px;
+    height: 50px;
+    background-color: #007bff;
+    left: 0;
+    z-index: 3; /* Ensure it is above the flashing bar */
+    transition: none;
+}
+
+.flashing-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #007bff;
+    opacity: 0;
+    transition: opacity 0.1s;
+    position: absolute; /* Ensure it does not affect the layout */
+    top: 0; /* Position it at the top */
+    left: 0;
+    z-index: 10; /* Ensure it is above other elements */
+}

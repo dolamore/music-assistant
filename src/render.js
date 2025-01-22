@@ -18,15 +18,44 @@ let soundSettings = [
 let bpm = 120;
 let isPlaying = false;
 let loop;
+let isPendulumMode = false;
+let metronomeBuffer = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Ensure the settings panel is hidden initially
     document.getElementById('settings-panel').classList.add('hidden');
 
-    // Event listener for the settings button
+    document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
+        const pendulumElement = document.querySelector('.pendulum');
+        const barElement = document.querySelector('.horizontal-bar');
+        if (e.target.checked) {
+            pendulumElement.style.opacity = '1';
+            barElement.style.opacity = '1';
+        } else {
+            pendulumElement.style.opacity = '0';
+            barElement.style.opacity = '0';
+        }
+    });
+
+    document.getElementById('toggle-flashing-bar').addEventListener('change', function (e) {
+        document.querySelector('.flashing-bar').classList.toggle('hidden', !e.target.checked);
+    });
+
+    document.getElementById('toggle-note-bar').addEventListener('change', function (e) {
+        document.querySelectorAll('.note').forEach(note => {
+            note.classList.toggle('hidden', !e.target.checked);
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
+        }
+    });
+
+
     const settingsButton = document.getElementById('settings');
     if (settingsButton) {
-        settingsButton.addEventListener('click', function() {
+        settingsButton.addEventListener('click', function () {
             for (let i = 0; i < 4; i++) {
                 const soundElement = document.getElementById(`sound-${i}`);
                 const frequencyElement = document.getElementById(`frequency-${i}`);
@@ -64,54 +93,42 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('settings-panel').classList.add('hidden');
     });
 
-    // Other event listeners and code...
-    // Update BPM from input
     document.getElementById('bpm').addEventListener('input', (e) => {
-        bpm = parseInt(e.target.value, 10) || 120;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = parseInt(e.target.value, 10) || 120;
+        handleBpmChange(newBpm);
     });
 
-    // Prevent non-numeric input
     document.getElementById('bpm').addEventListener('keypress', (e) => {
         if (!/[0-9]/.test(e.key)) {
             e.preventDefault();
         }
     });
 
-    // Increase BPM by 1
     document.getElementById('increase-bpm-1').addEventListener('click', () => {
-        bpm += 1;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm + 1;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
-    // Increase BPM by 5
     document.getElementById('increase-bpm-5').addEventListener('click', () => {
-        bpm += 5;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm + 5;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
-    // Decrease BPM by 1
     document.getElementById('decrease-bpm-1').addEventListener('click', () => {
-        bpm -= 1;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm - 1;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
-    // Decrease BPM by 5
     document.getElementById('decrease-bpm-5').addEventListener('click', () => {
-        bpm -= 5;
-        document.getElementById('bpm').value = bpm;
-        if (loop) loop.stop();
-        if (isPlaying) startMetronome();
+        const newBpm = bpm - 5;
+        document.getElementById('bpm').value = newBpm;
+        handleBpmChange(newBpm);
     });
 
-    // Start/stop metronome
+
     document.getElementById('start-stop').addEventListener('click', async () => {
         await Tone.start();
         if (isPlaying) {
@@ -121,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Select sound for each quarter note
     document.querySelectorAll('.note').forEach(button => {
         button.addEventListener('click', (e) => {
             const noteIndex = parseInt(e.target.dataset.note, 10);
@@ -130,53 +146,147 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Initial render
     render();
 });
 
 function render() {
-    // Update BPM display
     document.getElementById('bpm').value = bpm;
 
-    // Update note display
     document.querySelectorAll('.note').forEach((note, index) => {
         note.dataset.sound = selectedSounds[index];
         note.classList.toggle('playing', isPlaying && (index === (Tone.Transport.position.split(':')[1] % 4)));
     });
 }
 
-// Start metronome
+function generateMetronomeSequence() {
+    const sequence = [];
+    for (let i = 0; i < 4; i++) {
+        const sound = sounds[selectedSounds[i]];
+        const settings = soundSettings[i];
+        sequence.push({sound, settings});
+    }
+    return sequence;
+}
+
+function getMetronomeSequence() {
+    if (metronomeBuffer.length === 0) {
+        metronomeBuffer = generateMetronomeSequence();
+    }
+    return metronomeBuffer;
+}
+
+let pendulumAnimationFrame; // Чтобы остановить текущую анимацию
+
+function movePendulum() {
+    const pendulumElement = document.querySelector('.pendulum');
+    const barElement = document.querySelector('.horizontal-bar');
+
+    if (!pendulumElement || !barElement) {
+        console.error('Pendulum or bar element not found.');
+        return;
+    }
+
+    const barWidth = barElement.clientWidth;
+    const pendulumWidth = pendulumElement.clientWidth;
+    const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
+    const beatDuration = (60 / bpm) * 1000; // Duration of one beat in milliseconds
+    const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
+
+    let startTime = performance.now();
+
+    function updatePendulumPosition(currentTime) {
+        if (!isPlaying) return; // Stop animation if metronome is stopped
+
+        const elapsed = (currentTime - startTime) % pendulumPeriod;
+        const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
+
+        const position = normalizedTime <= 0.5
+            ? normalizedTime * 2 * maxPosition // Move right
+            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
+
+        pendulumElement.style.left = `${position}px`;
+
+        pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+    }
+
+    startTime = performance.now();
+    pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+
+    // Synchronize with metronome
+    Tone.Transport.scheduleRepeat(() => {
+        startTime = performance.now(); // Reset animation time on each beat
+    }, "2n");
+}
+
+function resetPendulumAnimation() {
+    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
+    const pendulumElement = document.querySelector('.pendulum');
+    if (pendulumElement) {
+        pendulumElement.style.left = '0px'; // Reset pendulum to initial position
+    }
+}
+
+
 function startMetronome() {
     isPlaying = true;
+    isPendulumMode = true;
     Tone.Transport.bpm.value = bpm;
+
+    const flashingBar = document.querySelector('.flashing-bar');
+    const sequence = getMetronomeSequence();
 
     let count = 0;
     loop = new Tone.Loop((time) => {
         const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
         currentNote.classList.add('playing');
-        if (sounds[selectedSounds[count % 4]]) {
-            const synth = sounds[selectedSounds[count % 4]];
-            const settings = soundSettings[count % 4];
-            synth.oscillator.frequency.value = settings.frequency;
-            synth.oscillator.detune.value = settings.detune;
-            synth.oscillator.phase = settings.phase;
-            synth.volume.value = settings.volume;
-            synth.triggerAttackRelease('C4', '8n', time);
+        const {sound, settings} = sequence[count % 4];
+        if (sound) {
+            sound.oscillator.frequency.value = settings.frequency;
+            sound.oscillator.detune.value = settings.detune;
+            sound.oscillator.phase = settings.phase;
+            sound.volume.value = settings.volume;
+            sound.triggerAttackRelease('C4', '8n', time);
         }
+
+        // Flash the bar
+        flashingBar.style.opacity = 1;
         setTimeout(() => {
+            flashingBar.style.opacity = 0;
             currentNote.classList.remove('playing');
-        }, (60000 / bpm) / 2); // Remove class after half a beat
+        }, 100); // Flash duration
         count++;
     }, "4n").start(0);  // Every quarter note
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
+    movePendulum(); // Запускаем маятник
 }
 
-// Stop metronome
+
 function stopMetronome() {
     isPlaying = false;
+    isPendulumMode = false;
     if (loop) loop.stop();
     Tone.Transport.stop();
     document.getElementById('start-stop').textContent = 'Start';
+
+    // Сбросить маятник в начальное положение
+    const pendulumElement = document.querySelector('.pendulum');
+    pendulumElement.style.left = '0px';
+}
+
+function handleBpmChange(newBpm) {
+    bpm = newBpm;
+    if (loop) loop.stop();  // Останавливаем текущий цикл метронома
+    if (isPlaying) {
+        stopMetronome();  // Останавливаем метроном
+        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
+        startMetronome();  // Перезапускаем метроном с новым BPM
+    }
+}
+
+function restartMetronomeAndPendulum() {
+    stopMetronome();
+    resetPendulumAnimation();
+    startMetronome();
 }

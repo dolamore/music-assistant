@@ -13,8 +13,10 @@ app.on('ready', async () => {
         },
     });
 
+    // Set the minimum size of the window
+    mainWindow.setMinimumSize(600, 600);
     // Uncomment the following line to open DevTools
-    mainWindow.webContents.openDevTools();
+//    mainWindow.webContents.openDevTools();
 
     await mainWindow.loadFile(path.join(app.getAppPath(), 'src', 'index.html'));
 });
