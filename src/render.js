@@ -21,8 +21,25 @@ let loop;
 let isPendulumMode = false;
 let metronomeBuffer = [];
 
+const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n'];
+let currentNoteSizeIndex = 2; // Default to '4n' (quarter note)
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
+
+    document.getElementById('increase-notes').addEventListener('click', () => {
+        if (currentNoteSizeIndex < noteSizes.length - 1) {
+            currentNoteSizeIndex++;
+            updateNoteSize();
+        }
+    });
+
+    document.getElementById('decrease-notes').addEventListener('click', () => {
+        if (currentNoteSizeIndex > 0) {
+            currentNoteSizeIndex--;
+            updateNoteSize();
+        }
+    });
 
     document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
         const pendulumElement = document.querySelector('.pendulum');
@@ -226,11 +243,13 @@ function resetPendulumAnimation() {
     }
 }
 
-
 function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
     Tone.Transport.bpm.value = bpm;
+
+    const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n'];
+    const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем строковое значение длительности ноты
 
     const flashingBar = document.querySelector('.flashing-bar');
     const sequence = getMetronomeSequence();
@@ -239,13 +258,13 @@ function startMetronome() {
     loop = new Tone.Loop((time) => {
         const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
         currentNote.classList.add('playing');
-        const {sound, settings} = sequence[count % 4];
+        const { sound, settings } = sequence[count % 4];
         if (sound) {
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
             sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', '8n', time);
+            sound.triggerAttackRelease('C4', noteSize, time);
         }
 
         // Flash the bar
@@ -255,13 +274,12 @@ function startMetronome() {
             currentNote.classList.remove('playing');
         }, 100); // Flash duration
         count++;
-    }, "4n").start(0);  // Every quarter note
+    }, noteSize).start(0);  // Используем строковое значение
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
-    movePendulum(); // Запускаем маятник
+    movePendulum(); // Start the pendulum
 }
-
 
 function stopMetronome() {
     isPlaying = false;
@@ -289,4 +307,15 @@ function restartMetronomeAndPendulum() {
     stopMetronome();
     resetPendulumAnimation();
     startMetronome();
+}
+
+function updateNoteSize() {
+    const noteSize = noteSizes[currentNoteSizeIndex];
+    const beatsCount = document.getElementById('beats-count').textContent;
+    document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+
+    if (isPlaying) {
+        stopMetronome();  // Stop the metronome
+        startMetronome(); // Restart the metronome with the new note size
+    }
 }
