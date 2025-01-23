@@ -7,6 +7,8 @@ const sounds = [
     new Tone.Synth({oscillator: {type: 'square'}}).toDestination(),
     new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination()
 ];
+const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n']; // Default to '4n' (quarter note)
+const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [
@@ -20,9 +22,8 @@ let isPlaying = false;
 let loop;
 let isPendulumMode = false;
 let metronomeBuffer = [];
-
-const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n'];
-let currentNoteSizeIndex = 2; // Default to '4n' (quarter note)
+let pendulumAnimationFrame;
+let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
@@ -190,9 +191,7 @@ function getMetronomeSequence() {
         metronomeBuffer = generateMetronomeSequence();
     }
     return metronomeBuffer;
-}
-
-let pendulumAnimationFrame; // Чтобы остановить текущую анимацию
+}// Чтобы остановить текущую анимацию
 
 function movePendulum() {
     const pendulumElement = document.querySelector('.pendulum');
@@ -206,7 +205,7 @@ function movePendulum() {
     const barWidth = barElement.clientWidth;
     const pendulumWidth = pendulumElement.clientWidth;
     const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-    const beatDuration = (60 / bpm) * 1000; // Duration of one beat in milliseconds
+    const beatDuration = (60 / bpm) * 1000 * noteMultipliers[currentNoteSizeIndex]; // Duration of one beat in milliseconds
     const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
 
     let startTime = performance.now();
@@ -229,10 +228,10 @@ function movePendulum() {
     startTime = performance.now();
     pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
 
-    // Synchronize with metronome
-    Tone.Transport.scheduleRepeat(() => {
-        startTime = performance.now(); // Reset animation time on each beat
-    }, "2n");
+    // // Synchronize with metronome
+    // Tone.Transport.scheduleRepeat(() => {
+    //     startTime = performance.now(); // Reset animation time on each beat
+    // }, "1n");
 }
 
 function resetPendulumAnimation() {
@@ -246,10 +245,10 @@ function resetPendulumAnimation() {
 function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
-    Tone.Transport.bpm.value = bpm;
 
-    const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n'];
-    const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем строковое значение длительности ноты
+    const noteSize = noteSizes[currentNoteSizeIndex]; // Get the current note size
+
+    Tone.Transport.bpm.value = bpm;
 
     const flashingBar = document.querySelector('.flashing-bar');
     const sequence = getMetronomeSequence();
@@ -274,7 +273,7 @@ function startMetronome() {
             currentNote.classList.remove('playing');
         }, 100); // Flash duration
         count++;
-    }, noteSize).start(0);  // Используем строковое значение
+    }, noteSize).start(0);
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
