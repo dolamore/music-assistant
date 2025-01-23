@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('toggle-note-bar').addEventListener('change', function (e) {
-        document.querySelectorAll('.note').forEach(note => {
+        document.querySelectorAll('.beat').forEach(note => {
             note.classList.toggle('hidden', !e.target.checked);
         });
     });
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 phase: parseFloat(document.getElementById(`phase-${i}`).value),
                 volume: parseFloat(document.getElementById(`volume-${i}`).value)
             };
-            document.querySelector(`.note[data-note="${i}"]`).dataset.sound = selectedSounds[i];
+            document.querySelector(`.beat[data-note="${i}"]`).dataset.sound = selectedSounds[i];
         }
         document.getElementById('settings-panel').classList.add('hidden');
     });
@@ -156,9 +156,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelectorAll('.note').forEach(button => {
+    document.querySelectorAll('.beat').forEach(button => {
         button.addEventListener('click', (e) => {
-            const noteIndex = parseInt(e.target.dataset.note, 10);
+            const noteIndex = parseInt(e.target.dataset.beat, 10);
             selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
             e.target.dataset.sound = selectedSounds[noteIndex];
         });
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function render() {
     document.getElementById('bpm').value = bpm;
 
-    document.querySelectorAll('.note').forEach((note, index) => {
+    document.querySelectorAll('.beat').forEach((note, index) => {
         note.dataset.sound = selectedSounds[index];
         note.classList.toggle('playing', isPlaying && (index === (Tone.Transport.position.split(':')[1] % 4)));
     });
@@ -255,7 +255,7 @@ function startMetronome() {
 
     let count = 0;
     loop = new Tone.Loop((time) => {
-        const currentNote = document.querySelector(`.note[data-note="${count % 4}"]`);
+        const currentNote = document.querySelector(`.beat[data-note="${count % 4}"]`);
         currentNote.classList.add('playing');
         const { sound, settings } = sequence[count % 4];
         if (sound) {

@@ -58,18 +58,18 @@ button:hover {
     gap: 10px;
 }
 
-.note {
+.beat {
     width: 50px;
     height: 200px;
     background-color: #ccc;
     position: relative;
 }
 
-.note.playing::before {
+.beat.playing::before {
     background-color: #ff0000; /* Change to desired highlight color */
 }
 
-.note::before {
+.beat::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -79,19 +79,19 @@ button:hover {
     transition: height 0.3s;
 }
 
-.note[data-sound="1"]::before {
+.beat[data-sound="1"]::before {
     height: 25%;
 }
 
-.note[data-sound="2"]::before {
+.beat[data-sound="2"]::before {
     height: 50%;
 }
 
-.note[data-sound="3"]::before {
+.beat[data-sound="3"]::before {
     height: 75%;
 }
 
-.note[data-sound="4"]::before {
+.beat[data-sound="4"]::before {
     height: 100%;
 }
 
