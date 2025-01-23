@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 phase: parseFloat(document.getElementById(`phase-${i}`).value),
                 volume: parseFloat(document.getElementById(`volume-${i}`).value)
             };
-            document.querySelector(`.beat[data-note="${i}"]`).dataset.sound = selectedSounds[i];
+            document.querySelector(`.beat[data-beat="${i}"]`).dataset.sound = selectedSounds[i];
         }
         document.getElementById('settings-panel').classList.add('hidden');
     });
@@ -255,7 +255,7 @@ function startMetronome() {
 
     let count = 0;
     loop = new Tone.Loop((time) => {
-        const currentNote = document.querySelector(`.beat[data-note="${count % 4}"]`);
+        const currentNote = document.querySelector(`.beat[data-beat="${count % 4}"]`);
         currentNote.classList.add('playing');
         const { sound, settings } = sequence[count % 4];
         if (sound) {
