@@ -146,6 +146,14 @@ document.addEventListener('DOMContentLoaded', function () {
             beat.dataset.sound = selectedSounds[index];
         });
 
+        // Regenerate the metronome sequence
+        metronomeBuffer = generateMetronomeSequence();
+
+        // Restart the metronome if it is playing
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
+        }
+
         document.getElementById('settings-panel').classList.add('hidden');
     });
 
@@ -199,6 +207,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const noteIndex = parseInt(e.target.dataset.beat, 10);
             selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
             e.target.dataset.sound = selectedSounds[noteIndex];
+            metronomeBuffer = generateMetronomeSequence(); // Update the metronome buffer
+
+            if (isPlaying) {
+                restartMetronomeAndPendulum(); // Restart the metronome if it is playing
+            }
         });
     });
 
