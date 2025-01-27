@@ -132,6 +132,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const beatRows = document.querySelectorAll('.sound-row');
         selectedSounds = [];
         soundSettings = [];
+
+        // Извлекаем и обновляем настройки для каждого бита
         beatRows.forEach((row, index) => {
             selectedSounds.push(parseInt(row.querySelector('select').value, 10));
             soundSettings.push({
@@ -142,12 +144,23 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
+        // Обновляем данные в DOM
         document.querySelectorAll('.beat').forEach((beat, index) => {
-            beat.dataset.sound = selectedSounds[index];
+            beat.dataset.sound = selectedSounds[index];  // Обновляем звук для каждого бита
         });
 
+        // Перегенерируем последовательность для метронома с новыми настройками
+        metronomeBuffer = generateMetronomeSequence();
+
+        // Обновляем метроном, не останавливая его
+        if (isPlaying) {
+            updateMetronomeSequence();
+        }
+
+        // Скрываем панель настроек
         document.getElementById('settings-panel').classList.add('hidden');
     });
+
 
     document.getElementById('bpm').addEventListener('input', (e) => {
         const newBpm = parseInt(e.target.value, 10) || 120;
@@ -362,56 +375,6 @@ function updateNoteSize() {
     if (isPlaying) {
         stopMetronome();  // Stop the metronome
         startMetronome(); // Restart the metronome with the new note size
-    }
-}
-
-function updateBeats() {
-    const beatRows = document.querySelectorAll('.sound-row');
-
-    // Удаляем лишние данные, если битов стало меньше
-    while (selectedSounds.length > beatRows.length) {
-        selectedSounds.pop();
-        soundSettings.pop();
-    }
-
-    beatRows.forEach((row, index) => {
-        const soundElement = row.querySelector('select');
-        const frequencyElement = row.querySelector('input[placeholder="Frequency"]');
-        const detuneElement = row.querySelector('input[placeholder="Detune"]');
-        const phaseElement = row.querySelector('input[placeholder="Phase"]');
-        const volumeElement = row.querySelector('input[placeholder="Volume"]');
-
-        selectedSounds[index] = parseInt(soundElement.value, 10);
-        soundSettings[index] = {
-            frequency: parseFloat(frequencyElement.value),
-            detune: parseFloat(detuneElement.value),
-            phase: parseFloat(phaseElement.value),
-            volume: parseFloat(volumeElement.value)
-        };
-    });
-
-    // Обновляем последовательность метронома
-    metronomeBuffer = generateMetronomeSequence();
-
-    // Обновляем контейнер битов
-    const beatContainer = document.querySelector('.beat-container');
-    beatContainer.innerHTML = '';
-    for (let i = 0; i < beatRows.length; i++) {
-        const beatDiv = document.createElement('div');
-        beatDiv.classList.add('beat');
-        beatDiv.dataset.beat = i;
-        beatDiv.dataset.sound = selectedSounds[i];
-        beatDiv.addEventListener('click', (e) => {
-            const noteIndex = parseInt(e.target.dataset.beat, 10);
-            selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
-            e.target.dataset.sound = selectedSounds[noteIndex];
-        });
-        beatContainer.appendChild(beatDiv);
-    }
-
-    // Перезапуск метронома при необходимости
-    if (isPlaying) {
-        restartMetronomeAndPendulum();
     }
 }
 
