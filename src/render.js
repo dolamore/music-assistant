@@ -197,8 +197,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.beat').forEach(button => {
         button.addEventListener('click', (e) => {
             const noteIndex = parseInt(e.target.dataset.beat, 10);
-            selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;
-            e.target.dataset.sound = selectedSounds[noteIndex];
+            selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;  // Меняем звук
+            e.target.dataset.sound = selectedSounds[noteIndex];  // Обновляем данные для HTML
+
+            // Перегенерируем последовательность метронома
+            metronomeBuffer = generateMetronomeSequence();
+
+            // Обновляем текущую позицию метронома без перезапуска
+            if (isPlaying) {
+                updateMetronomeSequence();
+            }
         });
     });
 
@@ -406,3 +414,33 @@ function updateBeats() {
         restartMetronomeAndPendulum();
     }
 }
+
+function updateMetronomeSequence() {
+    const sequence = getMetronomeSequence();  // Получаем актуальную последовательность звуков
+    let count = 0;
+
+    // Обновляем текущие события для метронома
+    loop.dispose();  // Удаляем старый цикл
+    loop = new Tone.Loop((time) => {
+        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
+        currentNote.classList.add('playing');
+        const {sound, settings} = sequence[count % sequence.length];
+        if (sound) {
+            sound.oscillator.frequency.value = settings.frequency;
+            sound.oscillator.detune.value = settings.detune;
+            sound.oscillator.phase = settings.phase;
+            sound.volume.value = settings.volume;
+            sound.triggerAttackRelease('C4', noteSizes[currentNoteSizeIndex], time);
+        }
+
+        // Визуальное мигание бара
+        const flashingBar = document.querySelector('.flashing-bar');
+        flashingBar.style.opacity = 1;
+        setTimeout(() => {
+            flashingBar.style.opacity = 0;
+            currentNote.classList.remove('playing');
+        }, 100); // Длительность мигания
+        count++;
+    }, noteSizes[currentNoteSizeIndex]).start(0);
+}
+
