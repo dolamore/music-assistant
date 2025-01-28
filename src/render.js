@@ -287,10 +287,35 @@ document.addEventListener('DOMContentLoaded', function () {
 function render() {
     document.getElementById('bpm').value = bpm;
 
-    document.querySelectorAll('.beat').forEach((note, index) => {
-        note.dataset.sound = selectedSounds[index];
-        note.classList.toggle('playing', isPlaying && (index === (Tone.Transport.position.split(':')[1] % 4)));
+    document.querySelector('.beat-container').addEventListener('click', (event) => {
+        const beatElement = event.target.closest('.beat');
+        if (beatElement) {
+            const beatIndex = parseInt(beatElement.dataset.beat, 10);
+            const currentSound = parseInt(beatElement.dataset.sound, 10);
+
+            // Циклическое переключение звуков (0 - No Sound, 1 - Sound 1, ..., 4 - Sound 4)
+            const nextSound = (currentSound + 1) % sounds.length; // sounds.length для гибкости
+            beatElement.dataset.sound = nextSound;
+
+            // Обновляем массив selectedSounds
+            selectedSounds[beatIndex] = nextSound;
+
+            // Обновляем select в sound settings
+            const soundSelect = document.getElementById(`sound-${beatIndex}`);
+            if (soundSelect) {
+                soundSelect.value = nextSound;
+            }
+
+            // Перегенерируем последовательность для метронома
+            metronomeBuffer = generateMetronomeSequence();
+
+            // Обновляем текущую позицию метронома без перезапуска
+            if (isPlaying) {
+                updateMetronomeSequence();
+            }
+        }
     });
+
 }
 
 function generateMetronomeSequence() {
