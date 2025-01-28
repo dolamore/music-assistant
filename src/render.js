@@ -58,6 +58,60 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('increase-beats').addEventListener('click', () => {
+        const beatRows = document.querySelectorAll('.sound-row');
+        if (beatRows.length < 16) { // Ограничение на максимальное количество битов
+            const newBeatIndex = beatRows.length;
+
+            // Добавляем новую строку в настройки звуков
+            const settingsPanel = document.querySelector('.sound-settings');
+            const newSoundRow = document.createElement('div');
+            newSoundRow.classList.add('sound-row');
+            newSoundRow.innerHTML = `
+            <label for="sound-${newBeatIndex}">Beat ${newBeatIndex + 1}:</label>
+            <select id="sound-${newBeatIndex}">
+                <option value="0">No Sound</option>
+                <option value="1" selected>Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-${newBeatIndex}" type="number" placeholder="Frequency" value="440">
+            <input id="detune-${newBeatIndex}" type="number" placeholder="Detune" value="0">
+            <input id="phase-${newBeatIndex}" type="number" placeholder="Phase" value="0">
+            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="-12">
+        `;
+            settingsPanel.appendChild(newSoundRow);
+
+            // Добавляем новый элемент в beat-container
+            const beatContainer = document.querySelector('.beat-container');
+            const newBeat = document.createElement('div');
+            newBeat.classList.add('beat');
+            newBeat.dataset.beat = newBeatIndex;
+            newBeat.dataset.sound = '1'; // Устанавливаем значение по умолчанию
+            beatContainer.appendChild(newBeat);
+
+            // Обновляем массивы
+            selectedSounds.push(1); // Звук по умолчанию
+            soundSettings.push({
+                frequency: 440,
+                detune: 0,
+                phase: 0,
+                volume: 100
+            });
+
+            // Обновляем количество битов
+            document.getElementById('beats-count').textContent = beatRows.length + 1;
+
+            // Перегенерируем последовательность для метронома
+            metronomeBuffer = generateMetronomeSequence();
+
+            // Если метроном запущен, перезапускаем
+            if (isPlaying) {
+                restartMetronomeAndPendulum();
+            }
+        }
+    });
 
     document.getElementById('increase-notes').addEventListener('click', () => {
         if (currentNoteSizeIndex < noteSizes.length - 1) {
