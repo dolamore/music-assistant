@@ -353,9 +353,7 @@ function movePendulum() {
 function resetPendulumAnimation() {
     cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
     const pendulumElement = document.querySelector('.pendulum');
-    if (pendulumElement) {
-        pendulumElement.style.left = '0px'; // Reset pendulum to initial position
-    }
+    pendulumElement.style.left = '0px'; // Reset pendulum to initial position
 }
 
 function startMetronome() {
