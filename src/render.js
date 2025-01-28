@@ -28,6 +28,8 @@ let currentNoteSizeIndex = 2;
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
 
+    document.getElementById('bpm').value = bpm;
+
     document.getElementById('decrease-beats').addEventListener('click', () => {
         const beatRows = document.querySelectorAll('.sound-row');
         if (beatRows.length > 1) {
@@ -159,32 +161,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('settings').addEventListener('click', function () {
+        for (let i = 0; i < 4; i++) {
+            const soundElement = document.getElementById(`sound-${i}`);
+            const frequencyElement = document.getElementById(`frequency-${i}`);
+            const detuneElement = document.getElementById(`detune-${i}`);
+            const phaseElement = document.getElementById(`phase-${i}`);
+            const volumeElement = document.getElementById(`volume-${i}`);
 
-    const settingsButton = document.getElementById('settings');
-    if (settingsButton) {
-        settingsButton.addEventListener('click', function () {
-            for (let i = 0; i < 4; i++) {
-                const soundElement = document.getElementById(`sound-${i}`);
-                const frequencyElement = document.getElementById(`frequency-${i}`);
-                const detuneElement = document.getElementById(`detune-${i}`);
-                const phaseElement = document.getElementById(`phase-${i}`);
-                const volumeElement = document.getElementById(`volume-${i}`);
-
-                if (soundElement && frequencyElement && detuneElement && phaseElement && volumeElement) {
-                    soundElement.value = selectedSounds[i];
-                    frequencyElement.value = soundSettings[i].frequency;
-                    detuneElement.value = soundSettings[i].detune;
-                    phaseElement.value = soundSettings[i].phase;
-                    volumeElement.value = soundSettings[i].volume;
-                } else {
-                    console.error(`Element with ID sound-${i}, frequency-${i}, detune-${i}, phase-${i}, or volume-${i} not found.`);
-                }
+            if (soundElement && frequencyElement && detuneElement && phaseElement && volumeElement) {
+                soundElement.value = selectedSounds[i];
+                frequencyElement.value = soundSettings[i].frequency;
+                detuneElement.value = soundSettings[i].detune;
+                phaseElement.value = soundSettings[i].phase;
+                volumeElement.value = soundSettings[i].volume;
+            } else {
+                console.error(`Element with ID sound-${i}, frequency-${i}, detune-${i}, phase-${i}, or volume-${i} not found.`);
             }
-            document.getElementById('settings-panel').classList.toggle('hidden');
-        });
-    } else {
-        console.error('Settings button not found.');
-    }
+        }
+        document.getElementById('settings-panel').classList.toggle('hidden');
+    });
 
     document.getElementById('save-settings').addEventListener('click', function () {
         const beatRows = document.querySelectorAll('.sound-row');
@@ -265,58 +261,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelectorAll('.beat').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const noteIndex = parseInt(e.target.dataset.beat, 10);
-            selectedSounds[noteIndex] = (selectedSounds[noteIndex] + 1) % sounds.length;  // Меняем звук
-            e.target.dataset.sound = selectedSounds[noteIndex];  // Обновляем данные для HTML
-
-            // Перегенерируем последовательность метронома
-            metronomeBuffer = generateMetronomeSequence();
-
-            // Обновляем текущую позицию метронома без перезапуска
-            if (isPlaying) {
-                updateMetronomeSequence();
-            }
-        });
-    });
-
-    render();
-});
-
-function render() {
-    document.getElementById('bpm').value = bpm;
-
     document.querySelector('.beat-container').addEventListener('click', (event) => {
         const beatElement = event.target.closest('.beat');
         if (beatElement) {
             const beatIndex = parseInt(beatElement.dataset.beat, 10);
             const currentSound = parseInt(beatElement.dataset.sound, 10);
 
-            // Циклическое переключение звуков (0 - No Sound, 1 - Sound 1, ..., 4 - Sound 4)
-            const nextSound = (currentSound + 1) % sounds.length; // sounds.length для гибкости
+            // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
+            const nextSound = (currentSound % sounds.length) + 1;
             beatElement.dataset.sound = nextSound;
 
-            // Обновляем массив selectedSounds
+            // Update selectedSounds array
             selectedSounds[beatIndex] = nextSound;
 
-            // Обновляем select в sound settings
+            // Update select in sound settings
             const soundSelect = document.getElementById(`sound-${beatIndex}`);
             if (soundSelect) {
                 soundSelect.value = nextSound;
             }
 
-            // Перегенерируем последовательность для метронома
+            // Regenerate metronome sequence
             metronomeBuffer = generateMetronomeSequence();
 
-            // Обновляем текущую позицию метронома без перезапуска
+            // Update metronome sequence without restarting
             if (isPlaying) {
                 updateMetronomeSequence();
             }
         }
     });
-
-}
+});
 
 function generateMetronomeSequence() {
     const sequence = [];
