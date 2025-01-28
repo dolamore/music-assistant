@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Перегенерируем последовательность для метронома
             metronomeBuffer = generateMetronomeSequence();
 
+            updateTimeSignature();
+
             // Если метроном запущен, перезапускаем
             if (isPlaying) {
                 restartMetronomeAndPendulum();
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <input id="frequency-${newBeatIndex}" type="number" placeholder="Frequency" value="440">
             <input id="detune-${newBeatIndex}" type="number" placeholder="Detune" value="0">
             <input id="phase-${newBeatIndex}" type="number" placeholder="Phase" value="0">
-            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="-12">
+            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="0">
         `;
             settingsPanel.appendChild(newSoundRow);
 
@@ -97,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 frequency: 440,
                 detune: 0,
                 phase: 0,
-                volume: 100
+                volume: 0
             });
 
             // Обновляем количество битов
@@ -105,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Перегенерируем последовательность для метронома
             metronomeBuffer = generateMetronomeSequence();
+
+            updateTimeSignature();
 
             // Если метроном запущен, перезапускаем
             if (isPlaying) {
@@ -422,9 +426,7 @@ function restartMetronomeAndPendulum() {
 }
 
 function updateNoteSize() {
-    const noteSize = noteSizes[currentNoteSizeIndex];
-    const beatsCount = document.getElementById('beats-count').textContent;
-    document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+    updateTimeSignature()
 
     if (isPlaying) {
         stopMetronome();  // Stop the metronome
@@ -459,5 +461,11 @@ function updateMetronomeSequence() {
         }, 100); // Длительность мигания
         count++;
     }, noteSizes[currentNoteSizeIndex]).start(0);
+}
+
+function updateTimeSignature() {
+    const beatsCount = document.getElementById('beats-count').textContent;
+    const noteSize = noteSizes[currentNoteSizeIndex];
+    document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
 }
 
