@@ -265,6 +265,61 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function changeBeatSound(beatElement) {
+    const beatIndex = parseInt(beatElement.dataset.beat, 10);
+    const currentSound = parseInt(beatElement.dataset.sound, 10);
+
+    // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
+    const nextSound = (currentSound % sounds.length) + 1;
+    beatElement.dataset.sound = nextSound;
+
+    // Update selectedSounds array
+    selectedSounds[beatIndex] = nextSound;
+
+    // Update select in sound settings
+    const soundSelect = document.getElementById(`sound-${beatIndex}`);
+    if (soundSelect) {
+        soundSelect.value = nextSound;
+    }
+
+    // Regenerate metronome sequence
+    metronomeBuffer = generateMetronomeSequence();
+
+    // Update metronome sequence without restarting
+    if (isPlaying) {
+        updateMetronomeSequence();
+    }
+}
+
+function updateMetronomeSequence() {
+    const sequence = getMetronomeSequence();  // Получаем актуальную последовательность звуков
+    let count = 0;
+
+    // Обновляем текущие события для метронома
+    loop.dispose();  // Удаляем старый цикл
+    loop = new Tone.Loop((time) => {
+        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
+        currentNote.classList.add('playing');
+        const {sound, settings} = sequence[count % sequence.length];
+        if (sound) {
+            sound.oscillator.frequency.value = settings.frequency;
+            sound.oscillator.detune.value = settings.detune;
+            sound.oscillator.phase = settings.phase;
+            sound.volume.value = settings.volume;
+            sound.triggerAttackRelease('C4', noteSizes[currentNoteSizeIndex], time);
+        }
+
+        // Визуальное мигание бара
+        const flashingBar = document.querySelector('.flashing-bar');
+        flashingBar.style.opacity = 1;
+        setTimeout(() => {
+            flashingBar.style.opacity = 0;
+            currentNote.classList.remove('playing');
+        }, 100); // Длительность мигания
+        count++;
+    }, noteSizes[currentNoteSizeIndex]).start(0);
+}
+
 function generateMetronomeSequence() {
     const sequence = [];
     const beatRows = document.querySelectorAll('.sound-row');
@@ -404,64 +459,9 @@ function updateNoteSize() {
     }
 }
 
-function updateMetronomeSequence() {
-    const sequence = getMetronomeSequence();  // Получаем актуальную последовательность звуков
-    let count = 0;
-
-    // Обновляем текущие события для метронома
-    loop.dispose();  // Удаляем старый цикл
-    loop = new Tone.Loop((time) => {
-        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
-        currentNote.classList.add('playing');
-        const {sound, settings} = sequence[count % sequence.length];
-        if (sound) {
-            sound.oscillator.frequency.value = settings.frequency;
-            sound.oscillator.detune.value = settings.detune;
-            sound.oscillator.phase = settings.phase;
-            sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', noteSizes[currentNoteSizeIndex], time);
-        }
-
-        // Визуальное мигание бара
-        const flashingBar = document.querySelector('.flashing-bar');
-        flashingBar.style.opacity = 1;
-        setTimeout(() => {
-            flashingBar.style.opacity = 0;
-            currentNote.classList.remove('playing');
-        }, 100); // Длительность мигания
-        count++;
-    }, noteSizes[currentNoteSizeIndex]).start(0);
-}
-
 function updateTimeSignature() {
     const beatsCount = document.getElementById('beats-count').textContent;
     const noteSize = noteSizes[currentNoteSizeIndex];
     document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
-}
-
-function changeBeatSound(beatElement) {
-    const beatIndex = parseInt(beatElement.dataset.beat, 10);
-    const currentSound = parseInt(beatElement.dataset.sound, 10);
-
-    // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
-    const nextSound = (currentSound % sounds.length) + 1;
-    beatElement.dataset.sound = nextSound;
-
-    // Update selectedSounds array
-    selectedSounds[beatIndex] = nextSound;
-
-    // Update select in sound settings
-    const soundSelect = document.getElementById(`sound-${beatIndex}`);
-    if (soundSelect) {
-        soundSelect.value = nextSound;
-    }
-
-    // Regenerate metronome sequence
-    metronomeBuffer = generateMetronomeSequence();
-
-    // Update metronome sequence without restarting
-    if (isPlaying) {
-        updateMetronomeSequence();
-    }
 }
 
