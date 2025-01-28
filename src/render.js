@@ -215,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('settings-panel').classList.add('hidden');
     });
 
-
     document.getElementById('bpm').addEventListener('input', (e) => {
         const newBpm = parseInt(e.target.value, 10) || 120;
         handleBpmChange(newBpm);
@@ -251,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function () {
         handleBpmChange(newBpm);
     });
 
-
     document.getElementById('start-stop').addEventListener('click', async () => {
         await Tone.start();
         if (isPlaying) {
@@ -263,31 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelector('.beat-container').addEventListener('click', (event) => {
         const beatElement = event.target.closest('.beat');
-        if (beatElement) {
-            const beatIndex = parseInt(beatElement.dataset.beat, 10);
-            const currentSound = parseInt(beatElement.dataset.sound, 10);
-
-            // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
-            const nextSound = (currentSound % sounds.length) + 1;
-            beatElement.dataset.sound = nextSound;
-
-            // Update selectedSounds array
-            selectedSounds[beatIndex] = nextSound;
-
-            // Update select in sound settings
-            const soundSelect = document.getElementById(`sound-${beatIndex}`);
-            if (soundSelect) {
-                soundSelect.value = nextSound;
-            }
-
-            // Regenerate metronome sequence
-            metronomeBuffer = generateMetronomeSequence();
-
-            // Update metronome sequence without restarting
-            if (isPlaying) {
-                updateMetronomeSequence();
-            }
-        }
+        changeBeatSound(beatElement);
     });
 });
 
@@ -463,5 +437,31 @@ function updateTimeSignature() {
     const beatsCount = document.getElementById('beats-count').textContent;
     const noteSize = noteSizes[currentNoteSizeIndex];
     document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+}
+
+function changeBeatSound(beatElement) {
+    const beatIndex = parseInt(beatElement.dataset.beat, 10);
+    const currentSound = parseInt(beatElement.dataset.sound, 10);
+
+    // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
+    const nextSound = (currentSound % sounds.length) + 1;
+    beatElement.dataset.sound = nextSound;
+
+    // Update selectedSounds array
+    selectedSounds[beatIndex] = nextSound;
+
+    // Update select in sound settings
+    const soundSelect = document.getElementById(`sound-${beatIndex}`);
+    if (soundSelect) {
+        soundSelect.value = nextSound;
+    }
+
+    // Regenerate metronome sequence
+    metronomeBuffer = generateMetronomeSequence();
+
+    // Update metronome sequence without restarting
+    if (isPlaying) {
+        updateMetronomeSequence();
+    }
 }
 
