@@ -20,6 +20,7 @@ let soundSettings = [
 let bpm = 120;
 let isPlaying = false;
 let loop;
+let count = 0;
 let isPendulumMode = false;
 let metronomeBuffer = [];
 let pendulumAnimationFrame;
@@ -31,92 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('bpm').value = bpm;
 
     document.getElementById('decrease-beats').addEventListener('click', () => {
-        const beatRows = document.querySelectorAll('.sound-row');
-        if (beatRows.length > 1) {
-            // Удаляем последнюю строку из DOM
-            beatRows[beatRows.length - 1].remove();
-
-            // Обновляем массивы
-            selectedSounds.pop(); // Убираем последний элемент из selectedSounds
-            soundSettings.pop(); // Убираем последний элемент из soundSettings
-
-            // Удаляем соответствующий элемент beat-container
-            const beatContainer = document.querySelector('.beat-container');
-            const lastBeat = beatContainer.lastElementChild;
-            if (lastBeat) {
-                lastBeat.remove();
-            }
-
-            // Пересчитываем количество битов и обновляем текст
-            document.getElementById('beats-count').textContent = beatRows.length - 1;
-
-            // Перегенерируем последовательность для метронома
-            metronomeBuffer = generateMetronomeSequence();
-
-            updateTimeSignature();
-
-            // Если метроном запущен, перезапускаем
-            if (isPlaying) {
-                restartMetronomeAndPendulum();
-            }
-        }
+        decreaseBeat();
     });
 
     document.getElementById('increase-beats').addEventListener('click', () => {
-        const beatRows = document.querySelectorAll('.sound-row');
-        if (beatRows.length < 16) { // Ограничение на максимальное количество битов
-            const newBeatIndex = beatRows.length;
-
-            // Добавляем новую строку в настройки звуков
-            const settingsPanel = document.querySelector('.sound-settings');
-            const newSoundRow = document.createElement('div');
-            newSoundRow.classList.add('sound-row');
-            newSoundRow.innerHTML = `
-            <label for="sound-${newBeatIndex}">Beat ${newBeatIndex + 1}:</label>
-            <select id="sound-${newBeatIndex}">
-                <option value="0">No Sound</option>
-                <option value="1" selected>Sound 1</option>
-                <option value="2">Sound 2</option>
-                <option value="3">Sound 3</option>
-                <option value="4">Sound 4</option>
-            </select>
-            <input id="frequency-${newBeatIndex}" type="number" placeholder="Frequency" value="440">
-            <input id="detune-${newBeatIndex}" type="number" placeholder="Detune" value="0">
-            <input id="phase-${newBeatIndex}" type="number" placeholder="Phase" value="0">
-            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="0">
-        `;
-            settingsPanel.appendChild(newSoundRow);
-
-            // Добавляем новый элемент в beat-container
-            const beatContainer = document.querySelector('.beat-container');
-            const newBeat = document.createElement('div');
-            newBeat.classList.add('beat');
-            newBeat.dataset.beat = newBeatIndex;
-            newBeat.dataset.sound = '1'; // Устанавливаем значение по умолчанию
-            beatContainer.appendChild(newBeat);
-
-            // Обновляем массивы
-            selectedSounds.push(1); // Звук по умолчанию
-            soundSettings.push({
-                frequency: 440,
-                detune: 0,
-                phase: 0,
-                volume: 0
-            });
-
-            // Обновляем количество битов
-            document.getElementById('beats-count').textContent = beatRows.length + 1;
-
-            // Перегенерируем последовательность для метронома
-            metronomeBuffer = generateMetronomeSequence();
-
-            updateTimeSignature();
-
-            // Если метроном запущен, перезапускаем
-            if (isPlaying) {
-                restartMetronomeAndPendulum();
-            }
-        }
+        increaseBeat();
     });
 
     document.getElementById('increase-notes').addEventListener('click', () => {
@@ -265,18 +185,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function startMetronome() {
-    isPlaying = true;
-    isPendulumMode = true;
+function createMetronomeLoop(noteSize) {
+    const sequence = getMetronomeSequence(); // Получаем текущую последовательность битов
 
-    const noteSize = noteSizes[currentNoteSizeIndex]; // Get the current note size
-    Tone.Transport.bpm.value = bpm;
-
-    const flashingBar = document.querySelector('.flashing-bar');
-    const sequence = getMetronomeSequence();
-
-    let count = 0;
-    loop = new Tone.Loop((time) => {
+    return new Tone.Loop((time) => {
         const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
         currentNote.classList.add('playing');
         const {sound, settings} = sequence[count % sequence.length];
@@ -289,17 +201,31 @@ function startMetronome() {
         }
 
         // Flash the bar
+        const flashingBar = document.querySelector('.flashing-bar');
         flashingBar.style.opacity = 1;
         setTimeout(() => {
             flashingBar.style.opacity = 0;
             currentNote.classList.remove('playing');
         }, 100); // Flash duration
         count++;
-    }, noteSize).start(0);
+    }, noteSize); // Возвращаем луп, не стартуя его сразу
+}
+
+function startMetronome() {
+    isPlaying = true;
+    isPendulumMode = true;
+
+    const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем текущий размер ноты
+    Tone.Transport.bpm.value = bpm;
+
+    // Создаем новый луп с нужными параметрами
+    loop = createMetronomeLoop(noteSize);
+
+    loop.start(0); // Стартуем луп
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
-    movePendulum(); // Start the pendulum
+    movePendulum(); // Запускаем анимацию маятника
 }
 
 function changeBeatSound(beatElement) {
@@ -383,6 +309,7 @@ function stopMetronome() {
     // Сбросить маятник в начальное положение
     const pendulumElement = document.querySelector('.pendulum');
     pendulumElement.style.left = '0px';
+    count = 0;
 }
 
 function handleBpmChange(newBpm) {
@@ -446,4 +373,105 @@ function movePendulum() {
     startTime = performance.now();
     requestAnimationFrame(updatePendulumPosition);
 }
+
+function resetPendulumAnimation() {
+    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
+    const pendulumElement = document.querySelector('.pendulum');
+    pendulumElement.style.left = '0px'; // Reset pendulum to initial position
+}
+
+function decreaseBeat() {
+    const beatRows = document.querySelectorAll('.sound-row');
+    if (beatRows.length > 1) {
+        // Удаляем последнюю строку из DOM
+        beatRows[beatRows.length - 1].remove();
+
+        // Обновляем массивы
+        selectedSounds.pop(); // Убираем последний элемент из selectedSounds
+        soundSettings.pop(); // Убираем последний элемент из soundSettings
+
+        // Удаляем соответствующий элемент beat-container
+        const beatContainer = document.querySelector('.beat-container');
+        const lastBeat = beatContainer.lastElementChild;
+        if (lastBeat) {
+            lastBeat.remove();
+        }
+
+        // Пересчитываем количество битов и обновляем текст
+        document.getElementById('beats-count').textContent = beatRows.length - 1;
+
+        // Удаляем последний элемент из последовательности метронома (метод сгенерирует актуальную последовательность)
+        metronomeBuffer.pop();
+
+        // Обновляем метроному без перезапуска
+        updateMetronomeSequence();
+
+        // Обновляем размер такта
+        updateTimeSignature();
+
+        // Если метроном запущен, обновляем его без перезапуска
+        if (isPlaying) {
+            updateMetronomeSequence();  // Применяем изменения в последовательности
+        }
+    }
+}
+
+function increaseBeat() {
+    const beatRows = document.querySelectorAll('.sound-row');
+    if (beatRows.length < 16) { // Ограничение на максимальное количество битов
+        const newBeatIndex = beatRows.length;
+
+        // Добавляем новую строку в настройки звуков
+        const settingsPanel = document.querySelector('.sound-settings');
+        const newSoundRow = document.createElement('div');
+        newSoundRow.classList.add('sound-row');
+        newSoundRow.innerHTML = `
+            <label for="sound-${newBeatIndex}">Beat ${newBeatIndex + 1}:</label>
+            <select id="sound-${newBeatIndex}">
+                <option value="0">No Sound</option>
+                <option value="1" selected>Sound 1</option>
+                <option value="2">Sound 2</option>
+                <option value="3">Sound 3</option>
+                <option value="4">Sound 4</option>
+            </select>
+            <input id="frequency-${newBeatIndex}" type="number" placeholder="Frequency" value="440">
+            <input id="detune-${newBeatIndex}" type="number" placeholder="Detune" value="0">
+            <input id="phase-${newBeatIndex}" type="number" placeholder="Phase" value="0">
+            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="0">
+        `;
+        settingsPanel.appendChild(newSoundRow);
+
+        // Добавляем новый элемент в beat-container
+        const beatContainer = document.querySelector('.beat-container');
+        const newBeat = document.createElement('div');
+        newBeat.classList.add('beat');
+        newBeat.dataset.beat = newBeatIndex;
+        newBeat.dataset.sound = '1'; // Устанавливаем значение по умолчанию
+        beatContainer.appendChild(newBeat);
+
+        // Обновляем массивы
+        selectedSounds.push(1); // Звук по умолчанию
+        soundSettings.push({
+            frequency: 440,
+            detune: 0,
+            phase: 0,
+            volume: 0
+        });
+
+        // Обновляем количество битов
+        document.getElementById('beats-count').textContent = beatRows.length + 1;
+
+        // Перегенерируем последовательность для метронома
+        metronomeBuffer = generateMetronomeSequence();
+
+        // Обновляем последовательность метронома без перезапуска
+        if (isPlaying) {
+            updateMetronomeSequence();
+        }
+
+        // Обновляем тактовую сетку (если нужно)
+        updateTimeSignature();
+    }
+}
+
 
