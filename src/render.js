@@ -265,6 +265,43 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function startMetronome() {
+    isPlaying = true;
+    isPendulumMode = true;
+
+    const noteSize = noteSizes[currentNoteSizeIndex]; // Get the current note size
+    Tone.Transport.bpm.value = bpm;
+
+    const flashingBar = document.querySelector('.flashing-bar');
+    const sequence = getMetronomeSequence();
+
+    let count = 0;
+    loop = new Tone.Loop((time) => {
+        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
+        currentNote.classList.add('playing');
+        const {sound, settings} = sequence[count % sequence.length];
+        if (sound) {
+            sound.oscillator.frequency.value = settings.frequency;
+            sound.oscillator.detune.value = settings.detune;
+            sound.oscillator.phase = settings.phase;
+            sound.volume.value = settings.volume;
+            sound.triggerAttackRelease('C4', noteSize, time);
+        }
+
+        // Flash the bar
+        flashingBar.style.opacity = 1;
+        setTimeout(() => {
+            flashingBar.style.opacity = 0;
+            currentNote.classList.remove('playing');
+        }, 100); // Flash duration
+        count++;
+    }, noteSize).start(0);
+
+    Tone.Transport.start();
+    document.getElementById('start-stop').textContent = 'Stop';
+    movePendulum(); // Start the pendulum
+}
+
 function changeBeatSound(beatElement) {
     const beatIndex = parseInt(beatElement.dataset.beat, 10);
     const currentSound = parseInt(beatElement.dataset.sound, 10);
@@ -342,11 +379,6 @@ function movePendulum() {
     const pendulumElement = document.querySelector('.pendulum');
     const barElement = document.querySelector('.horizontal-bar');
 
-    if (!pendulumElement || !barElement) {
-        console.error('Pendulum or bar element not found.');
-        return;
-    }
-
     const barWidth = barElement.clientWidth;
     const pendulumWidth = pendulumElement.clientWidth;
     const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
@@ -383,43 +415,6 @@ function resetPendulumAnimation() {
     cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
     const pendulumElement = document.querySelector('.pendulum');
     pendulumElement.style.left = '0px'; // Reset pendulum to initial position
-}
-
-function startMetronome() {
-    isPlaying = true;
-    isPendulumMode = true;
-
-    const noteSize = noteSizes[currentNoteSizeIndex]; // Get the current note size
-    Tone.Transport.bpm.value = bpm;
-
-    const flashingBar = document.querySelector('.flashing-bar');
-    const sequence = getMetronomeSequence();
-
-    let count = 0;
-    loop = new Tone.Loop((time) => {
-        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
-        currentNote.classList.add('playing');
-        const {sound, settings} = sequence[count % sequence.length];
-        if (sound) {
-            sound.oscillator.frequency.value = settings.frequency;
-            sound.oscillator.detune.value = settings.detune;
-            sound.oscillator.phase = settings.phase;
-            sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', noteSize, time);
-        }
-
-        // Flash the bar
-        flashingBar.style.opacity = 1;
-        setTimeout(() => {
-            flashingBar.style.opacity = 0;
-            currentNote.classList.remove('playing');
-        }, 100); // Flash duration
-        count++;
-    }, noteSize).start(0);
-
-    Tone.Transport.start();
-    document.getElementById('start-stop').textContent = 'Stop';
-    movePendulum(); // Start the pendulum
 }
 
 function stopMetronome() {
