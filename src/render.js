@@ -330,11 +330,9 @@ function changeBeatSound(beatElement) {
 
 function updateMetronomeSequence() {
     const sequence = getMetronomeSequence();  // Получаем актуальную последовательность звуков
-    let count = 0;
 
-    // Обновляем текущие события для метронома
-    loop.dispose();  // Удаляем старый цикл
-    loop = new Tone.Loop((time) => {
+    // Обновляем логику без создания нового лупа
+    loop.callback = (time) => {
         const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
         currentNote.classList.add('playing');
         const {sound, settings} = sequence[count % sequence.length];
@@ -354,7 +352,7 @@ function updateMetronomeSequence() {
             currentNote.classList.remove('playing');
         }, 100); // Длительность мигания
         count++;
-    }, noteSizes[currentNoteSizeIndex]).start(0);
+    };
 }
 
 function generateMetronomeSequence() {
@@ -447,11 +445,5 @@ function movePendulum() {
 
     startTime = performance.now();
     requestAnimationFrame(updatePendulumPosition);
-}
-
-function resetPendulumAnimation() {
-    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
-    const pendulumElement = document.querySelector('.pendulum');
-    pendulumElement.style.left = '0px'; // Reset pendulum to initial position
 }
 
