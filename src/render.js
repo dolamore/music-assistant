@@ -375,48 +375,6 @@ function getMetronomeSequence() {
     return metronomeBuffer;
 }// Чтобы остановить текущую анимацию
 
-function movePendulum() {
-    const pendulumElement = document.querySelector('.pendulum');
-    const barElement = document.querySelector('.horizontal-bar');
-
-    const barWidth = barElement.clientWidth;
-    const pendulumWidth = pendulumElement.clientWidth;
-    const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-    const beatDuration = (60 / bpm) * 1000 * noteMultipliers[currentNoteSizeIndex]; // Duration of one beat in milliseconds
-    const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
-
-    let startTime = performance.now();
-
-    function updatePendulumPosition(currentTime) {
-        if (!isPlaying) return; // Stop animation if metronome is stopped
-
-        const elapsed = (currentTime - startTime) % pendulumPeriod;
-        const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
-
-        const position = normalizedTime <= 0.5
-            ? normalizedTime * 2 * maxPosition // Move right
-            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
-
-        pendulumElement.style.left = `${position}px`;
-
-        pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
-    }
-
-    startTime = performance.now();
-    pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
-
-    // // Synchronize with metronome
-    // Tone.Transport.scheduleRepeat(() => {
-    //     startTime = performance.now(); // Reset animation time on each beat
-    // }, "1n");
-}
-
-function resetPendulumAnimation() {
-    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
-    const pendulumElement = document.querySelector('.pendulum');
-    pendulumElement.style.left = '0px'; // Reset pendulum to initial position
-}
-
 function stopMetronome() {
     isPlaying = false;
     isPendulumMode = false;
@@ -458,5 +416,42 @@ function updateTimeSignature() {
     const beatsCount = document.getElementById('beats-count').textContent;
     const noteSize = noteSizes[currentNoteSizeIndex];
     document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+}
+
+function movePendulum() {
+    const pendulumElement = document.querySelector('.pendulum');
+    const barElement = document.querySelector('.horizontal-bar');
+
+    const barWidth = barElement.clientWidth;
+    const pendulumWidth = pendulumElement.clientWidth;
+    const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
+    const beatDuration = (60 / bpm) * 1000 * noteMultipliers[currentNoteSizeIndex]; // Duration of one beat in milliseconds
+    const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
+
+    let startTime = performance.now();
+
+    function updatePendulumPosition(currentTime) {
+        if (!isPlaying) return; // Stop animation if metronome is stopped
+
+        const elapsed = (currentTime - startTime) % pendulumPeriod;
+        const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
+
+        const position = normalizedTime <= 0.5
+            ? normalizedTime * 2 * maxPosition // Move right
+            : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
+
+        pendulumElement.style.left = `${position}px`;
+
+        pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+    }
+
+    startTime = performance.now();
+    requestAnimationFrame(updatePendulumPosition);
+}
+
+function resetPendulumAnimation() {
+    cancelAnimationFrame(pendulumAnimationFrame); // Stop the current animation
+    const pendulumElement = document.querySelector('.pendulum');
+    pendulumElement.style.left = '0px'; // Reset pendulum to initial position
 }
 
