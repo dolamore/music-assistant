@@ -1,14 +1,5 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-
-const sounds = [
-    null, // No sound
-    new Tone.Synth({oscillator: {type: 'sine'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'triangle'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'square'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination()
-];
-const noteSizes = ['1n', '2n', '4n', '8n', '16n', '32n', '64n']; // Default to '4n' (quarter note)
-const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
+import {noteMultipliers, noteSizes, sounds} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [
@@ -338,7 +329,7 @@ function updateNoteSize() {
 }
 
 function updateTimeSignature() {
-    const beatsCount = document.getElementById('beats-count').textContent;
+    const beatsCount = document.querySelectorAll('.beat-wrapper').length;
     const noteSize = noteSizes[currentNoteSizeIndex];
     document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
 }
@@ -386,35 +377,33 @@ function decreaseBeat() {
         // Удаляем последнюю строку из DOM
         beatRows[beatRows.length - 1].remove();
 
-        // Обновляем массивы
-        selectedSounds.pop(); // Убираем последний элемент из selectedSounds
-        soundSettings.pop(); // Убираем последний элемент из soundSettings
-
-        // Удаляем соответствующий элемент beat-container
+        // Удаляем последний элемент из beat-container
         const beatContainer = document.querySelector('.beat-container');
-        const lastBeat = beatContainer.lastElementChild;
-        if (lastBeat) {
-            lastBeat.remove();
+        const lastBeatWrapper = beatContainer.lastElementChild;
+        if (lastBeatWrapper) {
+            lastBeatWrapper.remove();
         }
 
-        // Пересчитываем количество битов и обновляем текст
-        document.getElementById('beats-count').textContent = beatRows.length - 1;
-
-        // Удаляем последний элемент из последовательности метронома (метод сгенерирует актуальную последовательность)
+        // Обновляем массивы
+        selectedSounds.pop();
+        soundSettings.pop();
         metronomeBuffer.pop();
 
-        // Обновляем метроному без перезапуска
-        updateMetronomeSequence();
+        // Пересчитываем количество битов
+        document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
 
-        // Обновляем размер такта
-        updateTimeSignature();
+        // Используем setTimeout, чтобы подождать завершения обновления DOM
+        setTimeout(() => {
+            updateTimeSignature();
+        }, 0);
 
-        // Если метроном запущен, обновляем его без перезапуска
+        // Если метроном запущен, обновляем его
         if (isPlaying) {
-            updateMetronomeSequence();  // Применяем изменения в последовательности
+            updateMetronomeSequence();
         }
     }
 }
+
 
 function increaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
@@ -443,11 +432,21 @@ function increaseBeat() {
 
         // Добавляем новый элемент в beat-container
         const beatContainer = document.querySelector('.beat-container');
-        const newBeat = document.createElement('div');
-        newBeat.classList.add('beat');
-        newBeat.dataset.beat = newBeatIndex;
-        newBeat.dataset.sound = '1'; // Устанавливаем значение по умолчанию
-        beatContainer.appendChild(newBeat);
+        const newBeatWrapper = document.createElement('div');
+        newBeatWrapper.classList.add('beat-wrapper');
+        newBeatWrapper.innerHTML = `
+            <div class="beat" data-beat="${newBeatIndex}" data-sound="1"></div>
+            <select class="note-size-dropdown" data-beat="${newBeatIndex}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+                <option value="64">64</option>
+            </select>
+        `;
+        beatContainer.appendChild(newBeatWrapper);
 
         // Обновляем массивы
         selectedSounds.push(1); // Звук по умолчанию
