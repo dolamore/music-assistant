@@ -176,31 +176,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function createMetronomeLoop(noteSize) {
-    const sequence = getMetronomeSequence(); // Получаем текущую последовательность битов
+function createMetronomeLoop() {
+    const sequence = generateFixedMetronomeSequence(); // Get the new sequence
 
     return new Tone.Loop((time) => {
-        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
-        currentNote.classList.add('playing');
-        const {sound, settings} = sequence[count % sequence.length];
-        if (sound) {
+        const currentStep = count % 64; // Step through a 64-step grid
+
+        const currentNote = sequence[currentStep];
+        if (currentNote && currentStep % 16 === 0) { // Only play the first 1/64 note in each beat
+            const { sound, settings } = currentNote;
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
             sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', noteSize, time);
+            sound.triggerAttackRelease('C4', '64n', time); // Always play a 1/64 note
+
+            // Visual flashing
+            const flashingBar = document.querySelector('.flashing-bar');
+            flashingBar.style.opacity = 1;
+            setTimeout(() => flashingBar.style.opacity = 0, 100);
+
+            // Animate the current beat
+            document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`).classList.add('playing');
+            setTimeout(() => document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`).classList.remove('playing'), 100);
         }
 
-        // Flash the bar
-        const flashingBar = document.querySelector('.flashing-bar');
-        flashingBar.style.opacity = 1;
-        setTimeout(() => {
-            flashingBar.style.opacity = 0;
-            currentNote.classList.remove('playing');
-        }, 100); // Flash duration
         count++;
-    }, noteSize); // Возвращаем луп, не стартуя его сразу
+    }, '64n'); // Always move with 1/64 resolution
 }
+
 
 function startMetronome() {
     isPlaying = true;
@@ -473,4 +477,27 @@ function increaseBeat() {
     }
 }
 
+function generateFixedMetronomeSequence() {
+    const totalSteps = 64;  // Всегда 64 шага
+    const sequence = new Array(totalSteps).fill(null); // Создаем пустую последовательность
+    let position = 0;
+
+    document.querySelectorAll('.beat-wrapper').forEach((beatWrapper, index) => {
+        const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
+        const stepSize = 64 / noteSize; // Вычисляем, сколько шагов занимает этот бит
+
+        for (let i = 0; i < stepSize; i++) {
+            if (position < totalSteps) {
+                sequence[position] = {
+                    sound: sounds[selectedSounds[index]],
+                    settings: soundSettings[index],
+                    beatIndex: index
+                };
+                position++;
+            }
+        }
+    });
+
+    return sequence;
+}
 
