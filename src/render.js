@@ -442,12 +442,12 @@ function increaseBeat() {
             <div class="beat" data-beat="${newBeatIndex}" data-sound="1"></div>
             <select class="note-size-dropdown" data-beat="${newBeatIndex}">
                 <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="4" selected>4</option>
-                <option value="8">8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
-                <option value="64">64</option>
+                <option value="2">1/2</option>
+                <option value="4" selected>1/4</option>
+                <option value="8">1/8</option>
+                <option value="16">1/16</option>
+                <option value="32">1/32</option>
+                <option value="64">1/64</option>
             </select>
         `;
         beatContainer.appendChild(newBeatWrapper);
