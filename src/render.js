@@ -206,8 +206,6 @@ function createMetronomeLoop() {
     }, '64n'); // Всегда двигаемся с разрешением 1/64
 }
 
-
-
 function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
@@ -252,28 +250,30 @@ function changeBeatSound(beatElement) {
 }
 
 function updateMetronomeSequence() {
-    const sequence = getMetronomeSequence();  // Получаем актуальную последовательность звуков
+    const sequence = generateFixedMetronomeSequence();  // Get the updated sequence
 
-    // Обновляем логику без создания нового лупа
+    // Update the loop callback with the new sequence
     loop.callback = (time) => {
-        const currentNote = document.querySelector(`.beat[data-beat="${count % sequence.length}"]`);
-        currentNote.classList.add('playing');
-        const {sound, settings} = sequence[count % sequence.length];
-        if (sound) {
+        const currentStep = count % sequence.length;
+        const currentNote = sequence[currentStep];
+        if (currentNote) {
+            const { sound, settings } = currentNote;
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
             sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', noteSizes[currentNoteSizeIndex], time);
-        }
+            sound.triggerAttackRelease('C4', '64n', time);
 
-        // Визуальное мигание бара
-        const flashingBar = document.querySelector('.flashing-bar');
-        flashingBar.style.opacity = 1;
-        setTimeout(() => {
-            flashingBar.style.opacity = 0;
-            currentNote.classList.remove('playing');
-        }, 100); // Длительность мигания
+            // Visual flashing
+            const flashingBar = document.querySelector('.flashing-bar');
+            flashingBar.style.opacity = 1;
+            setTimeout(() => flashingBar.style.opacity = 0, 100);
+
+            // Highlight the current beat
+            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+            beatElement.classList.add('playing');
+            setTimeout(() => beatElement.classList.remove('playing'), 100);
+        }
         count++;
     };
 }
@@ -489,18 +489,18 @@ function generateFixedMetronomeSequence() {
     });
 
     const sequence = new Array(totalSteps).fill(null);
-    let position = 0; // Указатель текущей позиции
+    let position = 0; // Current position pointer
 
     beats.forEach((beatWrapper, index) => {
         const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
-        const stepSize = 64 / noteSize; // Сколько шагов занимает бит
+        const stepSize = 64 / noteSize; // Number of steps this beat occupies
 
         sequence[position] = {
             sound: sounds[selectedSounds[index]],
             settings: soundSettings[index],
             beatIndex: index
         };
-        position += stepSize; // Переход к следующему биту
+        position += stepSize; // Move to the next beat
     });
 
     return sequence;
