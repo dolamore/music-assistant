@@ -177,33 +177,35 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function createMetronomeLoop() {
-    const sequence = generateFixedMetronomeSequence(); // Get the new sequence
+    const sequence = generateFixedMetronomeSequence(); // Получаем последовательность
 
     return new Tone.Loop((time) => {
-        const currentStep = count % 64; // Step through a 64-step grid
+        const currentStep = count % sequence.length; // Двигаемся по всей длине последовательности
 
         const currentNote = sequence[currentStep];
-        if (currentNote && currentStep % 16 === 0) { // Only play the first 1/64 note in each beat
+        if (currentNote) { // Просто проверяем, есть ли тут нота
             const { sound, settings } = currentNote;
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
             sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', '64n', time); // Always play a 1/64 note
+            sound.triggerAttackRelease('C4', '64n', time); // Проигрываем 1/64 ноту
 
-            // Visual flashing
+            // Визуальный эффект мигания
             const flashingBar = document.querySelector('.flashing-bar');
             flashingBar.style.opacity = 1;
             setTimeout(() => flashingBar.style.opacity = 0, 100);
 
-            // Animate the current beat
-            document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`).classList.add('playing');
-            setTimeout(() => document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`).classList.remove('playing'), 100);
+            // Подсветка текущего бита
+            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+            beatElement.classList.add('playing');
+            setTimeout(() => beatElement.classList.remove('playing'), 100);
         }
 
         count++;
-    }, '64n'); // Always move with 1/64 resolution
+    }, '64n'); // Всегда двигаемся с разрешением 1/64
 }
+
 
 
 function startMetronome() {
@@ -478,26 +480,35 @@ function increaseBeat() {
 }
 
 function generateFixedMetronomeSequence() {
-    const totalSteps = 64;  // Всегда 64 шага
-    const sequence = new Array(totalSteps).fill(null); // Создаем пустую последовательность
-    let position = 0;
+    const beats = document.querySelectorAll('.beat-wrapper');
+    let totalSteps = 0;
 
-    document.querySelectorAll('.beat-wrapper').forEach((beatWrapper, index) => {
+    beats.forEach((beatWrapper) => {
         const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
-        const stepSize = 64 / noteSize; // Вычисляем, сколько шагов занимает этот бит
+        totalSteps += 64 / noteSize;
+    });
 
-        for (let i = 0; i < stepSize; i++) {
-            if (position < totalSteps) {
-                sequence[position] = {
-                    sound: sounds[selectedSounds[index]],
-                    settings: soundSettings[index],
-                    beatIndex: index
-                };
-                position++;
-            }
-        }
+    const sequence = new Array(totalSteps).fill(null);
+    let position = 0; // Указатель текущей позиции
+
+    beats.forEach((beatWrapper, index) => {
+        const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
+        const stepSize = 64 / noteSize; // Сколько шагов занимает бит
+
+        sequence[position] = {
+            sound: sounds[selectedSounds[index]],
+            settings: soundSettings[index],
+            beatIndex: index
+        };
+        position += stepSize; // Переход к следующему биту
     });
 
     return sequence;
 }
+
+
+
+
+
+
 
