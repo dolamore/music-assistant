@@ -456,6 +456,14 @@ function increaseBeat() {
     <option value="64">1/64</option>
     <option value="64T">1/64T</option>
 </select>
+        <label>
+            <select class="note-amount-dropdown" data-beat="0">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </label>
         `;
         beatContainer.appendChild(newBeatWrapper);
 
