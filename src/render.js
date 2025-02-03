@@ -12,6 +12,7 @@ let bpm = 120;
 let isPlaying = false;
 let loop;
 let count = 0;
+let loopCount = 0;
 let isPendulumMode = false;
 let metronomeBuffer = [];
 let pendulumAnimationFrame;
@@ -200,6 +201,11 @@ function createMetronomeLoop() {
             const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
             beatElement.classList.add('playing');
             setTimeout(() => beatElement.classList.remove('playing'), 100);
+
+            if (currentStep === 0) {
+                document.getElementById('loop-counter').textContent = loopCount;
+                loopCount++;
+            }
         }
 
         count++;
@@ -300,6 +306,8 @@ function stopMetronome() {
     const pendulumElement = document.querySelector('.pendulum');
     pendulumElement.style.left = '0px';
     count = 0;
+    loopCount = 0;
+    document.getElementById('loop-counter').textContent = loopCount;
 }
 
 function handleBpmChange(newBpm) {
