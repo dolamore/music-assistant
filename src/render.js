@@ -184,7 +184,7 @@ function createMetronomeLoop() {
 
         const currentNote = sequence[currentStep];
         if (currentNote) { // Просто проверяем, есть ли тут нота
-            const { sound, settings } = currentNote;
+            const {sound, settings} = currentNote;
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
@@ -257,7 +257,7 @@ function updateMetronomeSequence() {
         const currentStep = count % sequence.length;
         const currentNote = sequence[currentStep];
         if (currentNote) {
-            const { sound, settings } = currentNote;
+            const {sound, settings} = currentNote;
             sound.oscillator.frequency.value = settings.frequency;
             sound.oscillator.detune.value = settings.detune;
             sound.oscillator.phase = settings.phase;
@@ -288,13 +288,6 @@ function generateMetronomeSequence() {
     }
     return sequence;
 }
-
-function getMetronomeSequence() {
-    if (metronomeBuffer.length === 0) {
-        metronomeBuffer = generateMetronomeSequence();
-    }
-    return metronomeBuffer;
-}// Чтобы остановить текущую анимацию
 
 function stopMetronome() {
     isPlaying = false;
@@ -442,15 +435,19 @@ function increaseBeat() {
         newBeatWrapper.classList.add('beat-wrapper');
         newBeatWrapper.innerHTML = `
             <div class="beat" data-beat="${newBeatIndex}" data-sound="1"></div>
-            <select class="note-size-dropdown" data-beat="${newBeatIndex}">
-                <option value="1">1</option>
-                <option value="2">1/2</option>
-                <option value="4" selected>1/4</option>
-                <option value="8">1/8</option>
-                <option value="16">1/16</option>
-                <option value="32">1/32</option>
-                <option value="64">1/64</option>
-            </select>
+<select class="note-size-dropdown" data-beat="${newBeatIndex}">
+    <option value="1">1</option>
+    <option value="2">1/2</option>
+    <option value="4" selected>1/4</option>
+    <option value="8">1/8</option>
+    <option value="8T">1/8T</option>
+    <option value="16">1/16</option>
+    <option value="16T">1/16T</option>
+    <option value="32">1/32</option>
+    <option value="32T">1/32T</option>
+    <option value="64">1/64</option>
+    <option value="64T">1/64T</option>
+</select>
         `;
         beatContainer.appendChild(newBeatWrapper);
 
@@ -484,26 +481,48 @@ function generateFixedMetronomeSequence() {
     let totalSteps = 0;
 
     beats.forEach((beatWrapper) => {
-        const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
-        totalSteps += 64 / noteSize;
+        const noteSize = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value).number;
+        totalSteps += 64 / noteSize * 3;
     });
 
     const sequence = new Array(totalSteps).fill(null);
     let position = 0; // Current position pointer
 
     beats.forEach((beatWrapper, index) => {
-        const noteSize = parseInt(beatWrapper.querySelector('.note-size-dropdown').value, 10);
-        const stepSize = 64 / noteSize; // Number of steps this beat occupies
+        const parsedNote = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value);
+        const noteSize = parsedNote.number;
+        const isTriplet = parsedNote.isTriplet;
+        let stepSize;
 
-        sequence[position] = {
-            sound: sounds[selectedSounds[index]],
-            settings: soundSettings[index],
-            beatIndex: index
-        };
-        position += stepSize; // Move to the next beat
+        if (isTriplet) {
+            stepSize = 64 / noteSize
+            for (let i = 0; i < 3; i++) {
+                sequence[position] = {
+                    sound: sounds[selectedSounds[index]],
+                    settings: soundSettings[index],
+                    beatIndex: index
+                };
+                position += stepSize;
+            }
+        } else {
+            stepSize = 64 / noteSize * 3; // Number of steps this beat occupies
+            sequence[position] = {
+                sound: sounds[selectedSounds[index]],
+                settings: soundSettings[index],
+                beatIndex: index
+            };
+            position += stepSize; // Move to the next beat
+        }
     });
 
     return sequence;
+}
+
+function parseNoteSize(value) {
+    const isTriplet = value.endsWith('T'); // Проверяем, есть ли 'T' в конце
+    const number = parseInt(value, 10); // Извлекаем числовое значение
+
+    return {number, isTriplet};
 }
 
 
