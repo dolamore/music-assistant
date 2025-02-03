@@ -211,7 +211,7 @@ function startMetronome() {
     isPendulumMode = true;
 
     const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем текущий размер ноты
-    Tone.Transport.bpm.value = bpm;
+    Tone.Transport.bpm.value = bpm * 3;
 
     // Создаем новый луп с нужными параметрами
     loop = createMetronomeLoop(noteSize);
