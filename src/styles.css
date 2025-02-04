@@ -107,7 +107,7 @@ button:hover {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 #settings-panel {
@@ -203,4 +203,21 @@ button:hover {
     padding: 5px;
     display: inline-block;
     margin-top: 5px; /* Add margin to separate from label */
+}
+
+.training-mode-container {
+    margin-bottom: 20px;
+}
+
+#training-settings {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.probability-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

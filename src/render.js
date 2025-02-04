@@ -21,6 +21,8 @@ let currentNoteSizeIndex = 2;
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('settings-panel').classList.add('hidden');
 
+    document.getElementById('training-settings').classList.add('hidden');
+
     document.getElementById('bpm').value = bpm;
 
     document.getElementById('decrease-beats').addEventListener('click', () => {
@@ -175,40 +177,65 @@ document.addEventListener('DOMContentLoaded', function () {
         const beatElement = event.target.closest('.beat');
         changeBeatSound(beatElement);
     });
+
+    document.getElementById('training-mode').addEventListener('change', function (e) {
+        const trainingSettings = document.getElementById('training-settings');
+        if (e.target.checked) {
+            trainingSettings.classList.remove('hidden');
+        } else {
+            trainingSettings.classList.add('hidden');
+        }
+    });
 });
 
 function createMetronomeLoop() {
     const sequence = generateFixedMetronomeSequence(); // Получаем последовательность
+    let skipper = 0; // Количество шагов для пропуска
 
     return new Tone.Loop((time) => {
         const currentStep = count % sequence.length; // Двигаемся по всей длине последовательности
+        const isStartOfLoop = currentStep === 0; // Начало нового лупа
 
-        const currentNote = sequence[currentStep];
-        if (currentNote) { // Просто проверяем, есть ли тут нота
-            const {sound, settings} = currentNote;
-            sound.oscillator.frequency.value = settings.frequency;
-            sound.oscillator.detune.value = settings.detune;
-            sound.oscillator.phase = settings.phase;
-            sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', '64n', time); // Проигрываем 1/64 ноту
+        // Получаем настройки режима тренировки
+        const isTrainingMode = document.getElementById('training-mode').checked;
+        const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
+        const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
-            // Визуальный эффект мигания
-            const flashingBar = document.querySelector('.flashing-bar');
-            flashingBar.style.opacity = 1;
-            setTimeout(() => flashingBar.style.opacity = 0, 100);
+        // Если начало лупа и нужно пропустить — устанавливаем счетчик пропусков
+        if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
+            skipper = sequence.length; // Пропустить весь луп
+        }
 
-            // Подсветка текущего бита
-            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-            beatElement.classList.add('playing');
-            setTimeout(() => beatElement.classList.remove('playing'), 100);
+        // Если есть пропуск, уменьшаем счетчик и выходим
+        if (skipper > 0) {
+            skipper--;
+        } else {
+            const currentNote = sequence[currentStep];
 
-            if (currentStep === 0) {
-                document.getElementById('loop-counter').textContent = loopCount;
-                loopCount++;
+            // Пропускаем ноту, если включен режим тренировки и вероятность совпала
+            if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
+                const { sound, settings } = currentNote;
+                sound.oscillator.frequency.value = settings.frequency;
+                sound.oscillator.detune.value = settings.detune;
+                sound.oscillator.phase = settings.phase;
+                sound.volume.value = settings.volume;
+                sound.triggerAttackRelease('C4', '64n', time); // Проигрываем 1/64 ноту
+
+                // Визуальные эффекты
+                document.querySelector('.flashing-bar').style.opacity = 1;
+                setTimeout(() => document.querySelector('.flashing-bar').style.opacity = 0, 100);
+
+                const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+                beatElement.classList.add('playing');
+                setTimeout(() => beatElement.classList.remove('playing'), 100);
+
+                if (isStartOfLoop) {
+                    document.getElementById('loop-counter').textContent = loopCount++;
+                }
             }
         }
 
-        count++;
+        count++; // Увеличиваем счетчик в конце
     }, '64n'); // Всегда двигаемся с разрешением 1/64
 }
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metronome</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.26/Tone.js" defer></script>
 </head>
 <body>
 <div class="bpm-container">
@@ -28,6 +28,23 @@
 <div>
     <button id="start-stop">Start</button>
     <button id="settings">Settings</button>
+    <label>
+        <input type="checkbox" id="training-mode"> Training Mode
+    </label>
+</div>
+<div id="training-settings" class="hidden">
+    <div id="loop-skip-probability-container" class="probability-container">
+        <label>
+            Loop Skip:
+            <input type="number" id="loop-skip-probability" value="25" min="0" max="100">%
+        </label>
+    </div>
+    <div id="note-skip-probability-container" class="probability-container">
+        <label>
+            Note Skip:
+            <input type="number" id="note-skip-probability" value="0" min="0" max="100">%
+        </label>
+    </div>
 </div>
 <div class="controls-container">
     <div class="control-group">
@@ -235,6 +252,6 @@
     </div>
     <button id="save-settings">Save</button>
 </div>
-<script src="render.js" type="module"></script>
+<script src="render.js" type="module" defer></script>
 </body>
 </html>
