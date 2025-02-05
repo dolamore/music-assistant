@@ -236,10 +236,11 @@ function createMetronomeLoop() {
                 beatElement.classList.add('playing');
                 setTimeout(() => beatElement.classList.remove('playing'), 100);
 
-                if (isStartOfLoop) {
-                    document.getElementById('loop-counter').textContent = loopCount++;
-                }
             }
+        }
+
+        if (isStartOfLoop) {
+            document.getElementById('loop-counter').textContent = loopCount++;
         }
 
         count++; // Увеличиваем счетчик в конце
