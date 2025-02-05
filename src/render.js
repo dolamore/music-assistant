@@ -19,6 +19,13 @@ let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+            event.preventDefault(); // Предотвращаем скролл страницы
+            toggleMetronome();
+        }
+    });
+
     document.getElementById('settings-panel').classList.add('hidden');
 
     document.getElementById('training-settings').classList.add('hidden');
@@ -229,10 +236,11 @@ function createMetronomeLoop() {
                 beatElement.classList.add('playing');
                 setTimeout(() => beatElement.classList.remove('playing'), 100);
 
-                if (isStartOfLoop) {
-                    document.getElementById('loop-counter').textContent = loopCount++;
-                }
             }
+        }
+
+        if (isStartOfLoop) {
+            document.getElementById('loop-counter').textContent = loopCount++;
         }
 
         count++; // Увеличиваем счетчик в конце
@@ -566,6 +574,11 @@ function parseNoteSize(value) {
     const number = parseInt(value, 10); // Извлекаем числовое значение
 
     return {number, isTriplet};
+}
+
+function toggleMetronome() {
+    const button = document.getElementById('start-stop');
+    button.click(); // Имитация клика по кнопке
 }
 
 
