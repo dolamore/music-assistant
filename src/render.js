@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         soundSettings = [];
 
         // Извлекаем и обновляем настройки для каждого бита
-        beatRows.forEach((row, index) => {
+        beatRows.forEach((row) => {
             selectedSounds.push(parseInt(row.querySelector('select').value, 10));
             soundSettings.push({
                 frequency: parseFloat(row.querySelector('input[placeholder="Frequency"]').value),
