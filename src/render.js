@@ -221,7 +221,7 @@ function createMetronomeLoop() {
 
             // Пропускаем ноту, если включен режим тренировки и вероятность совпала
             if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-                const { sound, settings } = currentNote;
+                const {sound, settings} = currentNote;
                 sound.oscillator.frequency.value = settings.frequency;
                 sound.oscillator.detune.value = settings.detune;
                 sound.oscillator.phase = settings.phase;
@@ -533,7 +533,9 @@ function generateFixedMetronomeSequence() {
 
     beats.forEach((beatWrapper) => {
         const noteSize = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value).number;
-        totalSteps += 64 / noteSize * 3;
+        const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
+
+        totalSteps += 64 / noteSize * 3 * noteAmount;
     });
 
     const sequence = new Array(totalSteps).fill(null);
@@ -541,13 +543,14 @@ function generateFixedMetronomeSequence() {
 
     beats.forEach((beatWrapper, index) => {
         const parsedNote = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
         const noteSize = parsedNote.number;
         const isTriplet = parsedNote.isTriplet;
         let stepSize;
 
         if (isTriplet) {
             stepSize = 64 / noteSize
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 3 * noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
                     settings: soundSettings[index],
@@ -557,12 +560,15 @@ function generateFixedMetronomeSequence() {
             }
         } else {
             stepSize = 64 / noteSize * 3; // Number of steps this beat occupies
-            sequence[position] = {
-                sound: sounds[selectedSounds[index]],
-                settings: soundSettings[index],
-                beatIndex: index
-            };
-            position += stepSize; // Move to the next beat
+
+            for (let i = 0; i < noteAmount; i++) {
+                sequence[position] = {
+                    sound: sounds[selectedSounds[index]],
+                    settings: soundSettings[index],
+                    beatIndex: index
+                };
+                position += stepSize; // Move to the next beat
+            }
         }
     });
 
