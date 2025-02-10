@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         soundSettings = [];
 
         // Извлекаем и обновляем настройки для каждого бита
-        beatRows.forEach((row, index) => {
+        beatRows.forEach((row) => {
             selectedSounds.push(parseInt(row.querySelector('select').value, 10));
             soundSettings.push({
                 frequency: parseFloat(row.querySelector('input[placeholder="Frequency"]').value),
@@ -221,7 +221,7 @@ function createMetronomeLoop() {
 
             // Пропускаем ноту, если включен режим тренировки и вероятность совпала
             if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-                const { sound, settings } = currentNote;
+                const {sound, settings} = currentNote;
                 sound.oscillator.frequency.value = settings.frequency;
                 sound.oscillator.detune.value = settings.detune;
                 sound.oscillator.phase = settings.phase;
@@ -479,18 +479,21 @@ function increaseBeat() {
         newBeatWrapper.innerHTML = `
             <div class="beat" data-beat="${newBeatIndex}" data-sound="1"></div>
 <select class="note-size-dropdown" data-beat="${newBeatIndex}">
-    <option value="1">1</option>
-    <option value="2">1/2</option>
-    <option value="4" selected>1/4</option>
-    <option value="8">1/8</option>
-    <option value="8T">1/8T</option>
-    <option value="16">1/16</option>
-    <option value="16T">1/16T</option>
-    <option value="32">1/32</option>
-    <option value="32T">1/32T</option>
-    <option value="64">1/64</option>
-    <option value="64T">1/64T</option>
-</select>
+            <option value="1">1</option>
+            <option value="1T">1T</option>
+            <option value="2">1/2</option>
+            <option value="2T">1/2T</option>
+            <option value="4" selected>1/4</option>
+            <option value="4T">1/4T</option>
+            <option value="8">1/8</option>
+            <option value="8T">1/8T</option>
+            <option value="16">1/16</option>
+            <option value="16T">1/16T</option>
+            <option value="32">1/32</option>
+            <option value="32T">1/32T</option>
+            <option value="64">1/64</option>
+            <option value="64T">1/64T</option>
+        </select>
         <label>
             <select class="note-amount-dropdown" data-beat="0">
                 <option value="1" selected>1</option>
@@ -533,7 +536,9 @@ function generateFixedMetronomeSequence() {
 
     beats.forEach((beatWrapper) => {
         const noteSize = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value).number;
-        totalSteps += 64 / noteSize * 3;
+        const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
+
+        totalSteps += 64 / noteSize * 3 * noteAmount;
     });
 
     const sequence = new Array(totalSteps).fill(null);
@@ -541,13 +546,14 @@ function generateFixedMetronomeSequence() {
 
     beats.forEach((beatWrapper, index) => {
         const parsedNote = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
         const noteSize = parsedNote.number;
         const isTriplet = parsedNote.isTriplet;
         let stepSize;
 
         if (isTriplet) {
             stepSize = 64 / noteSize
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 3 * noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
                     settings: soundSettings[index],
@@ -557,12 +563,15 @@ function generateFixedMetronomeSequence() {
             }
         } else {
             stepSize = 64 / noteSize * 3; // Number of steps this beat occupies
-            sequence[position] = {
-                sound: sounds[selectedSounds[index]],
-                settings: soundSettings[index],
-                beatIndex: index
-            };
-            position += stepSize; // Move to the next beat
+
+            for (let i = 0; i < noteAmount; i++) {
+                sequence[position] = {
+                    sound: sounds[selectedSounds[index]],
+                    settings: soundSettings[index],
+                    beatIndex: index
+                };
+                position += stepSize; // Move to the next beat
+            }
         }
     });
 
