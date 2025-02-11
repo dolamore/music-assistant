@@ -1,5 +1,5 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, noteSizes, sounds} from './vars.js';
+import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [
@@ -19,6 +19,9 @@ let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    initialBeatRender();
+
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
             event.preventDefault(); // Предотвращаем скролл страницы
@@ -446,64 +449,13 @@ function decreaseBeat() {
     }
 }
 
-
 function increaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
     if (beatRows.length < 16) { // Ограничение на максимальное количество битов
         const newBeatIndex = beatRows.length;
 
-        // Добавляем новую строку в настройки звуков
-        const settingsPanel = document.querySelector('.sound-settings');
-        const newSoundRow = document.createElement('div');
-        newSoundRow.classList.add('sound-row');
-        newSoundRow.innerHTML = `
-            <label for="sound-${newBeatIndex}">Beat ${newBeatIndex + 1}:</label>
-            <select id="sound-${newBeatIndex}">
-                <option value="0">No Sound</option>
-                <option value="1" selected>Sound 1</option>
-                <option value="2">Sound 2</option>
-                <option value="3">Sound 3</option>
-                <option value="4">Sound 4</option>
-            </select>
-            <input id="frequency-${newBeatIndex}" type="number" placeholder="Frequency" value="440">
-            <input id="detune-${newBeatIndex}" type="number" placeholder="Detune" value="0">
-            <input id="phase-${newBeatIndex}" type="number" placeholder="Phase" value="0">
-            <input id="volume-${newBeatIndex}" type="number" placeholder="Volume" value="0">
-        `;
-        settingsPanel.appendChild(newSoundRow);
-
-        // Добавляем новый элемент в beat-container
-        const beatContainer = document.querySelector('.beat-container');
-        const newBeatWrapper = document.createElement('div');
-        newBeatWrapper.classList.add('beat-wrapper');
-        newBeatWrapper.innerHTML = `
-            <div class="beat" data-beat="${newBeatIndex}" data-sound="1"></div>
-<select class="note-size-dropdown" data-beat="${newBeatIndex}">
-            <option value="1">1</option>
-            <option value="1T">1T</option>
-            <option value="2">1/2</option>
-            <option value="2T">1/2T</option>
-            <option value="4" selected>1/4</option>
-            <option value="4T">1/4T</option>
-            <option value="8">1/8</option>
-            <option value="8T">1/8T</option>
-            <option value="16">1/16</option>
-            <option value="16T">1/16T</option>
-            <option value="32">1/32</option>
-            <option value="32T">1/32T</option>
-            <option value="64">1/64</option>
-            <option value="64T">1/64T</option>
-        </select>
-        <label>
-            <select class="note-amount-dropdown" data-beat="0">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-        </label>
-        `;
-        beatContainer.appendChild(newBeatWrapper);
+        // Создаём новый элемент и добавляем его на страницу
+        createBeatElement(newBeatIndex);
 
         // Обновляем массивы
         selectedSounds.push(1); // Звук по умолчанию
@@ -515,7 +467,7 @@ function increaseBeat() {
         });
 
         // Обновляем количество битов
-        document.getElementById('beats-count').textContent = beatRows.length + 1;
+        document.getElementById('beats-count').textContent = newBeatIndex + 1;
 
         // Перегенерируем последовательность для метронома
         metronomeBuffer = generateMetronomeSequence();
@@ -589,6 +541,83 @@ function toggleMetronome() {
     const button = document.getElementById('start-stop');
     button.click(); // Имитация клика по кнопке
 }
+
+function createBeatElement(index) {
+    const soundSettingsContainer = document.querySelector('.sound-settings');
+
+    // Если заголовки еще не добавлены, добавим их
+    if (!soundSettingsContainer.querySelector('.labels')) {
+        const labels = document.createElement('div');
+        labels.classList.add('labels');
+        labels.innerHTML = `
+            <span>Beat</span>
+            <span>Sound</span>
+            <span>Frequency</span>
+            <span>Detune</span>
+            <span>Phase</span>
+            <span>Volume</span>
+        `;
+        soundSettingsContainer.prepend(labels); // Добавляем заголовки в начало контейнера
+    }
+
+    // Создаём новый элемент с настройками бита
+    const soundRow = document.createElement('div');
+    soundRow.classList.add('sound-row');
+    soundRow.innerHTML = `
+        <label for="sound-${index}">Beat ${index + 1}:</label>
+        <select id="sound-${index}">
+            <option value="0">No Sound</option>
+            <option value="1" selected>Sound 1</option>
+            <option value="2">Sound 2</option>
+            <option value="3">Sound 3</option>
+            <option value="4">Sound 4</option>
+        </select>
+        <input id="frequency-${index}" type="number" placeholder="Frequency" value="440">
+        <input id="detune-${index}" type="number" placeholder="Detune" value="0">
+        <input id="phase-${index}" type="number" placeholder="Phase" value="0">
+        <input id="volume-${index}" type="number" placeholder="Volume" value="0">
+    `;
+    soundSettingsContainer.appendChild(soundRow);
+
+    // Создаём новый элемент для контейнера битов
+    const beatWrapper = document.createElement('div');
+    beatWrapper.classList.add('beat-wrapper');
+    beatWrapper.innerHTML = `
+        <div class="beat" data-beat="${index}" data-sound="1"></div>
+        <select class="note-size-dropdown" data-beat="${index}">
+            <option value="1">1</option>
+            <option value="1T">1T</option>
+            <option value="2">1/2</option>
+            <option value="2T">1/2T</option>
+            <option value="4" selected>1/4</option>
+            <option value="4T">1/4T</option>
+            <option value="8">1/8</option>
+            <option value="8T">1/8T</option>
+            <option value="16">1/16</option>
+            <option value="16T">1/16T</option>
+            <option value="32">1/32</option>
+            <option value="32T">1/32T</option>
+            <option value="64">1/64</option>
+            <option value="64T">1/64T</option>
+        </select>
+        <label>
+            <select class="note-amount-dropdown" data-beat="${index}">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </label>
+    `;
+    document.querySelector('.beat-container').appendChild(beatWrapper);
+}
+
+function initialBeatRender() {
+    for (let i = 0; i < initialNumberOfBeats; i++) {
+        createBeatElement(i); // Отрисовываем элементы без добавления на страницу
+    }
+}
+
 
 
 
