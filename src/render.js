@@ -19,6 +19,11 @@ let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    renderBeats(4);
+
+    renderSoundSettings(4);
+
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
             event.preventDefault(); // Предотвращаем скролл страницы
@@ -589,6 +594,104 @@ function toggleMetronome() {
     const button = document.getElementById('start-stop');
     button.click(); // Имитация клика по кнопке
 }
+
+function renderBeats(count) {
+    const beatContainer = document.getElementById("beat-container");
+    beatContainer.innerHTML = ""; // Очистка перед рендером
+
+    for (let i = 0; i < count; i++) {
+        const beatWrapper = document.createElement("div");
+        beatWrapper.classList.add("beat-wrapper");
+
+        beatWrapper.innerHTML = `
+            <div class="beat" data-beat="${i}" data-sound="1"></div>
+            <select class="note-size-dropdown" data-beat="${i}">
+                ${generateNoteOptions()}
+            </select>
+            <label>
+                <select class="note-amount-dropdown" data-beat="${i}">
+                    ${generateAmountOptions()}
+                </select>
+            </label>
+        `;
+
+        beatContainer.appendChild(beatWrapper);
+    }
+}
+
+// Генерация опций для размера нот
+function generateNoteOptions(selectedLabel = "1/4") {
+    const options = [
+        { value: "1", label: "1" },
+        { value: "1T", label: "1T" },
+        { value: "2", label: "1/2" },
+        { value: "2T", label: "1/2T" },
+        { value: "4", label: "1/4" },
+        { value: "4T", label: "1/4T" },
+        { value: "8", label: "1/8" },
+        { value: "8T", label: "1/8T" },
+        { value: "16", label: "1/16" },
+        { value: "16T", label: "1/16T" },
+        { value: "32", label: "1/32" },
+        { value: "32T", label: "1/32T" },
+        { value: "64", label: "1/64" },
+        { value: "64T", label: "1/64T" }
+    ];
+
+    return options
+        .map(opt => `<option value="${opt.value}" ${opt.label === selectedLabel ? "selected" : ""}>${opt.label}</option>`)
+        .join("");
+}
+
+// Генерация опций для количества нот
+function generateAmountOptions() {
+    return [1, 2, 3, 4].map(n => `<option value="${n}" ${n === 1 ? "selected" : ""}>${n}</option>`).join("");
+}
+
+function renderSoundSettings(count) {
+    const settingsContainer = document.querySelector("#settings-panel .sound-settings");
+    settingsContainer.innerHTML = ""; // Очистка перед рендером
+
+    // Добавляем заголовки колонок
+    const labels = document.createElement("div");
+    labels.classList.add("labels");
+    labels.innerHTML = `
+        <span>Beat</span>
+        <span>Sound</span>
+        <span>Frequency</span>
+        <span>Detune</span>
+        <span>Phase</span>
+        <span>Volume</span>
+    `;
+    settingsContainer.appendChild(labels);
+
+    for (let i = 0; i < count; i++) {
+        const row = document.createElement("div");
+        row.classList.add("sound-row");
+        row.innerHTML = `
+            <label for="sound-${i}">Beat ${i + 1}:</label>
+            <select id="sound-${i}">
+                ${generateSoundOptions()}
+            </select>
+            <input id="frequency-${i}" type="number" placeholder="Frequency">
+            <input id="detune-${i}" type="number" placeholder="Detune">
+            <input id="phase-${i}" type="number" placeholder="Phase">
+            <input id="volume-${i}" type="number" placeholder="Volume">
+        `;
+        settingsContainer.appendChild(row);
+    }
+}
+
+function generateSoundOptions() {
+    return `
+        <option value="0">No Sound</option>
+        <option value="1">Sound 1</option>
+        <option value="2">Sound 2</option>
+        <option value="3">Sound 3</option>
+        <option value="4">Sound 4</option>
+    `;
+}
+
 
 
 
