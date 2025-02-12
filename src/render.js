@@ -545,21 +545,6 @@ function toggleMetronome() {
 function createBeatElement(index) {
     const soundSettingsContainer = document.querySelector('.sound-settings');
 
-    // Если заголовки еще не добавлены, добавим их
-    if (!soundSettingsContainer.querySelector('.labels')) {
-        const labels = document.createElement('div');
-        labels.classList.add('labels');
-        labels.innerHTML = `
-            <span>Beat</span>
-            <span>Sound</span>
-            <span>Frequency</span>
-            <span>Detune</span>
-            <span>Phase</span>
-            <span>Volume</span>
-        `;
-        soundSettingsContainer.prepend(labels); // Добавляем заголовки в начало контейнера
-    }
-
     // Создаём новый элемент с настройками бита
     const soundRow = document.createElement('div');
     soundRow.classList.add('sound-row');
