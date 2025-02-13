@@ -14,7 +14,6 @@ let loop;
 let count = 0;
 let loopCount = 0;
 let isPendulumMode = false;
-let metronomeBuffer = [];
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
@@ -109,9 +108,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.beat').forEach((beat, index) => {
             beat.dataset.sound = selectedSounds[index];  // Обновляем звук для каждого бита
         });
-
-        // Перегенерируем последовательность для метронома с новыми настройками
-        metronomeBuffer = generateMetronomeSequence();
 
         // Обновляем метроном, не останавливая его
         if (isPlaying) {
@@ -267,9 +263,6 @@ function changeBeatSound(beatElement) {
         soundSelect.value = nextSound;
     }
 
-    // Regenerate metronome sequence
-    metronomeBuffer = generateMetronomeSequence();
-
     // Update metronome sequence without restarting
     if (isPlaying) {
         updateMetronomeSequence();
@@ -415,7 +408,6 @@ function decreaseBeat() {
         // Обновляем массивы
         selectedSounds.pop();
         soundSettings.pop();
-        metronomeBuffer.pop();
 
         // Пересчитываем количество битов
         document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
@@ -451,9 +443,6 @@ function increaseBeat() {
 
         // Обновляем количество битов
         document.getElementById('beats-count').textContent = newBeatIndex + 1;
-
-        // Перегенерируем последовательность для метронома
-        metronomeBuffer = generateMetronomeSequence();
 
         // Обновляем последовательность метронома без перезапуска
         if (isPlaying) {
