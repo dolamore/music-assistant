@@ -93,15 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const phaseElement = document.getElementById(`phase-${i}`);
             const volumeElement = document.getElementById(`volume-${i}`);
 
-            if (soundElement && frequencyElement && detuneElement && phaseElement && volumeElement) {
-                soundElement.value = selectedSounds[i];
-                frequencyElement.value = soundSettings[i].frequency;
-                detuneElement.value = soundSettings[i].detune;
-                phaseElement.value = soundSettings[i].phase;
-                volumeElement.value = soundSettings[i].volume;
-            } else {
-                console.error(`Element with ID sound-${i}, frequency-${i}, detune-${i}, phase-${i}, or volume-${i} not found.`);
-            }
+            soundElement.value = selectedSounds[i];
+            frequencyElement.value = soundSettings[i].frequency;
+            detuneElement.value = soundSettings[i].detune;
+            phaseElement.value = soundSettings[i].phase;
+            volumeElement.value = soundSettings[i].volume;
+
         }
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
@@ -602,11 +599,3 @@ function initialBeatRender() {
         createBeatElement(i); // Отрисовываем элементы без добавления на страницу
     }
 }
-
-
-
-
-
-
-
-
