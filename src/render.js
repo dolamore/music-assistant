@@ -2,12 +2,7 @@ import * as Tone from 'https://cdn.skypack.dev/tone';
 import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats, defaultSoundSettings} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
-let soundSettings = [
-    defaultSoundSettings,
-    defaultSoundSettings,
-    defaultSoundSettings,
-    defaultSoundSettings
-];
+let soundSettings = [];
 let bpm = 120;
 let isPlaying = false;
 let loop;
@@ -427,7 +422,7 @@ function generateFixedMetronomeSequence() {
             for (let i = 0; i < 3 * noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
-                    settings: soundSettings[index],
+                    settings: defaultSoundSettings,
                     beatIndex: index
                 };
                 position += stepSize;
@@ -438,7 +433,7 @@ function generateFixedMetronomeSequence() {
             for (let i = 0; i < noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
-                    settings: soundSettings[index],
+                    settings: defaultSoundSettings,
                     beatIndex: index
                 };
                 position += stepSize; // Move to the next beat
