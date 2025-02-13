@@ -1,20 +1,14 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats} from './vars.js';
+import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats, defaultSoundSettings} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
-let soundSettings = [
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0}
-];
+let soundSettings = [];
 let bpm = 120;
 let isPlaying = false;
 let loop;
 let count = 0;
 let loopCount = 0;
 let isPendulumMode = false;
-let metronomeBuffer = [];
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
@@ -86,23 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('settings').addEventListener('click', function () {
-        for (let i = 0; i < 4; i++) {
-            const soundElement = document.getElementById(`sound-${i}`);
-            const frequencyElement = document.getElementById(`frequency-${i}`);
-            const detuneElement = document.getElementById(`detune-${i}`);
-            const phaseElement = document.getElementById(`phase-${i}`);
-            const volumeElement = document.getElementById(`volume-${i}`);
-
-            if (soundElement && frequencyElement && detuneElement && phaseElement && volumeElement) {
-                soundElement.value = selectedSounds[i];
-                frequencyElement.value = soundSettings[i].frequency;
-                detuneElement.value = soundSettings[i].detune;
-                phaseElement.value = soundSettings[i].phase;
-                volumeElement.value = soundSettings[i].volume;
-            } else {
-                console.error(`Element with ID sound-${i}, frequency-${i}, detune-${i}, phase-${i}, or volume-${i} not found.`);
-            }
-        }
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
 
@@ -126,9 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.beat').forEach((beat, index) => {
             beat.dataset.sound = selectedSounds[index];  // Обновляем звук для каждого бита
         });
-
-        // Перегенерируем последовательность для метронома с новыми настройками
-        metronomeBuffer = generateMetronomeSequence();
 
         // Обновляем метроном, не останавливая его
         if (isPlaying) {
@@ -199,55 +173,33 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function createMetronomeLoop() {
-    const sequence = generateFixedMetronomeSequence(); // Получаем последовательность
-    let skipper = 0; // Количество шагов для пропуска
+    const sequence = generateFixedMetronomeSequence();
+    let skipper = 0;
 
     return new Tone.Loop((time) => {
-        const currentStep = count % sequence.length; // Двигаемся по всей длине последовательности
-        const isStartOfLoop = currentStep === 0; // Начало нового лупа
+        const currentStep = count % sequence.length;
+        const isStartOfLoop = currentStep === 0;
 
-        // Получаем настройки режима тренировки
         const isTrainingMode = document.getElementById('training-mode').checked;
         const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
         const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
-        // Если начало лупа и нужно пропустить — устанавливаем счетчик пропусков
         if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
-            skipper = sequence.length; // Пропустить весь луп
+            skipper = sequence.length;
         }
 
-        // Если есть пропуск, уменьшаем счетчик и выходим
         if (skipper > 0) {
             skipper--;
         } else {
-            const currentNote = sequence[currentStep];
-
-            // Пропускаем ноту, если включен режим тренировки и вероятность совпала
-            if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-                const {sound, settings} = currentNote;
-                sound.oscillator.frequency.value = settings.frequency;
-                sound.oscillator.detune.value = settings.detune;
-                sound.oscillator.phase = settings.phase;
-                sound.volume.value = settings.volume;
-                sound.triggerAttackRelease('C4', '64n', time); // Проигрываем 1/64 ноту
-
-                // Визуальные эффекты
-                document.querySelector('.flashing-bar').style.opacity = 1;
-                setTimeout(() => document.querySelector('.flashing-bar').style.opacity = 0, 100);
-
-                const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-                beatElement.classList.add('playing');
-                setTimeout(() => beatElement.classList.remove('playing'), 100);
-
-            }
+            playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability);
         }
 
         if (isStartOfLoop) {
             document.getElementById('loop-counter').textContent = loopCount++;
         }
 
-        count++; // Увеличиваем счетчик в конце
-    }, '64n'); // Всегда двигаемся с разрешением 1/64
+        count++;
+    }, '64n');
 }
 
 function startMetronome() {
@@ -284,9 +236,6 @@ function changeBeatSound(beatElement) {
         soundSelect.value = nextSound;
     }
 
-    // Regenerate metronome sequence
-    metronomeBuffer = generateMetronomeSequence();
-
     // Update metronome sequence without restarting
     if (isPlaying) {
         updateMetronomeSequence();
@@ -294,43 +243,12 @@ function changeBeatSound(beatElement) {
 }
 
 function updateMetronomeSequence() {
-    const sequence = generateFixedMetronomeSequence();  // Get the updated sequence
-
-    // Update the loop callback with the new sequence
+    const sequence = generateFixedMetronomeSequence();
     loop.callback = (time) => {
         const currentStep = count % sequence.length;
-        const currentNote = sequence[currentStep];
-        if (currentNote) {
-            const {sound, settings} = currentNote;
-            sound.oscillator.frequency.value = settings.frequency;
-            sound.oscillator.detune.value = settings.detune;
-            sound.oscillator.phase = settings.phase;
-            sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', '64n', time);
-
-            // Visual flashing
-            const flashingBar = document.querySelector('.flashing-bar');
-            flashingBar.style.opacity = 1;
-            setTimeout(() => flashingBar.style.opacity = 0, 100);
-
-            // Highlight the current beat
-            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-            beatElement.classList.add('playing');
-            setTimeout(() => beatElement.classList.remove('playing'), 100);
-        }
+        playMetronomeStep(sequence, currentStep, time, false, 0);
         count++;
     };
-}
-
-function generateMetronomeSequence() {
-    const sequence = [];
-    const beatRows = document.querySelectorAll('.sound-row');
-    for (let i = 0; i < beatRows.length; i++) {
-        const sound = sounds[selectedSounds[i]];
-        const settings = soundSettings[i];
-        sequence.push({sound, settings});
-    }
-    return sequence;
 }
 
 function stopMetronome() {
@@ -432,7 +350,6 @@ function decreaseBeat() {
         // Обновляем массивы
         selectedSounds.pop();
         soundSettings.pop();
-        metronomeBuffer.pop();
 
         // Пересчитываем количество битов
         document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
@@ -468,9 +385,6 @@ function increaseBeat() {
 
         // Обновляем количество битов
         document.getElementById('beats-count').textContent = newBeatIndex + 1;
-
-        // Перегенерируем последовательность для метронома
-        metronomeBuffer = generateMetronomeSequence();
 
         // Обновляем последовательность метронома без перезапуска
         if (isPlaying) {
@@ -508,7 +422,7 @@ function generateFixedMetronomeSequence() {
             for (let i = 0; i < 3 * noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
-                    settings: soundSettings[index],
+                    settings: defaultSoundSettings,
                     beatIndex: index
                 };
                 position += stepSize;
@@ -519,7 +433,7 @@ function generateFixedMetronomeSequence() {
             for (let i = 0; i < noteAmount; i++) {
                 sequence[position] = {
                     sound: sounds[selectedSounds[index]],
-                    settings: soundSettings[index],
+                    settings: defaultSoundSettings,
                     beatIndex: index
                 };
                 position += stepSize; // Move to the next beat
@@ -599,14 +513,26 @@ function createBeatElement(index) {
 
 function initialBeatRender() {
     for (let i = 0; i < initialNumberOfBeats; i++) {
-        createBeatElement(i); // Отрисовываем элементы без добавления на страницу
+        createBeatElement(i);
     }
 }
 
+function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
+    const currentNote = sequence[currentStep];
+    if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
+        const { sound, settings } = currentNote;
+        sound.oscillator.frequency.value = settings.frequency;
+        sound.oscillator.detune.value = settings.detune;
+        sound.oscillator.phase = settings.phase;
+        sound.volume.value = settings.volume;
+        sound.triggerAttackRelease('C4', '64n', time);
 
+        const flashingBar = document.querySelector('.flashing-bar');
+        flashingBar.style.opacity = 1;
+        setTimeout(() => flashingBar.style.opacity = 0, 100);
 
-
-
-
-
-
+        const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+        beatElement.classList.add('playing');
+        setTimeout(() => beatElement.classList.remove('playing'), 100);
+    }
+}
