@@ -1,12 +1,12 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats} from './vars.js';
+import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats, defaultSoundSettings} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0},
-    {frequency: 440, detune: 0, phase: 0, volume: 0}
+    defaultSoundSettings,
+    defaultSoundSettings,
+    defaultSoundSettings,
+    defaultSoundSettings
 ];
 let bpm = 120;
 let isPlaying = false;
@@ -86,20 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('settings').addEventListener('click', function () {
-        for (let i = 0; i < 4; i++) {
-            const soundElement = document.getElementById(`sound-${i}`);
-            const frequencyElement = document.getElementById(`frequency-${i}`);
-            const detuneElement = document.getElementById(`detune-${i}`);
-            const phaseElement = document.getElementById(`phase-${i}`);
-            const volumeElement = document.getElementById(`volume-${i}`);
-
-            soundElement.value = selectedSounds[i];
-            frequencyElement.value = soundSettings[i].frequency;
-            detuneElement.value = soundSettings[i].detune;
-            phaseElement.value = soundSettings[i].phase;
-            volumeElement.value = soundSettings[i].volume;
-
-        }
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
 
@@ -596,6 +582,6 @@ function createBeatElement(index) {
 
 function initialBeatRender() {
     for (let i = 0; i < initialNumberOfBeats; i++) {
-        createBeatElement(i); // Отрисовываем элементы без добавления на страницу
+        createBeatElement(i);
     }
 }
