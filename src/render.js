@@ -298,17 +298,6 @@ function updateMetronomeSequence() {
     };
 }
 
-function generateMetronomeSequence() {
-    const sequence = [];
-    const beatRows = document.querySelectorAll('.sound-row');
-    for (let i = 0; i < beatRows.length; i++) {
-        const sound = sounds[selectedSounds[i]];
-        const settings = soundSettings[i];
-        sequence.push({sound, settings});
-    }
-    return sequence;
-}
-
 function stopMetronome() {
     isPlaying = false;
     isPendulumMode = false;
