@@ -178,55 +178,33 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function createMetronomeLoop() {
-    const sequence = generateFixedMetronomeSequence(); // Получаем последовательность
-    let skipper = 0; // Количество шагов для пропуска
+    const sequence = generateFixedMetronomeSequence();
+    let skipper = 0;
 
     return new Tone.Loop((time) => {
-        const currentStep = count % sequence.length; // Двигаемся по всей длине последовательности
-        const isStartOfLoop = currentStep === 0; // Начало нового лупа
+        const currentStep = count % sequence.length;
+        const isStartOfLoop = currentStep === 0;
 
-        // Получаем настройки режима тренировки
         const isTrainingMode = document.getElementById('training-mode').checked;
         const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
         const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
-        // Если начало лупа и нужно пропустить — устанавливаем счетчик пропусков
         if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
-            skipper = sequence.length; // Пропустить весь луп
+            skipper = sequence.length;
         }
 
-        // Если есть пропуск, уменьшаем счетчик и выходим
         if (skipper > 0) {
             skipper--;
         } else {
-            const currentNote = sequence[currentStep];
-
-            // Пропускаем ноту, если включен режим тренировки и вероятность совпала
-            if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-                const {sound, settings} = currentNote;
-                sound.oscillator.frequency.value = settings.frequency;
-                sound.oscillator.detune.value = settings.detune;
-                sound.oscillator.phase = settings.phase;
-                sound.volume.value = settings.volume;
-                sound.triggerAttackRelease('C4', '64n', time); // Проигрываем 1/64 ноту
-
-                // Визуальные эффекты
-                document.querySelector('.flashing-bar').style.opacity = 1;
-                setTimeout(() => document.querySelector('.flashing-bar').style.opacity = 0, 100);
-
-                const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-                beatElement.classList.add('playing');
-                setTimeout(() => beatElement.classList.remove('playing'), 100);
-
-            }
+            playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability);
         }
 
         if (isStartOfLoop) {
             document.getElementById('loop-counter').textContent = loopCount++;
         }
 
-        count++; // Увеличиваем счетчик в конце
-    }, '64n'); // Всегда двигаемся с разрешением 1/64
+        count++;
+    }, '64n');
 }
 
 function startMetronome() {
@@ -270,30 +248,10 @@ function changeBeatSound(beatElement) {
 }
 
 function updateMetronomeSequence() {
-    const sequence = generateFixedMetronomeSequence();  // Get the updated sequence
-
-    // Update the loop callback with the new sequence
+    const sequence = generateFixedMetronomeSequence();
     loop.callback = (time) => {
         const currentStep = count % sequence.length;
-        const currentNote = sequence[currentStep];
-        if (currentNote) {
-            const {sound, settings} = currentNote;
-            sound.oscillator.frequency.value = settings.frequency;
-            sound.oscillator.detune.value = settings.detune;
-            sound.oscillator.phase = settings.phase;
-            sound.volume.value = settings.volume;
-            sound.triggerAttackRelease('C4', '64n', time);
-
-            // Visual flashing
-            const flashingBar = document.querySelector('.flashing-bar');
-            flashingBar.style.opacity = 1;
-            setTimeout(() => flashingBar.style.opacity = 0, 100);
-
-            // Highlight the current beat
-            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-            beatElement.classList.add('playing');
-            setTimeout(() => beatElement.classList.remove('playing'), 100);
-        }
+        playMetronomeStep(sequence, currentStep, time, false, 0);
         count++;
     };
 }
@@ -561,5 +519,25 @@ function createBeatElement(index) {
 function initialBeatRender() {
     for (let i = 0; i < initialNumberOfBeats; i++) {
         createBeatElement(i);
+    }
+}
+
+function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
+    const currentNote = sequence[currentStep];
+    if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
+        const { sound, settings } = currentNote;
+        sound.oscillator.frequency.value = settings.frequency;
+        sound.oscillator.detune.value = settings.detune;
+        sound.oscillator.phase = settings.phase;
+        sound.volume.value = settings.volume;
+        sound.triggerAttackRelease('C4', '64n', time);
+
+        const flashingBar = document.querySelector('.flashing-bar');
+        flashingBar.style.opacity = 1;
+        setTimeout(() => flashingBar.style.opacity = 0, 100);
+
+        const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+        beatElement.classList.add('playing');
+        setTimeout(() => beatElement.classList.remove('playing'), 100);
     }
 }
