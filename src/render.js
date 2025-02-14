@@ -152,11 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelector('.beat-container').addEventListener('click', (event) => {
-        const beatElement = event.target.closest('.beat');
-        changeBeatSound(beatElement);
-    });
-
     document.getElementById('training-mode').addEventListener('change', function (e) {
         const trainingSettings = document.getElementById('training-settings');
         if (e.target.checked) {
@@ -216,6 +211,7 @@ function startMetronome() {
 
 function changeBeatSound(beatElement) {
     const beatIndex = parseInt(beatElement.dataset.beat, 10);
+    console.log("beat index: " + beatIndex);
     const currentSound = parseInt(beatElement.dataset.sound, 10);
 
     // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
@@ -405,29 +401,13 @@ function generateFixedMetronomeSequence() {
         const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
         const noteSize = parsedNote.number;
         const isTriplet = parsedNote.isTriplet;
-        let stepSize;
+        const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
+        const sound = sounds[selectedSounds[index]];
+        const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
-        if (isTriplet) {
-            stepSize = 64 / noteSize
-            for (let i = 0; i < 3 * noteAmount; i++) {
-                sequence[position] = {
-                    sound: sounds[selectedSounds[index]],
-                    settings: defaultSoundSettings,
-                    beatIndex: index
-                };
-                position += stepSize;
-            }
-        } else {
-            stepSize = 64 / noteSize * 3; // Number of steps this beat occupies
-
-            for (let i = 0; i < noteAmount; i++) {
-                sequence[position] = {
-                    sound: sounds[selectedSounds[index]],
-                    settings: defaultSoundSettings,
-                    beatIndex: index
-                };
-                position += stepSize; // Move to the next beat
-            }
+        for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
+            sequence[position] = { sound, settings, beatIndex: index };
+            position += stepSize;
         }
     });
 
@@ -499,6 +479,14 @@ function createBeatElement(index) {
         </label>
     `;
     document.querySelector('.beat-container').appendChild(beatWrapper);
+
+    // Добавляем обработчик события для элемента .beat
+    const beatElement = beatWrapper.querySelector('.beat');
+    beatElement.addEventListener('click', () => {
+        changeBeatSound(beatElement);
+    });
+
+    soundSettings.push(defaultSoundSettings);
 }
 
 function initialBeatRender() {
@@ -529,9 +517,12 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
 
 function getSoundSettings(row) {
     return Object.fromEntries(
-        Object.keys(defaultSoundSettings).map(key => [
-            key,
-            parseFloat(row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`)?.value) || defaultSoundSettings[key]
-        ])
+        Object.keys(defaultSoundSettings).map(key => {
+            const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
+            return [
+                key,
+                input ? parseFloat(input.value) : defaultSoundSettings[key]
+            ];
+        })
     );
 }
