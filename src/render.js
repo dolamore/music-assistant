@@ -556,6 +556,7 @@ function getSoundSettings(row) {
 
 function renderSoundSettings() {
     const labelsContainer = document.querySelector('.labels');
+    const soundSettingsContainer = document.querySelector('.sound-settings');
 
     Object.keys(defaultSoundSettings).forEach((key) => {
         const label = document.createElement('span');
@@ -563,5 +564,7 @@ function renderSoundSettings() {
 
         // Добавляем label в контейнер labels
         labelsContainer.appendChild(label);
+        const numColumns = Object.keys(defaultSoundSettings).length;
+        soundSettingsContainer.style.gridTemplateColumns = `150px repeat(${numColumns + 1}, 1fr)`;
     });
 }
