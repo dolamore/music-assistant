@@ -91,12 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Извлекаем и обновляем настройки для каждого бита
         beatRows.forEach((row) => {
             selectedSounds.push(parseInt(row.querySelector('select').value, 10));
-            soundSettings.push({
-                frequency: parseFloat(row.querySelector('input[placeholder="Frequency"]').value),
-                detune: parseFloat(row.querySelector('input[placeholder="Detune"]').value),
-                phase: parseFloat(row.querySelector('input[placeholder="Phase"]').value),
-                volume: parseFloat(row.querySelector('input[placeholder="Volume"]').value)
-            });
+            soundSettings.push(getSoundSettings(row));
         });
 
         // Обновляем данные в DOM
@@ -376,12 +371,7 @@ function increaseBeat() {
 
         // Обновляем массивы
         selectedSounds.push(1); // Звук по умолчанию
-        soundSettings.push({
-            frequency: 440,
-            detune: 0,
-            phase: 0,
-            volume: 0
-        });
+        soundSettings.push(defaultSoundSettings);
 
         // Обновляем количество битов
         document.getElementById('beats-count').textContent = newBeatIndex + 1;
@@ -535,4 +525,13 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
         beatElement.classList.add('playing');
         setTimeout(() => beatElement.classList.remove('playing'), 100);
     }
+}
+
+function getSoundSettings(row) {
+    return Object.fromEntries(
+        Object.keys(defaultSoundSettings).map(key => [
+            key,
+            parseFloat(row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`)?.value) || defaultSoundSettings[key]
+        ])
+    );
 }
