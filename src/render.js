@@ -13,6 +13,7 @@ let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
+    renderSoundSettings();
 
     initialBeatRender();
 
@@ -551,4 +552,16 @@ function getSoundSettings(row) {
             ];
         })
     );
+}
+
+function renderSoundSettings() {
+    const labelsContainer = document.querySelector('.labels');
+
+    Object.keys(defaultSoundSettings).forEach((key) => {
+        const label = document.createElement('span');
+        label.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Преобразуем ключ в читаемое имя (например, 'frequency' -> 'Frequency')
+
+        // Добавляем label в контейнер labels
+        labelsContainer.appendChild(label);
+    });
 }
