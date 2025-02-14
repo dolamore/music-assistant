@@ -13,6 +13,7 @@ let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 
 document.addEventListener('DOMContentLoaded', function () {
+    renderSoundSettings();
 
     initialBeatRender();
 
@@ -91,12 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Извлекаем и обновляем настройки для каждого бита
         beatRows.forEach((row) => {
             selectedSounds.push(parseInt(row.querySelector('select').value, 10));
-            soundSettings.push({
-                frequency: parseFloat(row.querySelector('input[placeholder="Frequency"]').value),
-                detune: parseFloat(row.querySelector('input[placeholder="Detune"]').value),
-                phase: parseFloat(row.querySelector('input[placeholder="Phase"]').value),
-                volume: parseFloat(row.querySelector('input[placeholder="Volume"]').value)
-            });
+            soundSettings.push(getSoundSettings(row));
         });
 
         // Обновляем данные в DOM
@@ -155,11 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             startMetronome();
         }
-    });
-
-    document.querySelector('.beat-container').addEventListener('click', (event) => {
-        const beatElement = event.target.closest('.beat');
-        changeBeatSound(beatElement);
     });
 
     document.getElementById('training-mode').addEventListener('change', function (e) {
@@ -221,6 +212,7 @@ function startMetronome() {
 
 function changeBeatSound(beatElement) {
     const beatIndex = parseInt(beatElement.dataset.beat, 10);
+    console.log("beat index: " + beatIndex);
     const currentSound = parseInt(beatElement.dataset.sound, 10);
 
     // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
@@ -376,12 +368,7 @@ function increaseBeat() {
 
         // Обновляем массивы
         selectedSounds.push(1); // Звук по умолчанию
-        soundSettings.push({
-            frequency: 440,
-            detune: 0,
-            phase: 0,
-            volume: 0
-        });
+        soundSettings.push(defaultSoundSettings);
 
         // Обновляем количество битов
         document.getElementById('beats-count').textContent = newBeatIndex + 1;
@@ -415,29 +402,13 @@ function generateFixedMetronomeSequence() {
         const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
         const noteSize = parsedNote.number;
         const isTriplet = parsedNote.isTriplet;
-        let stepSize;
+        const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
+        const sound = sounds[selectedSounds[index]];
+        const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
-        if (isTriplet) {
-            stepSize = 64 / noteSize
-            for (let i = 0; i < 3 * noteAmount; i++) {
-                sequence[position] = {
-                    sound: sounds[selectedSounds[index]],
-                    settings: defaultSoundSettings,
-                    beatIndex: index
-                };
-                position += stepSize;
-            }
-        } else {
-            stepSize = 64 / noteSize * 3; // Number of steps this beat occupies
-
-            for (let i = 0; i < noteAmount; i++) {
-                sequence[position] = {
-                    sound: sounds[selectedSounds[index]],
-                    settings: defaultSoundSettings,
-                    beatIndex: index
-                };
-                position += stepSize; // Move to the next beat
-            }
+        for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
+            sequence[position] = { sound, settings, beatIndex: index };
+            position += stepSize;
         }
     });
 
@@ -456,29 +427,45 @@ function toggleMetronome() {
     button.click(); // Имитация клика по кнопке
 }
 
-function createBeatElement(index) {
-    const soundSettingsContainer = document.querySelector('.sound-settings');
+function createInputField(key, index) {
+    const input = document.createElement('input');
+    input.id = `${key}-${index}`;
+    input.type = 'number';
+    input.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
+    input.value = defaultSoundSettings[key];
+    return input;
+}
 
-    // Создаём новый элемент с настройками бита
+function createSoundRow(index) {
     const soundRow = document.createElement('div');
     soundRow.classList.add('sound-row');
-    soundRow.innerHTML = `
-        <label for="sound-${index}">Beat ${index + 1}:</label>
-        <select id="sound-${index}">
-            <option value="0">No Sound</option>
-            <option value="1" selected>Sound 1</option>
-            <option value="2">Sound 2</option>
-            <option value="3">Sound 3</option>
-            <option value="4">Sound 4</option>
-        </select>
-        <input id="frequency-${index}" type="number" placeholder="Frequency" value="440">
-        <input id="detune-${index}" type="number" placeholder="Detune" value="0">
-        <input id="phase-${index}" type="number" placeholder="Phase" value="0">
-        <input id="volume-${index}" type="number" placeholder="Volume" value="0">
-    `;
-    soundSettingsContainer.appendChild(soundRow);
 
-    // Создаём новый элемент для контейнера битов
+    // Создаём метку и выпадающий список звуков
+    const label = document.createElement('label');
+    label.setAttribute('for', `sound-${index}`);
+    label.textContent = `Beat ${index + 1}:`;
+    soundRow.appendChild(label);
+
+    const select = document.createElement('select');
+    select.id = `sound-${index}`;
+    select.innerHTML = `
+        <option value="0">No Sound</option>
+        <option value="1" selected>Sound 1</option>
+        <option value="2">Sound 2</option>
+        <option value="3">Sound 3</option>
+        <option value="4">Sound 4</option>
+    `;
+    soundRow.appendChild(select);
+
+    // Добавляем поля ввода на основе defaultSoundSettings
+    Object.keys(defaultSoundSettings).forEach(key => {
+        soundRow.appendChild(createInputField(key, index));
+    });
+
+    return soundRow;
+}
+
+function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
     beatWrapper.innerHTML = `
@@ -508,7 +495,25 @@ function createBeatElement(index) {
             </select>
         </label>
     `;
-    document.querySelector('.beat-container').appendChild(beatWrapper);
+
+    // Добавляем обработчик клика на бит
+    const beatElement = beatWrapper.querySelector('.beat');
+    beatElement.addEventListener('click', () => {
+        changeBeatSound(beatElement);
+    });
+
+    return beatWrapper;
+}
+
+function createBeatElement(index) {
+    const soundSettingsContainer = document.querySelector('.sound-settings');
+    soundSettingsContainer.appendChild(createSoundRow(index));
+
+    const beatContainer = document.querySelector('.beat-container');
+    beatContainer.appendChild(createBeatWrapper(index));
+
+    // Добавляем настройки звука в массив
+    soundSettings.push(defaultSoundSettings);
 }
 
 function initialBeatRender() {
@@ -535,4 +540,31 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
         beatElement.classList.add('playing');
         setTimeout(() => beatElement.classList.remove('playing'), 100);
     }
+}
+
+function getSoundSettings(row) {
+    return Object.fromEntries(
+        Object.keys(defaultSoundSettings).map(key => {
+            const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
+            return [
+                key,
+                input ? parseFloat(input.value) : defaultSoundSettings[key]
+            ];
+        })
+    );
+}
+
+function renderSoundSettings() {
+    const labelsContainer = document.querySelector('.labels');
+    const soundSettingsContainer = document.querySelector('.sound-settings');
+
+    Object.keys(defaultSoundSettings).forEach((key) => {
+        const label = document.createElement('span');
+        label.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Преобразуем ключ в читаемое имя (например, 'frequency' -> 'Frequency')
+
+        // Добавляем label в контейнер labels
+        labelsContainer.appendChild(label);
+        const numColumns = Object.keys(defaultSoundSettings).length;
+        soundSettingsContainer.style.gridTemplateColumns = `150px repeat(${numColumns + 1}, 1fr)`;
+    });
 }

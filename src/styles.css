@@ -124,7 +124,7 @@ button:hover {
 
 .sound-settings {
     display: grid;
-    grid-template-columns: 100px repeat(5, 1fr);
+    grid-template-columns: 150px repeat(5, 1fr);
     gap: 10px;
     margin-bottom: 10px;
 }
