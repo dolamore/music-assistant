@@ -426,29 +426,45 @@ function toggleMetronome() {
     button.click(); // Имитация клика по кнопке
 }
 
-function createBeatElement(index) {
-    const soundSettingsContainer = document.querySelector('.sound-settings');
+function createInputField(key, index) {
+    const input = document.createElement('input');
+    input.id = `${key}-${index}`;
+    input.type = 'number';
+    input.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
+    input.value = defaultSoundSettings[key];
+    return input;
+}
 
-    // Создаём новый элемент с настройками бита
+function createSoundRow(index) {
     const soundRow = document.createElement('div');
     soundRow.classList.add('sound-row');
-    soundRow.innerHTML = `
-        <label for="sound-${index}">Beat ${index + 1}:</label>
-        <select id="sound-${index}">
-            <option value="0">No Sound</option>
-            <option value="1" selected>Sound 1</option>
-            <option value="2">Sound 2</option>
-            <option value="3">Sound 3</option>
-            <option value="4">Sound 4</option>
-        </select>
-        <input id="frequency-${index}" type="number" placeholder="Frequency" value="440">
-        <input id="detune-${index}" type="number" placeholder="Detune" value="0">
-        <input id="phase-${index}" type="number" placeholder="Phase" value="0">
-        <input id="volume-${index}" type="number" placeholder="Volume" value="0">
-    `;
-    soundSettingsContainer.appendChild(soundRow);
 
-    // Создаём новый элемент для контейнера битов
+    // Создаём метку и выпадающий список звуков
+    const label = document.createElement('label');
+    label.setAttribute('for', `sound-${index}`);
+    label.textContent = `Beat ${index + 1}:`;
+    soundRow.appendChild(label);
+
+    const select = document.createElement('select');
+    select.id = `sound-${index}`;
+    select.innerHTML = `
+        <option value="0">No Sound</option>
+        <option value="1" selected>Sound 1</option>
+        <option value="2">Sound 2</option>
+        <option value="3">Sound 3</option>
+        <option value="4">Sound 4</option>
+    `;
+    soundRow.appendChild(select);
+
+    // Добавляем поля ввода на основе defaultSoundSettings
+    Object.keys(defaultSoundSettings).forEach(key => {
+        soundRow.appendChild(createInputField(key, index));
+    });
+
+    return soundRow;
+}
+
+function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
     beatWrapper.innerHTML = `
@@ -478,14 +494,24 @@ function createBeatElement(index) {
             </select>
         </label>
     `;
-    document.querySelector('.beat-container').appendChild(beatWrapper);
 
-    // Добавляем обработчик события для элемента .beat
+    // Добавляем обработчик клика на бит
     const beatElement = beatWrapper.querySelector('.beat');
     beatElement.addEventListener('click', () => {
         changeBeatSound(beatElement);
     });
 
+    return beatWrapper;
+}
+
+function createBeatElement(index) {
+    const soundSettingsContainer = document.querySelector('.sound-settings');
+    soundSettingsContainer.appendChild(createSoundRow(index));
+
+    const beatContainer = document.querySelector('.beat-container');
+    beatContainer.appendChild(createBeatWrapper(index));
+
+    // Добавляем настройки звука в массив
     soundSettings.push(defaultSoundSettings);
 }
 
