@@ -450,10 +450,10 @@ function createSoundRow(index) {
     select.id = `sound-${index}`;
     select.innerHTML = `
         <option value="0">No Sound</option>
-        <option value="1" selected>Sound 1</option>
-        <option value="2">Sound 2</option>
-        <option value="3">Sound 3</option>
-        <option value="4">Sound 4</option>
+        <option value="1" selected>Sine</option>
+        <option value="2">Triangle</option>
+        <option value="3">Square</option>
+        <option value="4">Sawtooth</option>
     `;
     soundRow.appendChild(select);
 
