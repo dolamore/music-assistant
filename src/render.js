@@ -524,14 +524,33 @@ function initialBeatRender() {
 
 function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
     const currentNote = sequence[currentStep];
+
     if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
         const { sound, settings } = currentNote;
-        sound.oscillator.frequency.value = settings.frequency;
-        sound.oscillator.detune.value = settings.detune;
-        sound.oscillator.phase = settings.phase;
-        sound.volume.value = settings.volume;
+
+        // Динамически применяем все параметры из settings к sound
+        for (const key in settings) {
+            if (settings.hasOwnProperty(key)) {
+                if (key in sound) {
+                    // Если параметр есть в объекте sound (например, volume)
+                    sound[key].value = settings[key];
+                } else if (key in sound.oscillator) {
+                    // Если параметр относится к осциллятору (например, frequency, detune, phase)
+                    sound.oscillator[key] = settings[key];
+                } else if (key in sound.envelope) {
+                    // Если параметр относится к огибающей (например, attack, decay, sustain, release)
+                    sound.envelope[key] = settings[key];
+                } else if (key in sound.filter) {
+                    // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
+                    sound.filter[key] = settings[key];
+                }
+            }
+        }
+
+        // Запускаем звук
         sound.triggerAttackRelease('C4', '64n', time);
 
+        // Визуальные эффекты
         const flashingBar = document.querySelector('.flashing-bar');
         flashingBar.style.opacity = 1;
         setTimeout(() => flashingBar.style.opacity = 0, 100);
@@ -541,6 +560,7 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
         setTimeout(() => beatElement.classList.remove('playing'), 100);
     }
 }
+
 
 function getSoundSettings(row) {
     return Object.fromEntries(
