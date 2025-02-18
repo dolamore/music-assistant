@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         increaseBeat();
     });
 
+    //TODO: we should change note sizes to all the beats
     document.getElementById('increase-notes').addEventListener('click', () => {
         if (currentNoteSizeIndex < noteSizes.length - 1) {
             currentNoteSizeIndex++;
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    //TODO: we should change note sizes to all the beats
     document.getElementById('decrease-notes').addEventListener('click', () => {
         if (currentNoteSizeIndex > 0) {
             currentNoteSizeIndex--;
@@ -161,6 +163,18 @@ document.addEventListener('DOMContentLoaded', function () {
             trainingSettings.classList.add('hidden');
         }
     });
+
+    document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            updateTimeSignature(); // вызов функции при изменении
+        });
+    });
+
+    document.querySelectorAll('.note-amount-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            updateTimeSignature(); // вызов функции при изменении
+        });
+    });
 });
 
 function createMetronomeLoop() {
@@ -197,17 +211,18 @@ function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
 
-    const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем текущий размер ноты
     Tone.Transport.bpm.value = bpm * 3;
 
     // Создаем новый луп с нужными параметрами
-    loop = createMetronomeLoop(noteSize);
+    loop = createMetronomeLoop();
 
     loop.start(0); // Стартуем луп
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
     movePendulum(); // Запускаем анимацию маятника
+
+    console.log(countSize());
 }
 
 function changeBeatSound(beatElement) {
@@ -284,9 +299,54 @@ function updateNoteSize() {
 }
 
 function updateTimeSignature() {
-    const beatsCount = document.querySelectorAll('.beat-wrapper').length;
-    const noteSize = noteSizes[currentNoteSizeIndex];
-    document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+    const timeSignature = countSize();
+    document.getElementById('time-signature').textContent = `${timeSignature.beatAmount}/${timeSignature.tactSize}`;
+}
+
+function countSize() {
+    let beatAmount = 0;
+    const beats = document.querySelectorAll('.beat-wrapper');
+    let beatPattern = [];
+
+    beats.forEach((beat) => {
+        const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
+        const isTriplet = noteData.isTriplet;
+        const noteSize = noteData.number;
+
+        for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
+            beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
+        }
+    });
+
+    const denominator = lcmArray(beatPattern);
+
+    beats.forEach((beat) => {
+        const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
+        const isTriplet = noteData.isTriplet;
+        const noteSize = isTriplet ? noteData.number * 3 / 2 : noteData.number;
+
+        if (isTriplet) {
+            beatAmount += noteAmount * 3 * (denominator / noteSize);
+        } else {
+            beatAmount += noteAmount * (denominator / noteSize);
+        }
+    });
+
+    return {beatAmount: beatAmount, tactSize: denominator};
+}
+
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+}
+
+function lcmArray(arr) {
+    return arr.reduce((a, b) => lcm(a, b));
 }
 
 function movePendulum() {
@@ -407,7 +467,7 @@ function generateFixedMetronomeSequence() {
         const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
         for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
-            sequence[position] = { sound, settings, beatIndex: index };
+            sequence[position] = {sound, settings, beatIndex: index};
             position += stepSize;
         }
     });
@@ -450,10 +510,10 @@ function createSoundRow(index) {
     select.id = `sound-${index}`;
     select.innerHTML = `
         <option value="0">No Sound</option>
-        <option value="1" selected>Sound 1</option>
-        <option value="2">Sound 2</option>
-        <option value="3">Sound 3</option>
-        <option value="4">Sound 4</option>
+        <option value="1" selected>Sine</option>
+        <option value="2">Triangle</option>
+        <option value="3">Square</option>
+        <option value="4">Sawtooth</option>
     `;
     soundRow.appendChild(select);
 
@@ -524,14 +584,33 @@ function initialBeatRender() {
 
 function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
     const currentNote = sequence[currentStep];
+
     if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-        const { sound, settings } = currentNote;
-        sound.oscillator.frequency.value = settings.frequency;
-        sound.oscillator.detune.value = settings.detune;
-        sound.oscillator.phase = settings.phase;
-        sound.volume.value = settings.volume;
+        const {sound, settings} = currentNote;
+
+        // Динамически применяем все параметры из settings к sound
+        for (const key in settings) {
+            if (settings.hasOwnProperty(key)) {
+                if (key in sound) {
+                    // Если параметр есть в объекте sound (например, volume)
+                    sound[key].value = settings[key];
+                } else if (key in sound.oscillator) {
+                    // Если параметр относится к осциллятору (например, frequency, detune, phase)
+                    sound.oscillator[key] = settings[key];
+                } else if (key in sound.envelope) {
+                    // Если параметр относится к огибающей (например, attack, decay, sustain, release)
+                    sound.envelope[key] = settings[key];
+                } else if (key in sound.filter) {
+                    // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
+                    sound.filter[key] = settings[key];
+                }
+            }
+        }
+
+        // Запускаем звук
         sound.triggerAttackRelease('C4', '64n', time);
 
+        // Визуальные эффекты
         const flashingBar = document.querySelector('.flashing-bar');
         flashingBar.style.opacity = 1;
         setTimeout(() => flashingBar.style.opacity = 0, 100);
