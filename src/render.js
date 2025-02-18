@@ -163,6 +163,18 @@ document.addEventListener('DOMContentLoaded', function () {
             trainingSettings.classList.add('hidden');
         }
     });
+
+    document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            updateTimeSignature(); // вызов функции при изменении
+        });
+    });
+
+    document.querySelectorAll('.note-amount-dropdown').forEach((dropdown) => {
+        dropdown.addEventListener('change', function () {
+            updateTimeSignature(); // вызов функции при изменении
+        });
+    });
 });
 
 function createMetronomeLoop() {
@@ -286,12 +298,9 @@ function updateNoteSize() {
     }
 }
 
-//TODO: change the function logics to calculate the new time signature
-
 function updateTimeSignature() {
-    const beatsCount = document.querySelectorAll('.beat-wrapper').length;
-    const noteSize = noteSizes[currentNoteSizeIndex];
-    document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+    const timeSignature = countSize();
+    document.getElementById('time-signature').textContent = `${timeSignature.beatAmount}/${timeSignature.tactSize}`;
 }
 
 function countSize() {
