@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         increaseBeat();
     });
 
+    //TODO: we should change note sizes to all the beats
     document.getElementById('increase-notes').addEventListener('click', () => {
         if (currentNoteSizeIndex < noteSizes.length - 1) {
             currentNoteSizeIndex++;
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    //TODO: we should change note sizes to all the beats
     document.getElementById('decrease-notes').addEventListener('click', () => {
         if (currentNoteSizeIndex > 0) {
             currentNoteSizeIndex--;
@@ -197,17 +199,18 @@ function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
 
-    const noteSize = noteSizes[currentNoteSizeIndex]; // Получаем текущий размер ноты
     Tone.Transport.bpm.value = bpm * 3;
 
     // Создаем новый луп с нужными параметрами
-    loop = createMetronomeLoop(noteSize);
+    loop = createMetronomeLoop();
 
     loop.start(0); // Стартуем луп
 
     Tone.Transport.start();
     document.getElementById('start-stop').textContent = 'Stop';
     movePendulum(); // Запускаем анимацию маятника
+
+    console.log(countSize());
 }
 
 function changeBeatSound(beatElement) {
@@ -283,10 +286,58 @@ function updateNoteSize() {
     }
 }
 
+//TODO: change the function logics to calculate the new time signature
+
 function updateTimeSignature() {
     const beatsCount = document.querySelectorAll('.beat-wrapper').length;
     const noteSize = noteSizes[currentNoteSizeIndex];
     document.getElementById('time-signature').textContent = `${beatsCount}/${noteSize.replace('n', '')}`;
+}
+
+function countSize() {
+    let beatAmount = 0;
+    const beats = document.querySelectorAll('.beat-wrapper');
+    let beatPattern = [];
+
+    beats.forEach((beat) => {
+        const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
+        const isTriplet = noteData.isTriplet;
+        const noteSize = noteData.number;
+
+        for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
+            beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
+        }
+    });
+
+    const denominator = lcmArray(beatPattern);
+
+    beats.forEach((beat) => {
+        const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
+        const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
+        const isTriplet = noteData.isTriplet;
+        const noteSize = isTriplet ? noteData.number * 3 / 2 : noteData.number;
+
+        if (isTriplet) {
+            beatAmount += noteAmount * 3 * (denominator / noteSize);
+        } else {
+            beatAmount += noteAmount * (denominator / noteSize);
+        }
+    });
+
+    return {beatAmount: beatAmount, tactSize: denominator};
+}
+
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+}
+
+function lcmArray(arr) {
+    return arr.reduce((a, b) => lcm(a, b));
 }
 
 function movePendulum() {
@@ -407,7 +458,7 @@ function generateFixedMetronomeSequence() {
         const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
         for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
-            sequence[position] = { sound, settings, beatIndex: index };
+            sequence[position] = {sound, settings, beatIndex: index};
             position += stepSize;
         }
     });
@@ -526,7 +577,7 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
     const currentNote = sequence[currentStep];
 
     if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
-        const { sound, settings } = currentNote;
+        const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
         for (const key in settings) {
@@ -560,7 +611,6 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
         setTimeout(() => beatElement.classList.remove('playing'), 100);
     }
 }
-
 
 function getSoundSettings(row) {
     return Object.fromEntries(
