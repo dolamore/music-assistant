@@ -221,3 +221,11 @@ button:hover {
     flex-direction: column;
     gap: 10px;
 }
+
+.button-limit {
+    background-color: gray;
+}
+
+.button-limit:hover {
+    background-color: #000000 !important;
+}

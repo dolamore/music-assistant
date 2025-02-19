@@ -43,7 +43,11 @@ document.addEventListener('DOMContentLoaded', function () {
             changeDropdownSize(dropdown, true);
         });
         updateTimeSignature();
-        restartMetronomeAndPendulum();
+        checkNotesLimit();
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
+        }
+
     });
 
     document.getElementById('decrease-notes').addEventListener('click', () => {
@@ -51,7 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
             changeDropdownSize(dropdown, false);
         });
         updateTimeSignature();
-        restartMetronomeAndPendulum();
+        checkNotesLimit();
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
+        }
     });
 
     document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
@@ -167,12 +174,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
         dropdown.addEventListener('change', function () {
             updateTimeSignature(); // вызов функции при изменении
+            checkNotesLimit();
         });
     });
 
     document.querySelectorAll('.note-amount-dropdown').forEach((dropdown) => {
         dropdown.addEventListener('change', function () {
             updateTimeSignature(); // вызов функции при изменении
+            checkNotesLimit();
         });
     });
 });
@@ -406,6 +415,9 @@ function decreaseBeat() {
         if (isPlaying) {
             updateMetronomeSequence();
         }
+
+        updateTimeSignature();
+        checkNotesLimit();
     }
 }
 
@@ -431,6 +443,7 @@ function increaseBeat() {
 
         // Обновляем тактовую сетку (если нужно)
         updateTimeSignature();
+        checkNotesLimit();
     }
 }
 
@@ -553,6 +566,17 @@ function createBeatWrapper(index) {
         changeBeatSound(beatElement);
     });
 
+    beatWrapper.querySelector('.note-size-dropdown').addEventListener('change', function () {
+        updateTimeSignature();
+        checkNotesLimit();
+    });
+
+    beatWrapper.querySelector('.note-amount-dropdown').addEventListener('change', function () {
+        updateTimeSignature();
+        checkNotesLimit();
+    });
+
+
     return beatWrapper;
 }
 
@@ -641,12 +665,36 @@ function renderSoundSettings() {
 
 function changeDropdownSize(dropdown, direction) {
     const options = Array.from(dropdown.options);
-    let currentIndex = options.findIndex(option => option.value === dropdown.value);
-    let newIndex;
+    const currentIndex = options.findIndex(option => option.value === dropdown.value);
+    // Изменяем индекс с учетом пропуска триолей
+    let newIndex = currentIndex + (direction ? 2 : -2);
 
-
-    if (parseInt(dropdown.value) < 64 && direction === true || parseInt(dropdown.value) > 1 && direction === false) {
-        newIndex = direction ? currentIndex + 2 : currentIndex - 2;
+    // Проверяем валидность нового значения
+    const newValue = parseInt(options[newIndex]?.value);
+    if (newValue >= 1 && newValue <= 64) {
         dropdown.value = options[newIndex].value;
     }
+}
+
+function checkNotesLimit() {
+    const noteSizeDropdowns = document.querySelectorAll('.note-size-dropdown');
+    let minLimit = false;
+    let maxLimit = false;
+
+    noteSizeDropdowns.forEach((dropdown) => {
+        const currentValue = parseInt(dropdown.value);
+
+        if (currentValue === 1) {
+            minLimit = true;
+        }
+
+        if (currentValue === 64) {
+            maxLimit = true;
+        }
+    });
+
+    document.getElementById('decrease-notes').disabled = minLimit;
+    document.getElementById('increase-notes').disabled = maxLimit;
+    document.getElementById('increase-notes').classList.toggle('button-limit', maxLimit);
+    document.getElementById('decrease-notes').classList.toggle('button-limit', minLimit);
 }
