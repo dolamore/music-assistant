@@ -38,20 +38,20 @@ document.addEventListener('DOMContentLoaded', function () {
         increaseBeat();
     });
 
-    //TODO: we should change note sizes to all the beats
     document.getElementById('increase-notes').addEventListener('click', () => {
         document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
             changeDropdownSize(dropdown, true);
         });
         updateTimeSignature();
+        restartMetronomeAndPendulum();
     });
 
-    //TODO: we should change note sizes to all the beats
     document.getElementById('decrease-notes').addEventListener('click', () => {
         document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
             changeDropdownSize(dropdown, false);
         });
         updateTimeSignature();
+        restartMetronomeAndPendulum();
     });
 
     document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
