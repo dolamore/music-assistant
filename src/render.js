@@ -40,18 +40,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //TODO: we should change note sizes to all the beats
     document.getElementById('increase-notes').addEventListener('click', () => {
-        if (currentNoteSizeIndex < noteSizes.length - 1) {
-            currentNoteSizeIndex++;
-            updateNoteSize();
-        }
+        document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+            changeDropdownSize(dropdown, true);
+        });
+        updateTimeSignature();
     });
 
     //TODO: we should change note sizes to all the beats
     document.getElementById('decrease-notes').addEventListener('click', () => {
-        if (currentNoteSizeIndex > 0) {
-            currentNoteSizeIndex--;
-            updateNoteSize();
-        }
+        document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+            changeDropdownSize(dropdown, false);
+        });
+        updateTimeSignature();
     });
 
     document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
@@ -287,15 +287,6 @@ function restartMetronomeAndPendulum() {
     stopMetronome();
     resetPendulumAnimation();
     startMetronome();
-}
-
-function updateNoteSize() {
-    updateTimeSignature()
-
-    if (isPlaying) {
-        stopMetronome();  // Stop the metronome
-        startMetronome(); // Restart the metronome with the new note size
-    }
 }
 
 function updateTimeSignature() {
@@ -646,4 +637,16 @@ function renderSoundSettings() {
         const numColumns = Object.keys(defaultSoundSettings).length;
         soundSettingsContainer.style.gridTemplateColumns = `150px repeat(${numColumns + 1}, 1fr)`;
     });
+}
+
+function changeDropdownSize(dropdown, direction) {
+    const options = Array.from(dropdown.options);
+    let currentIndex = options.findIndex(option => option.value === dropdown.value);
+    let newIndex;
+
+
+    if (parseInt(dropdown.value) < 64 && direction === true || parseInt(dropdown.value) > 1 && direction === false) {
+        newIndex = direction ? currentIndex + 2 : currentIndex - 2;
+        dropdown.value = options[newIndex].value;
+    }
 }
