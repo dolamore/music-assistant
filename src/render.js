@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
+    buttons.togglePendulumBar.addEventListener('change', function (e) {
         const pendulumElement = document.querySelector('.pendulum');
         const barElement = document.querySelector('.horizontal-bar');
         if (e.target.checked) {
@@ -79,11 +79,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('toggle-flashing-bar').addEventListener('change', function (e) {
+    buttons.toggleFlashingBar.addEventListener('change', function (e) {
         document.querySelector('.flashing-bar').classList.toggle('hidden', !e.target.checked);
     });
 
-    document.getElementById('toggle-note-bar').addEventListener('change', function (e) {
+    buttons.toggleBeatBars.addEventListener('change', function (e) {
         document.querySelectorAll('.beat').forEach(note => {
             note.classList.toggle('hidden', !e.target.checked);
         });
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('training-mode').addEventListener('change', function (e) {
+    buttons.toggleTrainingMode.addEventListener('change', function (e) {
         const trainingSettings = document.getElementById('training-settings');
         if (e.target.checked) {
             trainingSettings.classList.remove('hidden');
@@ -198,7 +198,7 @@ function createMetronomeLoop() {
         const currentStep = count % sequence.length;
         const isStartOfLoop = currentStep === 0;
 
-        const isTrainingMode = document.getElementById('training-mode').checked;
+        const isTrainingMode = buttons.toggleTrainingMode.checked;
         const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
         const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 

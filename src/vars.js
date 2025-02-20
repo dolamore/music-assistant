@@ -64,4 +64,8 @@ export const buttons = {
     decreaseBeatsButton: document.getElementById('decrease-beats-button'),
     increaseNotesButton: document.getElementById('increase-notes-button'),
     decreaseNotesButton: document.getElementById('decrease-notes-button'),
+    togglePendulumBar: document.getElementById('toggle-pendulum'),
+    toggleFlashingBar: document.getElementById('toggle-flashing-bar'),
+    toggleBeatBars: document.getElementById('toggle-beat-bars'),
+    toggleTrainingMode: document.getElementById('toggle-training-mode'),
 }
