@@ -1,5 +1,13 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, sounds, initialNumberOfBeats, defaultSoundSettings, beatHTML, buttons} from './vars.js';
+import {
+    noteMultipliers,
+    sounds,
+    initialNumberOfBeats,
+    defaultSoundSettings,
+    beatHTML,
+    buttons,
+    maxBeatsAmount
+} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [];
@@ -43,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function () {
             changeDropdownSize(dropdown, true);
         });
         updateTimeSignature();
-        checkNotesLimit();
         if (isPlaying) {
             restartMetronomeAndPendulum();
         }
@@ -55,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
             changeDropdownSize(dropdown, false);
         });
         updateTimeSignature();
-        checkNotesLimit();
         if (isPlaying) {
             restartMetronomeAndPendulum();
         }
@@ -174,7 +180,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
             updateTimeSignature();
-            checkNotesLimit();
         }
     });
 
@@ -229,8 +234,6 @@ function startMetronome() {
     Tone.Transport.start();
     buttons.startStopButton.textContent = 'Stop';
     movePendulum(); // Запускаем анимацию маятника
-
-    console.log(countSize());
 }
 
 function changeBeatSound(beatElement) {
@@ -300,6 +303,8 @@ function restartMetronomeAndPendulum() {
 function updateTimeSignature() {
     const timeSignature = countSize();
     document.getElementById('time-signature').textContent = `${timeSignature.beatAmount}/${timeSignature.tactSize}`;
+    checkNotesLimit();
+    checkBeatsLimit();
 }
 
 function countSize() {
@@ -387,63 +392,59 @@ function resetPendulumAnimation() {
 
 function decreaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
-    if (beatRows.length > 1) {
-        // Удаляем последнюю строку из DOM
-        beatRows[beatRows.length - 1].remove();
 
-        // Удаляем последний элемент из beat-container
-        const beatContainer = document.querySelector('.beat-container');
-        const lastBeatWrapper = beatContainer.lastElementChild;
-        if (lastBeatWrapper) {
-            lastBeatWrapper.remove();
-        }
+    // Удаляем последнюю строку из DOM
+    beatRows[beatRows.length - 1].remove();
 
-        // Обновляем массивы
-        selectedSounds.pop();
-        soundSettings.pop();
-
-        // Пересчитываем количество битов
-        document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
-
-        // Используем setTimeout, чтобы подождать завершения обновления DOM
-        setTimeout(() => {
-            updateTimeSignature();
-        }, 0);
-
-        // Если метроном запущен, обновляем его
-        if (isPlaying) {
-            updateMetronomeSequence();
-        }
-
-        updateTimeSignature();
-        checkNotesLimit();
+    // Удаляем последний элемент из beat-container
+    const beatContainer = document.querySelector('.beat-container');
+    const lastBeatWrapper = beatContainer.lastElementChild;
+    if (lastBeatWrapper) {
+        lastBeatWrapper.remove();
     }
+
+    // Обновляем массивы
+    selectedSounds.pop();
+    soundSettings.pop();
+
+    // Пересчитываем количество битов
+    document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
+
+    // Используем setTimeout, чтобы подождать завершения обновления DOM
+    setTimeout(() => {
+        updateTimeSignature();
+    }, 0);
+
+    // Если метроном запущен, обновляем его
+    if (isPlaying) {
+        updateMetronomeSequence();
+    }
+
+    updateTimeSignature();
 }
 
 function increaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
-    if (beatRows.length < 16) { // Ограничение на максимальное количество битов
-        const newBeatIndex = beatRows.length;
 
-        // Создаём новый элемент и добавляем его на страницу
-        createBeatElement(newBeatIndex);
+    const newBeatIndex = beatRows.length;
 
-        // Обновляем массивы
-        selectedSounds.push(1); // Звук по умолчанию
-        soundSettings.push(defaultSoundSettings);
+    // Создаём новый элемент и добавляем его на страницу
+    createBeatElement(newBeatIndex);
 
-        // Обновляем количество битов
-        document.getElementById('beats-count').textContent = newBeatIndex + 1;
+    // Обновляем массивы
+    selectedSounds.push(1); // Звук по умолчанию
+    soundSettings.push(defaultSoundSettings);
 
-        // Обновляем последовательность метронома без перезапуска
-        if (isPlaying) {
-            updateMetronomeSequence();
-        }
+    // Обновляем количество битов
+    document.getElementById('beats-count').textContent = newBeatIndex + 1;
 
-        // Обновляем тактовую сетку (если нужно)
-        updateTimeSignature();
-        checkNotesLimit();
+    // Обновляем последовательность метронома без перезапуска
+    if (isPlaying) {
+        updateMetronomeSequence();
     }
+
+    // Обновляем тактовую сетку (если нужно)
+    updateTimeSignature();
 }
 
 function generateFixedMetronomeSequence() {
@@ -644,8 +645,20 @@ function checkNotesLimit() {
         }
     });
 
-    buttons.decreaseNotesButton.disabled = minLimit;
-    buttons.increaseNotesButton.disabled = maxLimit;
-    buttons.increaseNotesButton.classList.toggle('button-limit', maxLimit);
-    buttons.decreaseNotesButton.classList.toggle('button-limit', minLimit);
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseNotesButton, buttons.decreaseNotesButton);
+}
+
+function checkBeatsLimit() {
+    const beatRows = document.querySelectorAll('.sound-row');
+    const minLimit = beatRows.length <= 1;
+    const maxLimit = beatRows.length >= maxBeatsAmount;
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
+}
+
+function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
+    increasingButton.disabled = maxLimit;
+    decreasingButton.disabled = minLimit;
+    increasingButton.classList.toggle('button-limit', maxLimit);
+    decreasingButton.classList.toggle('button-limit', minLimit);
 }
