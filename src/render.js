@@ -1,5 +1,5 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, sounds, initialNumberOfBeats, defaultSoundSettings, beatHTML} from './vars.js';
+import {noteMultipliers, sounds, initialNumberOfBeats, defaultSoundSettings, beatHTML, buttons} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [];
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
             event.preventDefault(); // Предотвращаем скролл страницы
-            toggleMetronome();
+            buttons.startStopButton.click();
         }
     });
 
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('settings').addEventListener('click', function () {
+    buttons.settingsButton.addEventListener('click', function () {
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
 
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('start-stop').addEventListener('click', async () => {
+    buttons.startStopButton.addEventListener('click', async () => {
         await Tone.start();
         if (isPlaying) {
             stopMetronome();
@@ -227,7 +227,7 @@ function startMetronome() {
     loop.start(0); // Стартуем луп
 
     Tone.Transport.start();
-    document.getElementById('start-stop').textContent = 'Stop';
+    buttons.startStopButton.textContent = 'Stop';
     movePendulum(); // Запускаем анимацию маятника
 
     console.log(countSize());
@@ -271,7 +271,7 @@ function stopMetronome() {
     isPendulumMode = false;
     if (loop) loop.stop();
     Tone.Transport.stop();
-    document.getElementById('start-stop').textContent = 'Start';
+    buttons.startStopButton.textContent = 'Start';
 
     // Сбросить маятник в начальное положение
     const pendulumElement = document.querySelector('.pendulum');
@@ -483,11 +483,6 @@ function parseNoteSize(value) {
     const number = parseInt(value, 10); // Извлекаем числовое значение
 
     return {number, isTriplet};
-}
-
-function toggleMetronome() {
-    const button = document.getElementById('start-stop');
-    button.click(); // Имитация клика по кнопке
 }
 
 function createInputField(key, index) {

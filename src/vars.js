@@ -49,3 +49,8 @@ export const beatHTML = (index) => `
             </select>
         </label>
     `;
+
+export const buttons = {
+    startStopButton: document.getElementById('start-stop-button'),
+    settingsButton: document.getElementById('settings-button'),
+}
