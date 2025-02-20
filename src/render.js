@@ -30,15 +30,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('bpm').value = bpm;
 
-    document.getElementById('decrease-beats').addEventListener('click', () => {
+    buttons.decreaseBeatsButton.addEventListener('click', () => {
         decreaseBeat();
     });
 
-    document.getElementById('increase-beats').addEventListener('click', () => {
+    buttons.increaseBeatsButton.addEventListener('click', () => {
         increaseBeat();
     });
 
-    document.getElementById('increase-notes').addEventListener('click', () => {
+    buttons.increaseNotesButton.addEventListener('click', () => {
         document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
             changeDropdownSize(dropdown, true);
         });
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    document.getElementById('decrease-notes').addEventListener('click', () => {
+    buttons.decreaseNotesButton.addEventListener('click', () => {
         document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
             changeDropdownSize(dropdown, false);
         });
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
 
-    document.getElementById('save-settings').addEventListener('click', function () {
+    buttons.saveSettingsButton.addEventListener('click', function () {
         const beatRows = document.querySelectorAll('.sound-row');
         selectedSounds = [];
         soundSettings = [];
@@ -129,25 +129,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('increase-bpm-1').addEventListener('click', () => {
+    buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('increase-bpm-5').addEventListener('click', () => {
+    buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('decrease-bpm-1').addEventListener('click', () => {
+    buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('decrease-bpm-5').addEventListener('click', () => {
+    buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
@@ -644,8 +644,8 @@ function checkNotesLimit() {
         }
     });
 
-    document.getElementById('decrease-notes').disabled = minLimit;
-    document.getElementById('increase-notes').disabled = maxLimit;
-    document.getElementById('increase-notes').classList.toggle('button-limit', maxLimit);
-    document.getElementById('decrease-notes').classList.toggle('button-limit', minLimit);
+    buttons.decreaseNotesButton.disabled = minLimit;
+    buttons.increaseNotesButton.disabled = maxLimit;
+    buttons.increaseNotesButton.classList.toggle('button-limit', maxLimit);
+    buttons.decreaseNotesButton.classList.toggle('button-limit', minLimit);
 }

@@ -53,4 +53,13 @@ export const beatHTML = (index) => `
 export const buttons = {
     startStopButton: document.getElementById('start-stop-button'),
     settingsButton: document.getElementById('settings-button'),
+    increaseBPMButton: document.getElementById('increase-bpm-1-button'),
+    decreaseBPMButton: document.getElementById('decrease-bpm-1-button'),
+    increaseFiveBPMButton: document.getElementById('increase-bpm-5-button'),
+    decreaseFiveBPMButton: document.getElementById('decrease-bpm-5-button'),
+    saveSettingsButton: document.getElementById('save-settings-button'),
+    increaseBeatsButton: document.getElementById('increase-beats-button'),
+    decreaseBeatsButton: document.getElementById('decrease-beats-button'),
+    increaseNotesButton: document.getElementById('increase-notes-button'),
+    decreaseNotesButton: document.getElementById('decrease-notes-button'),
 }

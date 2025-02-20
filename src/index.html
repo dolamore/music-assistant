@@ -11,11 +11,11 @@
 <div class="bpm-container">
     <label for="bpm">BPM:</label>
     <div class="bpm-controls">
-        <button id="decrease-bpm-5">-5</button>
-        <button id="decrease-bpm-1">-1</button>
+        <button id="decrease-bpm-5-button">-5</button>
+        <button id="decrease-bpm-1-button">-1</button>
         <input type="number" id="bpm" value="120">
-        <button id="increase-bpm-1">+1</button>
-        <button id="increase-bpm-5">+5</button>
+        <button id="increase-bpm-1-button">+1</button>
+        <button id="increase-bpm-5-button">+5</button>
     </div>
 </div>
 <div id="loop-counter-label">Loops played:</div>
@@ -50,9 +50,9 @@
     <div class="control-group">
         <label>Beats</label>
         <div>
-            <button id="increase-beats">+</button>
+            <button id="increase-beats-button">+</button>
             <span id="beats-count">4</span>
-            <button id="decrease-beats">-</button>
+            <button id="decrease-beats-button">-</button>
         </div>
     </div>
     <div class="time-signature">
@@ -62,8 +62,8 @@
     <div class="control-group">
         <label>Notes</label>
         <div>
-            <button id="increase-notes">+</button>
-            <button id="decrease-notes">-</button>
+            <button id="increase-notes-button">+</button>
+            <button id="decrease-notes-button">-</button>
         </div>
     </div>
 </div>
@@ -83,7 +83,7 @@
         </div>
         <!-- Сюда будет динамически добавляться содержимое через renderSoundSettings -->
     </div>
-    <button id="save-settings">Save</button>
+    <button id="save-settings-button">Save</button>
 </div>
 <script src="render.js" type="module" defer></script>
 </body>
