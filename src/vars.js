@@ -69,3 +69,7 @@ export const buttons = {
     toggleBeatBars: document.getElementById('toggle-beat-bars'),
     toggleTrainingMode: document.getElementById('toggle-training-mode'),
 }
+
+export const elements = {
+    bpmInput: document.getElementById('bpm-input'),
+}

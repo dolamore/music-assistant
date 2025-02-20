@@ -6,6 +6,7 @@ import {
     defaultSoundSettings,
     beatHTML,
     buttons,
+    elements,
     maxBeatsAmount
 } from './vars.js';
 
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('training-settings').classList.add('hidden');
 
-    document.getElementById('bpm').value = bpm;
+    elements.bpmInput.value = bpm;
 
     buttons.decreaseBeatsButton.addEventListener('click', () => {
         decreaseBeat();
@@ -124,12 +125,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('settings-panel').classList.add('hidden');
     });
 
-    document.getElementById('bpm').addEventListener('input', (e) => {
+    elements.bpmInput.addEventListener('input', (e) => {
         const newBpm = parseInt(e.target.value, 10) || 120;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('bpm').addEventListener('keypress', (e) => {
+    elements.bpmInput.addEventListener('keypress', (e) => {
         if (!/[0-9]/.test(e.key)) {
             e.preventDefault();
         }
@@ -137,25 +138,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
