@@ -5,7 +5,7 @@ let mainWindow;
 
 app.on('ready', async () => {
     mainWindow = new BrowserWindow({
-        width: 600,
+        width: 800,
         height: 1000,
         webPreferences: {
             contextIsolation: true,
@@ -14,9 +14,9 @@ app.on('ready', async () => {
     });
 
     // Set the minimum size of the window
-    mainWindow.setMinimumSize(600, 1000);
+    mainWindow.setMinimumSize(800, 1000);
     // Uncomment the following line to open DevTools
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     await mainWindow.loadFile(path.join(app.getAppPath(), 'src', 'index.html'));
 });

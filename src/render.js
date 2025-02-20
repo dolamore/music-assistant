@@ -1,5 +1,13 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats, defaultSoundSettings} from './vars.js';
+import {
+    noteMultipliers,
+    sounds,
+    initialNumberOfBeats,
+    defaultSoundSettings,
+    beatHTML,
+    buttons,
+    maxBeatsAmount
+} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [];
@@ -20,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
             event.preventDefault(); // Предотвращаем скролл страницы
-            toggleMetronome();
+            buttons.startStopButton.click();
         }
     });
 
@@ -30,31 +38,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('bpm').value = bpm;
 
-    document.getElementById('decrease-beats').addEventListener('click', () => {
+    buttons.decreaseBeatsButton.addEventListener('click', () => {
         decreaseBeat();
     });
 
-    document.getElementById('increase-beats').addEventListener('click', () => {
+    buttons.increaseBeatsButton.addEventListener('click', () => {
         increaseBeat();
     });
 
-    //TODO: we should change note sizes to all the beats
-    document.getElementById('increase-notes').addEventListener('click', () => {
-        if (currentNoteSizeIndex < noteSizes.length - 1) {
-            currentNoteSizeIndex++;
-            updateNoteSize();
+    buttons.increaseNotesButton.addEventListener('click', () => {
+        document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+            changeDropdownSize(dropdown, true);
+        });
+        updateTimeSignature();
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
+        }
+
+    });
+
+    buttons.decreaseNotesButton.addEventListener('click', () => {
+        document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
+            changeDropdownSize(dropdown, false);
+        });
+        updateTimeSignature();
+        if (isPlaying) {
+            restartMetronomeAndPendulum();
         }
     });
 
-    //TODO: we should change note sizes to all the beats
-    document.getElementById('decrease-notes').addEventListener('click', () => {
-        if (currentNoteSizeIndex > 0) {
-            currentNoteSizeIndex--;
-            updateNoteSize();
-        }
-    });
-
-    document.getElementById('toggle-pendulum').addEventListener('change', function (e) {
+    buttons.togglePendulumBar.addEventListener('change', function (e) {
         const pendulumElement = document.querySelector('.pendulum');
         const barElement = document.querySelector('.horizontal-bar');
         if (e.target.checked) {
@@ -66,11 +79,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('toggle-flashing-bar').addEventListener('change', function (e) {
+    buttons.toggleFlashingBar.addEventListener('change', function (e) {
         document.querySelector('.flashing-bar').classList.toggle('hidden', !e.target.checked);
     });
 
-    document.getElementById('toggle-note-bar').addEventListener('change', function (e) {
+    buttons.toggleBeatBars.addEventListener('change', function (e) {
         document.querySelectorAll('.beat').forEach(note => {
             note.classList.toggle('hidden', !e.target.checked);
         });
@@ -82,11 +95,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('settings').addEventListener('click', function () {
+    buttons.settingsButton.addEventListener('click', function () {
         document.getElementById('settings-panel').classList.toggle('hidden');
     });
 
-    document.getElementById('save-settings').addEventListener('click', function () {
+    buttons.saveSettingsButton.addEventListener('click', function () {
         const beatRows = document.querySelectorAll('.sound-row');
         selectedSounds = [];
         soundSettings = [];
@@ -122,31 +135,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('increase-bpm-1').addEventListener('click', () => {
+    buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('increase-bpm-5').addEventListener('click', () => {
+    buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('decrease-bpm-1').addEventListener('click', () => {
+    buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('decrease-bpm-5').addEventListener('click', () => {
+    buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
         document.getElementById('bpm').value = newBpm;
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('start-stop').addEventListener('click', async () => {
+    buttons.startStopButton.addEventListener('click', async () => {
         await Tone.start();
         if (isPlaying) {
             stopMetronome();
@@ -155,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('training-mode').addEventListener('change', function (e) {
+    buttons.toggleTrainingMode.addEventListener('change', function (e) {
         const trainingSettings = document.getElementById('training-settings');
         if (e.target.checked) {
             trainingSettings.classList.remove('hidden');
@@ -164,16 +177,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
-        dropdown.addEventListener('change', function () {
-            updateTimeSignature(); // вызов функции при изменении
-        });
+    document.addEventListener('change', function (event) {
+        if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
+            updateTimeSignature();
+        }
     });
 
-    document.querySelectorAll('.note-amount-dropdown').forEach((dropdown) => {
-        dropdown.addEventListener('change', function () {
-            updateTimeSignature(); // вызов функции при изменении
-        });
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('beat')) {
+            changeBeatSound(event.target);
+        }
     });
 });
 
@@ -185,7 +198,7 @@ function createMetronomeLoop() {
         const currentStep = count % sequence.length;
         const isStartOfLoop = currentStep === 0;
 
-        const isTrainingMode = document.getElementById('training-mode').checked;
+        const isTrainingMode = buttons.toggleTrainingMode.checked;
         const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
         const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
@@ -219,10 +232,8 @@ function startMetronome() {
     loop.start(0); // Стартуем луп
 
     Tone.Transport.start();
-    document.getElementById('start-stop').textContent = 'Stop';
+    buttons.startStopButton.textContent = 'Stop';
     movePendulum(); // Запускаем анимацию маятника
-
-    console.log(countSize());
 }
 
 function changeBeatSound(beatElement) {
@@ -263,7 +274,7 @@ function stopMetronome() {
     isPendulumMode = false;
     if (loop) loop.stop();
     Tone.Transport.stop();
-    document.getElementById('start-stop').textContent = 'Start';
+    buttons.startStopButton.textContent = 'Start';
 
     // Сбросить маятник в начальное положение
     const pendulumElement = document.querySelector('.pendulum');
@@ -289,18 +300,11 @@ function restartMetronomeAndPendulum() {
     startMetronome();
 }
 
-function updateNoteSize() {
-    updateTimeSignature()
-
-    if (isPlaying) {
-        stopMetronome();  // Stop the metronome
-        startMetronome(); // Restart the metronome with the new note size
-    }
-}
-
 function updateTimeSignature() {
     const timeSignature = countSize();
     document.getElementById('time-signature').textContent = `${timeSignature.beatAmount}/${timeSignature.tactSize}`;
+    checkNotesLimit();
+    checkBeatsLimit();
 }
 
 function countSize() {
@@ -388,59 +392,59 @@ function resetPendulumAnimation() {
 
 function decreaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
-    if (beatRows.length > 1) {
-        // Удаляем последнюю строку из DOM
-        beatRows[beatRows.length - 1].remove();
 
-        // Удаляем последний элемент из beat-container
-        const beatContainer = document.querySelector('.beat-container');
-        const lastBeatWrapper = beatContainer.lastElementChild;
-        if (lastBeatWrapper) {
-            lastBeatWrapper.remove();
-        }
+    // Удаляем последнюю строку из DOM
+    beatRows[beatRows.length - 1].remove();
 
-        // Обновляем массивы
-        selectedSounds.pop();
-        soundSettings.pop();
-
-        // Пересчитываем количество битов
-        document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
-
-        // Используем setTimeout, чтобы подождать завершения обновления DOM
-        setTimeout(() => {
-            updateTimeSignature();
-        }, 0);
-
-        // Если метроном запущен, обновляем его
-        if (isPlaying) {
-            updateMetronomeSequence();
-        }
+    // Удаляем последний элемент из beat-container
+    const beatContainer = document.querySelector('.beat-container');
+    const lastBeatWrapper = beatContainer.lastElementChild;
+    if (lastBeatWrapper) {
+        lastBeatWrapper.remove();
     }
+
+    // Обновляем массивы
+    selectedSounds.pop();
+    soundSettings.pop();
+
+    // Пересчитываем количество битов
+    document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
+
+    // Используем setTimeout, чтобы подождать завершения обновления DOM
+    setTimeout(() => {
+        updateTimeSignature();
+    }, 0);
+
+    // Если метроном запущен, обновляем его
+    if (isPlaying) {
+        updateMetronomeSequence();
+    }
+
+    updateTimeSignature();
 }
 
 function increaseBeat() {
     const beatRows = document.querySelectorAll('.sound-row');
-    if (beatRows.length < 16) { // Ограничение на максимальное количество битов
-        const newBeatIndex = beatRows.length;
 
-        // Создаём новый элемент и добавляем его на страницу
-        createBeatElement(newBeatIndex);
+    const newBeatIndex = beatRows.length;
 
-        // Обновляем массивы
-        selectedSounds.push(1); // Звук по умолчанию
-        soundSettings.push(defaultSoundSettings);
+    // Создаём новый элемент и добавляем его на страницу
+    createBeatElement(newBeatIndex);
 
-        // Обновляем количество битов
-        document.getElementById('beats-count').textContent = newBeatIndex + 1;
+    // Обновляем массивы
+    selectedSounds.push(1); // Звук по умолчанию
+    soundSettings.push(defaultSoundSettings);
 
-        // Обновляем последовательность метронома без перезапуска
-        if (isPlaying) {
-            updateMetronomeSequence();
-        }
+    // Обновляем количество битов
+    document.getElementById('beats-count').textContent = newBeatIndex + 1;
 
-        // Обновляем тактовую сетку (если нужно)
-        updateTimeSignature();
+    // Обновляем последовательность метронома без перезапуска
+    if (isPlaying) {
+        updateMetronomeSequence();
     }
+
+    // Обновляем тактовую сетку (если нужно)
+    updateTimeSignature();
 }
 
 function generateFixedMetronomeSequence() {
@@ -480,11 +484,6 @@ function parseNoteSize(value) {
     const number = parseInt(value, 10); // Извлекаем числовое значение
 
     return {number, isTriplet};
-}
-
-function toggleMetronome() {
-    const button = document.getElementById('start-stop');
-    button.click(); // Имитация клика по кнопке
 }
 
 function createInputField(key, index) {
@@ -528,39 +527,7 @@ function createSoundRow(index) {
 function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
-    beatWrapper.innerHTML = `
-        <div class="beat" data-beat="${index}" data-sound="1"></div>
-        <select class="note-size-dropdown" data-beat="${index}">
-            <option value="1">1</option>
-            <option value="1T">1T</option>
-            <option value="2">1/2</option>
-            <option value="2T">1/2T</option>
-            <option value="4" selected>1/4</option>
-            <option value="4T">1/4T</option>
-            <option value="8">1/8</option>
-            <option value="8T">1/8T</option>
-            <option value="16">1/16</option>
-            <option value="16T">1/16T</option>
-            <option value="32">1/32</option>
-            <option value="32T">1/32T</option>
-            <option value="64">1/64</option>
-            <option value="64T">1/64T</option>
-        </select>
-        <label>
-            <select class="note-amount-dropdown" data-beat="${index}">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-        </label>
-    `;
-
-    // Добавляем обработчик клика на бит
-    const beatElement = beatWrapper.querySelector('.beat');
-    beatElement.addEventListener('click', () => {
-        changeBeatSound(beatElement);
-    });
+    beatWrapper.innerHTML = beatHTML(index);
 
     return beatWrapper;
 }
@@ -646,4 +613,52 @@ function renderSoundSettings() {
         const numColumns = Object.keys(defaultSoundSettings).length;
         soundSettingsContainer.style.gridTemplateColumns = `150px repeat(${numColumns + 1}, 1fr)`;
     });
+}
+
+function changeDropdownSize(dropdown, direction) {
+    const options = Array.from(dropdown.options);
+    const currentIndex = options.findIndex(option => option.value === dropdown.value);
+    // Изменяем индекс с учетом пропуска триолей
+    let newIndex = currentIndex + (direction ? 2 : -2);
+
+    // Проверяем валидность нового значения
+    const newValue = parseInt(options[newIndex]?.value);
+    if (newValue >= 1 && newValue <= 64) {
+        dropdown.value = options[newIndex].value;
+    }
+}
+
+function checkNotesLimit() {
+    const noteSizeDropdowns = document.querySelectorAll('.note-size-dropdown');
+    let minLimit = false;
+    let maxLimit = false;
+
+    noteSizeDropdowns.forEach((dropdown) => {
+        const currentValue = parseInt(dropdown.value);
+
+        if (currentValue === 1) {
+            minLimit = true;
+        }
+
+        if (currentValue === 64) {
+            maxLimit = true;
+        }
+    });
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseNotesButton, buttons.decreaseNotesButton);
+}
+
+function checkBeatsLimit() {
+    const beatRows = document.querySelectorAll('.sound-row');
+    const minLimit = beatRows.length <= 1;
+    const maxLimit = beatRows.length >= maxBeatsAmount;
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
+}
+
+function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
+    increasingButton.disabled = maxLimit;
+    decreasingButton.disabled = minLimit;
+    increasingButton.classList.toggle('button-limit', maxLimit);
+    decreasingButton.classList.toggle('button-limit', minLimit);
 }
