@@ -1,5 +1,5 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {noteMultipliers, noteSizes, sounds, initialNumberOfBeats, defaultSoundSettings} from './vars.js';
+import {noteMultipliers, sounds, initialNumberOfBeats, defaultSoundSettings, beatHTML} from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [];
@@ -171,18 +171,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelectorAll('.note-size-dropdown').forEach((dropdown) => {
-        dropdown.addEventListener('change', function () {
-            updateTimeSignature(); // вызов функции при изменении
+    document.addEventListener('change', function (event) {
+        if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
+            updateTimeSignature();
             checkNotesLimit();
-        });
+        }
     });
 
-    document.querySelectorAll('.note-amount-dropdown').forEach((dropdown) => {
-        dropdown.addEventListener('change', function () {
-            updateTimeSignature(); // вызов функции при изменении
-            checkNotesLimit();
-        });
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('beat')) {
+            changeBeatSound(event.target);
+        }
     });
 });
 
@@ -532,50 +531,7 @@ function createSoundRow(index) {
 function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
-    beatWrapper.innerHTML = `
-        <div class="beat" data-beat="${index}" data-sound="1"></div>
-        <select class="note-size-dropdown" data-beat="${index}">
-            <option value="1">1</option>
-            <option value="1T">1T</option>
-            <option value="2">1/2</option>
-            <option value="2T">1/2T</option>
-            <option value="4" selected>1/4</option>
-            <option value="4T">1/4T</option>
-            <option value="8">1/8</option>
-            <option value="8T">1/8T</option>
-            <option value="16">1/16</option>
-            <option value="16T">1/16T</option>
-            <option value="32">1/32</option>
-            <option value="32T">1/32T</option>
-            <option value="64">1/64</option>
-            <option value="64T">1/64T</option>
-        </select>
-        <label>
-            <select class="note-amount-dropdown" data-beat="${index}">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-        </label>
-    `;
-
-    // Добавляем обработчик клика на бит
-    const beatElement = beatWrapper.querySelector('.beat');
-    beatElement.addEventListener('click', () => {
-        changeBeatSound(beatElement);
-    });
-
-    beatWrapper.querySelector('.note-size-dropdown').addEventListener('change', function () {
-        updateTimeSignature();
-        checkNotesLimit();
-    });
-
-    beatWrapper.querySelector('.note-amount-dropdown').addEventListener('change', function () {
-        updateTimeSignature();
-        checkNotesLimit();
-    });
-
+    beatWrapper.innerHTML = beatHTML(index);
 
     return beatWrapper;
 }
