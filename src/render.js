@@ -6,6 +6,7 @@ import {
     defaultSoundSettings,
     beatHTML,
     buttons,
+    elements,
     maxBeatsAmount
 } from './vars.js';
 
@@ -19,6 +20,9 @@ let loopCount = 0;
 let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
+let isTrainingMode = false;
+let loopSkipProbability = 0;
+let noteSkipProbability = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
     renderSoundSettings();
@@ -32,11 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('settings-panel').classList.add('hidden');
+    elements.settingsPanel.classList.add('hidden');
 
-    document.getElementById('training-settings').classList.add('hidden');
+    elements.trainingSettings.classList.add('hidden');
 
-    document.getElementById('bpm').value = bpm;
+    elements.bpmInput.value = bpm;
 
     buttons.decreaseBeatsButton.addEventListener('click', () => {
         decreaseBeat();
@@ -96,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.settingsButton.addEventListener('click', function () {
-        document.getElementById('settings-panel').classList.toggle('hidden');
+        elements.settingsPanel.classList.toggle('hidden');
     });
 
     buttons.saveSettingsButton.addEventListener('click', function () {
@@ -121,15 +125,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Скрываем панель настроек
-        document.getElementById('settings-panel').classList.add('hidden');
+        elements.settingsPanel.classList.add('hidden');
     });
 
-    document.getElementById('bpm').addEventListener('input', (e) => {
-        const newBpm = parseInt(e.target.value, 10) || 120;
+    elements.bpmInput.addEventListener('input', (e) => {
+        const newBpm = isNaN(parseInt(e.target.value, 10)) ? 120 : parseInt(e.target.value, 10);
         handleBpmChange(newBpm);
     });
 
-    document.getElementById('bpm').addEventListener('keypress', (e) => {
+    elements.bpmInput.addEventListener('keypress', (e) => {
         if (!/[0-9]/.test(e.key)) {
             e.preventDefault();
         }
@@ -137,25 +141,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
-        document.getElementById('bpm').value = newBpm;
+        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
@@ -169,12 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        const trainingSettings = document.getElementById('training-settings');
-        if (e.target.checked) {
-            trainingSettings.classList.remove('hidden');
-        } else {
-            trainingSettings.classList.add('hidden');
-        }
+        setTrainingMode(e.target.checked);
+    });
+
+    elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
+        loopSkipProbability = parseInt(e.target.value, 10) / 100;
+    });
+
+    elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
+        noteSkipProbability = parseInt(e.target.value, 10) / 100;
     });
 
     document.addEventListener('change', function (event) {
@@ -197,10 +204,6 @@ function createMetronomeLoop() {
     return new Tone.Loop((time) => {
         const currentStep = count % sequence.length;
         const isStartOfLoop = currentStep === 0;
-
-        const isTrainingMode = buttons.toggleTrainingMode.checked;
-        const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
-        const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
         if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
             skipper = sequence.length;
@@ -238,7 +241,6 @@ function startMetronome() {
 
 function changeBeatSound(beatElement) {
     const beatIndex = parseInt(beatElement.dataset.beat, 10);
-    console.log("beat index: " + beatIndex);
     const currentSound = parseInt(beatElement.dataset.sound, 10);
 
     // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
@@ -264,7 +266,7 @@ function updateMetronomeSequence() {
     const sequence = generateFixedMetronomeSequence();
     loop.callback = (time) => {
         const currentStep = count % sequence.length;
-        playMetronomeStep(sequence, currentStep, time, false, 0);
+        playMetronomeStep(sequence, currentStep, time, isTrainingMode, loopSkipProbability);
         count++;
     };
 }
@@ -285,7 +287,20 @@ function stopMetronome() {
 }
 
 function handleBpmChange(newBpm) {
-    bpm = newBpm;
+    if (elements.bpmInput.value === '') {
+        elements.bpmInput.value = bpm;
+        return;
+    }
+    if (newBpm > 500) {
+        bpm = 500;
+        elements.bpmInput.value = 500;
+    } else if (newBpm < 1) {
+        bpm = 1;
+        elements.bpmInput.value = 1;
+    } else {
+        bpm = newBpm;
+    }
+    checkBPMLimit();
     if (loop) loop.stop();  // Останавливаем текущий цикл метронома
     if (isPlaying) {
         stopMetronome();  // Останавливаем метроном
@@ -551,8 +566,8 @@ function initialBeatRender() {
 
 function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
     const currentNote = sequence[currentStep];
-
-    if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
+    if (!currentNote || !currentNote.sound) return;
+    if (!(isTrainingMode && Math.random() < noteSkipProbability)) {
         const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
@@ -656,9 +671,23 @@ function checkBeatsLimit() {
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
 }
 
+function checkBPMLimit() {
+    const minLimit = bpm <= 1;
+    const maxLimit = bpm >= 500;
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
+}
+
 function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
     increasingButton.disabled = maxLimit;
     decreasingButton.disabled = minLimit;
     increasingButton.classList.toggle('button-limit', maxLimit);
     decreasingButton.classList.toggle('button-limit', minLimit);
+}
+
+function setTrainingMode(enabled) {
+    isTrainingMode = enabled;
+    elements.trainingSettings.classList.toggle('hidden', !enabled);
+    updateMetronomeSequence();
 }

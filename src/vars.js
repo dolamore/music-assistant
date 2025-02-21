@@ -69,3 +69,11 @@ export const buttons = {
     toggleBeatBars: document.getElementById('toggle-beat-bars'),
     toggleTrainingMode: document.getElementById('toggle-training-mode'),
 }
+
+export const elements = {
+    bpmInput: document.getElementById('bpm-input'),
+    settingsPanel: document.getElementById('settings-panel'),
+    trainingSettings: document.getElementById('training-settings'),
+    noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
+    loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
+}
