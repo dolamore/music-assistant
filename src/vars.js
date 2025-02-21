@@ -72,4 +72,6 @@ export const buttons = {
 
 export const elements = {
     bpmInput: document.getElementById('bpm-input'),
+    settingsPanel: document.getElementById('settings-panel'),
+    trainingSettings: document.getElementById('training-settings'),
 }

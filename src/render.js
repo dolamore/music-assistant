@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('settings-panel').classList.add('hidden');
+    elements.settingsPanel.classList.add('hidden');
 
-    document.getElementById('training-settings').classList.add('hidden');
+    elements.trainingSettings.classList.add('hidden');
 
     elements.bpmInput.value = bpm;
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.settingsButton.addEventListener('click', function () {
-        document.getElementById('settings-panel').classList.toggle('hidden');
+        elements.settingsPanel.classList.toggle('hidden');
     });
 
     buttons.saveSettingsButton.addEventListener('click', function () {
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Скрываем панель настроек
-        document.getElementById('settings-panel').classList.add('hidden');
+        elements.settingsPanel.classList.add('hidden');
     });
 
     elements.bpmInput.addEventListener('input', (e) => {
@@ -170,11 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        const trainingSettings = document.getElementById('training-settings');
         if (e.target.checked) {
-            trainingSettings.classList.remove('hidden');
+            elements.trainingSettings.classList.remove('hidden');
         } else {
-            trainingSettings.classList.add('hidden');
+            elements.trainingSettings.classList.add('hidden');
         }
     });
 
