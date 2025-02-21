@@ -20,6 +20,9 @@ let loopCount = 0;
 let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
+let isTrainingMode = false;
+let loopSkipProbability = 0;
+let noteSkipProbability = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
     renderSoundSettings();
@@ -170,11 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        if (e.target.checked) {
-            elements.trainingSettings.classList.remove('hidden');
-        } else {
-            elements.trainingSettings.classList.add('hidden');
-        }
+        setTrainingMode(e.target.checked);
+    });
+
+    elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
+        loopSkipProbability = parseInt(e.target.value, 10) / 100;
+    });
+
+    elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
+        noteSkipProbability = parseInt(e.target.value, 10) / 100;
     });
 
     document.addEventListener('change', function (event) {
@@ -197,10 +204,6 @@ function createMetronomeLoop() {
     return new Tone.Loop((time) => {
         const currentStep = count % sequence.length;
         const isStartOfLoop = currentStep === 0;
-
-        const isTrainingMode = buttons.toggleTrainingMode.checked;
-        const noteSkipProbability = parseInt(document.getElementById('note-skip-probability').value, 10) / 100;
-        const loopSkipProbability = parseInt(document.getElementById('loop-skip-probability').value, 10) / 100;
 
         if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
             skipper = sequence.length;
@@ -263,7 +266,7 @@ function updateMetronomeSequence() {
     const sequence = generateFixedMetronomeSequence();
     loop.callback = (time) => {
         const currentStep = count % sequence.length;
-        playMetronomeStep(sequence, currentStep, time, false, 0);
+        playMetronomeStep(sequence, currentStep, time, isTrainingMode, loopSkipProbability);
         count++;
     };
 }
@@ -480,7 +483,6 @@ function generateFixedMetronomeSequence() {
         const isTriplet = parsedNote.isTriplet;
         const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
         const sound = sounds[selectedSounds[index]];
-        console.log(sound);
         const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
         for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
@@ -682,4 +684,10 @@ function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButt
     decreasingButton.disabled = minLimit;
     increasingButton.classList.toggle('button-limit', maxLimit);
     decreasingButton.classList.toggle('button-limit', minLimit);
+}
+
+function setTrainingMode(enabled) {
+    isTrainingMode = enabled;
+    elements.trainingSettings.classList.toggle('hidden', !enabled);
+    updateMetronomeSequence();
 }
