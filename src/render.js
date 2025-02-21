@@ -238,7 +238,6 @@ function startMetronome() {
 
 function changeBeatSound(beatElement) {
     const beatIndex = parseInt(beatElement.dataset.beat, 10);
-    console.log("beat index: " + beatIndex);
     const currentSound = parseInt(beatElement.dataset.sound, 10);
 
     // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
@@ -481,6 +480,7 @@ function generateFixedMetronomeSequence() {
         const isTriplet = parsedNote.isTriplet;
         const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
         const sound = sounds[selectedSounds[index]];
+        console.log(sound);
         const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
         for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
@@ -564,8 +564,8 @@ function initialBeatRender() {
 
 function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
     const currentNote = sequence[currentStep];
-
-    if (currentNote && !(isTrainingMode && Math.random() < noteSkipProbability)) {
+    if (!currentNote || !currentNote.sound) return;
+    if (!(isTrainingMode && Math.random() < noteSkipProbability)) {
         const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
