@@ -285,7 +285,6 @@ function stopMetronome() {
 }
 
 function handleBpmChange(newBpm) {
-    console.log(newBpm);
     if (elements.bpmInput.value === '') {
         elements.bpmInput.value = bpm;
         return;
