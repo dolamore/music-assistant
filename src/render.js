@@ -285,12 +285,20 @@ function stopMetronome() {
 }
 
 function handleBpmChange(newBpm) {
-    bpm = newBpm;
-    if (loop) loop.stop();  // Останавливаем текущий цикл метронома
-    if (isPlaying) {
-        stopMetronome();  // Останавливаем метроном
-        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
-        startMetronome();  // Перезапускаем метроном с новым BPM
+    if (newBpm > 500) {
+        bpm = 500;
+        elements.bpmInput.value = 500;
+    } else if (newBpm < 1) {
+        bpm = 1;
+        elements.bpmInput.value = 1;
+    } else {
+        bpm = newBpm;
+        if (loop) loop.stop();  // Останавливаем текущий цикл метронома
+        if (isPlaying) {
+            stopMetronome();  // Останавливаем метроном
+            resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
+            startMetronome();  // Перезапускаем метроном с новым BPM
+        }
     }
 }
 
