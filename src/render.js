@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.bpmInput.addEventListener('input', (e) => {
-        const newBpm = parseInt(e.target.value, 10) || 120;
+        const newBpm = isNaN(parseInt(e.target.value, 10)) ? 120 : parseInt(e.target.value, 10);
         handleBpmChange(newBpm);
     });
 
@@ -285,6 +285,11 @@ function stopMetronome() {
 }
 
 function handleBpmChange(newBpm) {
+    console.log(newBpm);
+    if (elements.bpmInput.value === '') {
+        elements.bpmInput.value = bpm;
+        return;
+    }
     if (newBpm > 500) {
         bpm = 500;
         elements.bpmInput.value = 500;
@@ -293,12 +298,13 @@ function handleBpmChange(newBpm) {
         elements.bpmInput.value = 1;
     } else {
         bpm = newBpm;
-        if (loop) loop.stop();  // Останавливаем текущий цикл метронома
-        if (isPlaying) {
-            stopMetronome();  // Останавливаем метроном
-            resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
-            startMetronome();  // Перезапускаем метроном с новым BPM
-        }
+    }
+    checkBPMLimit();
+    if (loop) loop.stop();  // Останавливаем текущий цикл метронома
+    if (isPlaying) {
+        stopMetronome();  // Останавливаем метроном
+        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
+        startMetronome();  // Перезапускаем метроном с новым BPM
     }
 }
 
@@ -662,6 +668,14 @@ function checkBeatsLimit() {
     const maxLimit = beatRows.length >= maxBeatsAmount;
 
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
+}
+
+function checkBPMLimit() {
+    const minLimit = bpm <= 1;
+    const maxLimit = bpm >= 500;
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
 }
 
 function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
