@@ -30,6 +30,7 @@ let sequence;
 let skipper = 0;
 let currentStep = 0;
 let isStartOfLoop = false;
+let isFirstLoop = true;
 
 document.addEventListener('DOMContentLoaded', function () {
     renderSoundSettings();
@@ -672,6 +673,7 @@ function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButt
 
 function setTrainingMode(enabled) {
     isTrainingMode = enabled;
+    isFirstLoop = enabled;
     elements.trainingSettings.classList.toggle('hidden', !enabled);
 }
 
@@ -680,8 +682,12 @@ function getMetronomeLoopCallback(time) {
     isStartOfLoop = currentStep === 0;
 
     // Применяем вероятность пропуска такта
-    if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
-        skipper = sequence.length;
+    if (isTrainingMode && isStartOfLoop) {
+        if (isFirstLoop) {
+            isFirstLoop = false;
+        } else if (Math.random() < loopSkipProbability) {
+            skipper = sequence.length;
+        }
     }
 
     if (skipper > 0) {
