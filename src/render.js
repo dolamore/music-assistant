@@ -27,7 +27,6 @@ let isTrainingMode = false;
 let loopSkipProbability = defaultLoopSkipProbability;
 let noteSkipProbability = defaultNoteSkipProbability;
 let sequence;
-let isLoopSkipping = false;
 let skipper = 0;
 let currentStep = 0;
 let isStartOfLoop = false;
@@ -195,6 +194,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
             updateTimeSignature();
+
+            if (isPlaying) {
+                updateMetronomeSequence();
+            }
         }
     });
 
@@ -208,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
 function createMetronomeLoop() {
     sequence = generateFixedMetronomeSequence();
     skipper = 0;
-
     return new Tone.Loop(getMetronomeLoopCallback, '64n');
 }
 
@@ -253,11 +255,7 @@ function changeBeatSound(beatElement) {
 
 function updateMetronomeSequence() {
     sequence = generateFixedMetronomeSequence();
-    loop.callback = (time) => {
-        const currentStep = count % sequence.length;
-        playMetronomeStep(sequence, currentStep, time);
-        count++;
-    };
+    loop.callback = (time) => getMetronomeLoopCallback(time);
 }
 
 function stopMetronome() {
