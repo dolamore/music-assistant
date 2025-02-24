@@ -208,20 +208,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function createMetronomeLoop() {
-    sequence = generateFixedMetronomeSequence();
-    skipper = 0;
-    return new Tone.Loop(getMetronomeLoopCallback, '64n');
-}
-
 function startMetronome() {
     isPlaying = true;
     isPendulumMode = true;
 
     Tone.Transport.bpm.value = bpm * 3;
 
+    sequence = generateFixedMetronomeSequence();
+    skipper = 0;
+
     // Создаем новый луп с нужными параметрами
-    loop = createMetronomeLoop();
+    loop = new Tone.Loop(getMetronomeLoopCallback, '64n');
 
     loop.start(0); // Стартуем луп
 
