@@ -673,20 +673,6 @@ function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButt
 function setTrainingMode(enabled) {
     isTrainingMode = enabled;
     elements.trainingSettings.classList.toggle('hidden', !enabled);
-
-    if (loop) {
-        loop.stop();
-        loop.dispose();
-    }
-
-    loop = new Tone.Loop(getMetronomeLoopCallback, '64n');
-
-    if (isPlaying) {
-        resetPendulumAnimation()
-        loop.start(0);
-        Tone.Transport.start();
-        movePendulum();
-    }
 }
 
 function getMetronomeLoopCallback(time) {
