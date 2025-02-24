@@ -7,12 +7,15 @@ import {
     beatHTML,
     buttons,
     elements,
-    maxBeatsAmount
+    maxBeatsAmount,
+    defaultLoopSkipProbability,
+    defaultNoteSkipProbability,
+    defaultInitialBPM
 } from './vars.js';
 
 let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
 let soundSettings = [];
-let bpm = 120;
+let bpm = defaultInitialBPM;
 let isPlaying = false;
 let loop;
 let count = 0;
@@ -21,8 +24,13 @@ let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
 let isTrainingMode = false;
-let loopSkipProbability = 0;
-let noteSkipProbability = 0;
+let loopSkipProbability = defaultLoopSkipProbability;
+let noteSkipProbability = defaultNoteSkipProbability;
+let sequence;
+let isLoopSkipping = false;
+let skipper = 0;
+let currentStep = 0;
+let isStartOfLoop = false;
 
 document.addEventListener('DOMContentLoaded', function () {
     renderSoundSettings();
@@ -198,29 +206,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function createMetronomeLoop() {
-    const sequence = generateFixedMetronomeSequence();
-    let skipper = 0;
+    sequence = generateFixedMetronomeSequence();
+    skipper = 0;
 
-    return new Tone.Loop((time) => {
-        const currentStep = count % sequence.length;
-        const isStartOfLoop = currentStep === 0;
-
-        if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
-            skipper = sequence.length;
-        }
-
-        if (skipper > 0) {
-            skipper--;
-        } else {
-            playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability);
-        }
-
-        if (isStartOfLoop) {
-            document.getElementById('loop-counter').textContent = loopCount++;
-        }
-
-        count++;
-    }, '64n');
+    return new Tone.Loop(getMetronomeLoopCallback, '64n');
 }
 
 function startMetronome() {
@@ -263,10 +252,10 @@ function changeBeatSound(beatElement) {
 }
 
 function updateMetronomeSequence() {
-    const sequence = generateFixedMetronomeSequence();
+    sequence = generateFixedMetronomeSequence();
     loop.callback = (time) => {
         const currentStep = count % sequence.length;
-        playMetronomeStep(sequence, currentStep, time, isTrainingMode, loopSkipProbability);
+        playMetronomeStep(sequence, currentStep, time);
         count++;
     };
 }
@@ -564,7 +553,7 @@ function initialBeatRender() {
     }
 }
 
-function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
+function playMetronomeStep(sequence, currentStep, time) {
     const currentNote = sequence[currentStep];
     if (!currentNote || !currentNote.sound) return;
     if (!(isTrainingMode && Math.random() < noteSkipProbability)) {
@@ -689,5 +678,40 @@ function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButt
 function setTrainingMode(enabled) {
     isTrainingMode = enabled;
     elements.trainingSettings.classList.toggle('hidden', !enabled);
-    updateMetronomeSequence();
+
+    if (loop) {
+        loop.stop();
+        loop.dispose();
+    }
+
+    loop = new Tone.Loop(getMetronomeLoopCallback, '64n');
+
+    if (isPlaying) {
+        resetPendulumAnimation()
+        loop.start(0);
+        Tone.Transport.start();
+        movePendulum();
+    }
+}
+
+function getMetronomeLoopCallback(time) {
+    currentStep = count % sequence.length;
+    isStartOfLoop = currentStep === 0;
+
+    // Применяем вероятность пропуска такта
+    if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
+        skipper = sequence.length;
+    }
+
+    if (skipper > 0) {
+        skipper--;
+    } else {
+        playMetronomeStep(sequence, currentStep, time);
+    }
+
+    if (isStartOfLoop) {
+        document.getElementById('loop-counter').textContent = loopCount++;
+    }
+
+    count++;
 }

@@ -77,3 +77,7 @@ export const elements = {
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
     loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
 }
+
+export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
+export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
+export const defaultInitialBPM = 120;
