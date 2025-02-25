@@ -147,27 +147,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
     buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
@@ -185,12 +193,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        loopSkipProbability = parseInt(e.target.value, 10) / 100;
+        const newProbability = isNaN(e.target.value) ? 25 : e.target.value;
+
+        handleLoopSkipProbabilityChange(newProbability / 100);
     });
 
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
         noteSkipProbability = parseInt(e.target.value, 10) / 100;
     });
+
+    buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
+    buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
+    buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
+    buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
 
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
@@ -284,6 +299,7 @@ function handleBpmChange(newBpm) {
         elements.bpmInput.value = 1;
     } else {
         bpm = newBpm;
+        elements.bpmInput.value = newBpm;
     }
     checkBPMLimit();
     if (loop) loop.stop();  // Останавливаем текущий цикл метронома
@@ -292,6 +308,23 @@ function handleBpmChange(newBpm) {
         resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
         startMetronome();  // Перезапускаем метроном с новым BPM
     }
+}
+
+function handleLoopSkipProbabilityChange(newProbability) {
+    if (elements.loopSkipProbabilityInput.value === '') {
+        elements.loopSkipProbabilityInput.value = parseInt(loopSkipProbability * 100);
+        return;
+    }
+    if (newProbability > 1) {
+        loopSkipProbability = 0;
+        elements.loopSkipProbabilityInput.value = 100;
+    } else if (newProbability < 0) {
+        loopSkipProbability = 0;
+        elements.loopSkipProbabilityInput.value = 0;
+    } else {
+        loopSkipProbability = newProbability;
+    }
+    checkLoopSkipProbabilityLimit();
 }
 
 function restartMetronomeAndPendulum() {
@@ -654,6 +687,14 @@ function checkBeatsLimit() {
     const maxLimit = beatRows.length >= maxBeatsAmount;
 
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
+}
+
+function checkLoopSkipProbabilityLimit() {
+    const minLimit = loopSkipProbability <= 0;
+    const maxLimit = loopSkipProbability >= 1;
+
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseLoopSkipProbabilityButton, buttons.decreaseLoopSkipProbabilityButton);
+    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseLoopSkipProbabilityFiveButton, buttons.decreaseLoopSkipProbabilityFiveButton);
 }
 
 function checkBPMLimit() {

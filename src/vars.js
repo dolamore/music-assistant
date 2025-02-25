@@ -1,5 +1,5 @@
 import * as Tone from 'https://cdn.skypack.dev/tone';
- // Default to '4n' (quarter note)
+// Default to '4n' (quarter note)
 export const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
 
 export const initialNumberOfBeats = 6;
@@ -68,6 +68,15 @@ export const buttons = {
     toggleFlashingBar: document.getElementById('toggle-flashing-bar'),
     toggleBeatBars: document.getElementById('toggle-beat-bars'),
     toggleTrainingMode: document.getElementById('toggle-training-mode'),
+    decreaseNoteSkipProbabilityButton: document.getElementById('decrease-note-skip-probability-button'),
+    decreaseNoteSkipProbabilityFiveButton: document.getElementById('decrease-note-skip-probability-5-button'),
+    increaseNoteSkipProbabilityButton: document.getElementById('increase-note-skip-probability-button'),
+    increaseNoteSkipProbabilityFiveButton: document.getElementById('increase-note-skip-probability-5-button'),
+    decreaseLoopSkipProbabilityButton: document.getElementById('decrease-loop-skip-probability-button'),
+    decreaseLoopSkipProbabilityFiveButton: document.getElementById('decrease-loop-skip-probability-5-button'),
+    increaseLoopSkipProbabilityButton: document.getElementById('increase-loop-skip-probability-button'),
+    increaseLoopSkipProbabilityFiveButton: document.getElementById('increase-loop-skip-probability-5-button'),
+
 }
 
 export const elements = {
