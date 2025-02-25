@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.toggleBeatBars.addEventListener('change', function (e) {
-        document.querySelectorAll('.beat').forEach(note => {
-            note.classList.toggle('hidden', !e.target.checked);
+        document.querySelectorAll('.beat').forEach(beat => {
+            beat.classList.toggle('hidden', !e.target.checked);
         });
     });
 
@@ -528,7 +528,7 @@ function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
     beatWrapper.innerHTML = beatHTML(index);
-
+    beatWrapper.querySelector('.beat').classList.toggle('hidden', !isBeatToggleChecked())
     return beatWrapper;
 }
 
@@ -701,4 +701,8 @@ function getMetronomeLoopCallback(time) {
     }
 
     count++;
+}
+
+function isBeatToggleChecked() {
+    return buttons.toggleBeatBars.checked;
 }
