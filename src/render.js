@@ -13,7 +13,7 @@ import {
     defaultInitialBPM
 } from './vars.js';
 
-let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
+let selectedSounds = []; // Default to the first sound for all notes
 let soundSettings = [];
 let bpm = defaultInitialBPM;
 let isPlaying = false;
@@ -33,8 +33,8 @@ let isStartOfLoop = false;
 let isFirstLoop = true;
 
 document.addEventListener('DOMContentLoaded', function () {
+    generateSelectedSounds();
     renderSoundSettings();
-
     initialBeatRender();
 
     document.addEventListener('keydown', (event) => {
@@ -705,4 +705,10 @@ function getMetronomeLoopCallback(time) {
 
 function isBeatToggleChecked() {
     return buttons.toggleBeatBars.checked;
+}
+
+function generateSelectedSounds() {
+    for (let i = 0; i < initialNumberOfBeats; i++) {
+        selectedSounds.push(1);
+    }
 }
