@@ -13,7 +13,7 @@ import {
     defaultInitialBPM
 } from './vars.js';
 
-let selectedSounds = []; // Default to the first sound for all notes
+let selectedSounds = [];
 let soundSettings = [];
 let bpm = defaultInitialBPM;
 let isPlaying = false;
@@ -139,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
     elements.bpmInput.addEventListener('input', (e) => {
         handleBpmChange(parseInt(e.target.value, 10));
     });
-
     elements.bpmInput.addEventListener('blur', () => {
         const oldBpm = bpm;
         handleInputBlur(elements.bpmInput, defaultInitialBPM, bpm);
@@ -200,16 +199,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        const newProbability = isNaN(e.target.value) ? 25 : e.target.value;
-
-        handleLoopSkipProbabilityChange(newProbability / 100);
+        // console.log(e.target.value);
+        handleLoopSkipProbabilityChange(e.target.value / 100);
     });
+    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, defaultLoopSkipProbability * 100));
 
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        noteSkipProbability = parseInt(e.target.value, 10) / 100;
+        handleNoteSkipProbabilityChange(e.target.value / 100);
     });
     elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, defaultNoteSkipProbability * 100));
-    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, defaultLoopSkipProbability * 100));
 
 
     buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
@@ -319,6 +317,9 @@ function handleBpmChange(newBpm) {
 }
 
 function handleLoopSkipProbabilityChange(newProbability) {
+    if (isNaN(newProbability) || loopSkipProbability === newProbability) {
+        return;
+    }
     if (newProbability > 1) {
         loopSkipProbability = 0;
         elements.loopSkipProbabilityInput.value = 100;
@@ -326,9 +327,44 @@ function handleLoopSkipProbabilityChange(newProbability) {
         loopSkipProbability = 0;
         elements.loopSkipProbabilityInput.value = 0;
     } else {
+        elements.loopSkipProbabilityInput.value = elements.loopSkipProbabilityInput.value.replace(/^0+/, '');
         loopSkipProbability = newProbability;
     }
-    checkLoopSkipProbabilityLimit();
+
+    checkSkipProbabilityLimit({
+        probability: loopSkipProbability,
+        probButtons: {
+            increaseButton: buttons.increaseLoopSkipProbabilityButton,
+            decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
+            increaseFiveButton: buttons.increaseLoopSkipProbabilityFiveButton,
+            decreaseFiveButton: buttons.decreaseLoopSkipProbabilityFiveButton
+        }
+    });
+}
+
+function handleNoteSkipProbabilityChange(newProbability) {
+    if (isNaN(newProbability) || noteSkipProbability === newProbability) {
+        return;
+    }
+    if (newProbability > 1) {
+        noteSkipProbability = 0;
+        elements.noteSkipProbabilityInput.value = 100;
+    } else if (newProbability < 0) {
+        noteSkipProbability = 0;
+        elements.noteSkipProbabilityInput.value = 0;
+    } else {
+        elements.noteSkipProbabilityInput.value = elements.loopSkipProbabilityInput.value.replace(/^0+/, '');
+        noteSkipProbability = newProbability;
+    }
+    checkSkipProbabilityLimit({
+        probability: noteSkipProbability,
+        probButtons: {
+            increaseButton: buttons.increaseNoteSkipProbabilityButton,
+            decreaseButton: buttons.decreaseNoteSkipProbabilityButton,
+            increaseFiveButton: buttons.increaseNoteSkipProbabilityFiveButton,
+            decreaseFiveButton: buttons.decreaseNoteSkipProbabilityFiveButton
+        }
+    });
 }
 
 function restartMetronomeAndPendulum() {
@@ -408,8 +444,7 @@ function movePendulum() {
         const elapsed = (currentTime - startTime) % pendulumPeriod;
         const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
 
-        const position = normalizedTime <= 0.5
-            ? normalizedTime * 2 * maxPosition // Move right
+        const position = normalizedTime <= 0.5 ? normalizedTime * 2 * maxPosition // Move right
             : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
 
         pendulumElement.style.left = `${position}px`;
@@ -626,15 +661,10 @@ function playMetronomeStep(sequence, currentStep, time) {
 }
 
 function getSoundSettings(row) {
-    return Object.fromEntries(
-        Object.keys(defaultSoundSettings).map(key => {
-            const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
-            return [
-                key,
-                input ? parseFloat(input.value) : defaultSoundSettings[key]
-            ];
-        })
-    );
+    return Object.fromEntries(Object.keys(defaultSoundSettings).map(key => {
+        const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
+        return [key, input ? parseFloat(input.value) : defaultSoundSettings[key]];
+    }));
 }
 
 function renderSoundSettings() {
@@ -693,12 +723,13 @@ function checkBeatsLimit() {
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
 }
 
-function checkLoopSkipProbabilityLimit() {
-    const minLimit = loopSkipProbability <= 0;
-    const maxLimit = loopSkipProbability >= 1;
 
-    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseLoopSkipProbabilityButton, buttons.decreaseLoopSkipProbabilityButton);
-    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseLoopSkipProbabilityFiveButton, buttons.decreaseLoopSkipProbabilityFiveButton);
+function checkSkipProbabilityLimit({probability, probButtons}) {
+    const isMinLimit = probability <= 0;
+    const isMaxLimit = probability >= 1;
+
+    toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseButton, probButtons.decreaseButton);
+    toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseFiveButton, probButtons.decreaseFiveButton);
 }
 
 function checkBPMLimit() {
