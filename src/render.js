@@ -28,13 +28,11 @@ let loopCount = 0;
 let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
-let loopSkipProbability = defaultLoopSkipProbability;
-let noteSkipProbability = defaultNoteSkipProbability;
 let sequence;
 let skipper = 0;
 let currentStep = 0;
 let isStartOfLoop = false;
-const trainingModeManager = new TrainingModeManager(defaultLoopSkipProbability, defaultNoteSkipProbability);
+const trainingModeManager = new TrainingModeManager();
 
 document.addEventListener('DOMContentLoaded', function () {
     generateSelectedSounds();
@@ -218,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function startMetronome() {
+    console.log(trainingModeManager.getIsTrainingMode(), trainingModeManager.getNoteSkipProbability(), trainingModeManager.getLoopSkipProbability());
     isPlaying = true;
     isPendulumMode = true;
 
@@ -545,7 +544,7 @@ function initialBeatRender() {
 function playMetronomeStep(sequence, currentStep, time) {
     const currentNote = sequence[currentStep];
     if (!currentNote || !currentNote.sound) return;
-    if (!(trainingModeManager.getIsTrainingMode() && Math.random() < noteSkipProbability)) {
+    if (!(trainingModeManager.getIsTrainingMode() && Math.random() < trainingModeManager.getNoteSkipProbability())) {
         const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
@@ -660,7 +659,7 @@ function getMetronomeLoopCallback(time) {
     if (trainingModeManager.getIsTrainingMode()) {
         if (trainingModeManager.getIsFirstLoop()) {
             trainingModeManager.setIsTrainingMode(false);
-        } else if (Math.random() < loopSkipProbability) {
+        } else if (Math.random() < trainingModeManager.getLoopSkipProbability()) {
             skipper = sequence.length;
         }
     }

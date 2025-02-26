@@ -1,10 +1,10 @@
-import {buttons, elements} from "./vars.js";
+import {buttons, defaultLoopSkipProbability, defaultNoteSkipProbability, elements} from "./vars.js";
 import {handleInputBlur, toggleButtonsLimit} from "./utils.js";
 
 export class TrainingModeManager {
-    constructor(loopSkipProbability, noteSkipProbability) {
-        this.loopSkipProbability = loopSkipProbability;
-        this.noteSkipProbability = noteSkipProbability;
+    constructor() {
+        this.loopSkipProbability = defaultLoopSkipProbability;
+        this.noteSkipProbability = defaultNoteSkipProbability;
         this.isTrainingMode = false;
         this.isFirstLoop = true;
     }
@@ -15,7 +15,7 @@ export class TrainingModeManager {
         elements.trainingSettings.classList.toggle('hidden', !enabled);
     }
 
-    handleLoopSkipProbabilityChange(newProbability, trainingModeManager) {
+    handleLoopSkipProbabilityChange(newProbability) {
         if (isNaN(newProbability) || this.loopSkipProbability === newProbability) {
             return;
         }
