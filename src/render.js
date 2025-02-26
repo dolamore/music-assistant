@@ -12,7 +12,11 @@ import {
     defaultNoteSkipProbability,
     defaultInitialBPM
 } from './vars.js';
-import {handleLoopSkipProbabilityChange, handleNoteSkipProbabilityChange} from './trainingModeManager.js';
+import {
+    handleLoopSkipProbabilityChange,
+    handleNoteSkipProbabilityChange,
+    renderTrainingModeElements
+} from './trainingModeManager.js';
 import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
 
 let selectedSounds = [];
@@ -200,26 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setTrainingMode(e.target.checked);
     });
 
-    elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        handleLoopSkipProbabilityChange(e.target.value / 100);
-    });
-    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
-
-    elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        handleNoteSkipProbabilityChange(e.target.value / 100);
-    });
-    elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
-
-
-    buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01, loopSkipProbability));
-    buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05, loopSkipProbability));
-    buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01, loopSkipProbability));
-    buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05, loopSkipProbability));
-
-    buttons.increaseNoteSkipProbabilityButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.01, noteSkipProbability));
-    buttons.increaseNoteSkipProbabilityFiveButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.05, noteSkipProbability));
-    buttons.decreaseNoteSkipProbabilityButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.01, noteSkipProbability));
-    buttons.decreaseNoteSkipProbabilityFiveButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.05, noteSkipProbability));
+    renderTrainingModeElements(loopSkipProbability, noteSkipProbability);
 
 
     document.addEventListener('change', function (event) {

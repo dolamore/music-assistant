@@ -8,7 +8,6 @@ export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreas
 export function handleInputBlur(element, defaultElementValue) {
     if (element.value === '') {
         element.value = defaultElementValue;
-
         element.dispatchEvent(new Event('input', {bubbles: true}));
     }
 }
