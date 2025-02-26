@@ -30,7 +30,7 @@ export class TrainingModeManager {
             this.setLoopSkipProbability(newProbability);
         }
 
-        checkSkipProbabilityLimit({
+        this.checkSkipProbabilityLimit({
             probability: this.loopSkipProbability, probButtons: {
                 increaseButton: buttons.increaseLoopSkipProbabilityButton,
                 decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
@@ -116,7 +116,7 @@ export function renderTrainingModeElements(trainingModeManager) {
     elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
 
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        handleNoteSkipProbabilityChange(e.target.value / 100);
+        trainingModeManager.handleNoteSkipProbabilityChange(e.target.value / 100);
     });
     elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
 
