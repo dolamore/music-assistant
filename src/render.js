@@ -13,8 +13,7 @@ import {
     defaultInitialBPM
 } from './vars.js';
 import {
-    handleLoopSkipProbabilityChange,
-    handleNoteSkipProbabilityChange,
+    TrainingModeManager,
     renderTrainingModeElements
 } from './trainingModeManager.js';
 import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
@@ -29,14 +28,13 @@ let loopCount = 0;
 let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
-let isTrainingMode = false;
 let loopSkipProbability = defaultLoopSkipProbability;
 let noteSkipProbability = defaultNoteSkipProbability;
 let sequence;
 let skipper = 0;
 let currentStep = 0;
 let isStartOfLoop = false;
-let isFirstLoop = true;
+const trainingModeManager = new TrainingModeManager(defaultLoopSkipProbability, defaultNoteSkipProbability);
 
 document.addEventListener('DOMContentLoaded', function () {
     generateSelectedSounds();
@@ -200,12 +198,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        setTrainingMode(e.target.checked);
-    });
-
-    renderTrainingModeElements(loopSkipProbability, noteSkipProbability);
-
+    renderTrainingModeElements(trainingModeManager);
 
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
@@ -552,7 +545,7 @@ function initialBeatRender() {
 function playMetronomeStep(sequence, currentStep, time) {
     const currentNote = sequence[currentStep];
     if (!currentNote || !currentNote.sound) return;
-    if (!(isTrainingMode && Math.random() < noteSkipProbability)) {
+    if (!(trainingModeManager.getIsTrainingMode() && Math.random() < noteSkipProbability)) {
         const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
@@ -659,20 +652,14 @@ function checkBPMLimit() {
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
 }
 
-function setTrainingMode(enabled) {
-    isTrainingMode = enabled;
-    isFirstLoop = enabled;
-    elements.trainingSettings.classList.toggle('hidden', !enabled);
-}
-
 function getMetronomeLoopCallback(time) {
     currentStep = count % sequence.length;
     isStartOfLoop = currentStep === 0;
 
     // Применяем вероятность пропуска такта
-    if (isTrainingMode && isStartOfLoop) {
-        if (isFirstLoop) {
-            isFirstLoop = false;
+    if (trainingModeManager.getIsTrainingMode()) {
+        if (trainingModeManager.getIsFirstLoop()) {
+            trainingModeManager.setIsTrainingMode(false);
         } else if (Math.random() < loopSkipProbability) {
             skipper = sequence.length;
         }
