@@ -12,6 +12,8 @@ import {
     defaultNoteSkipProbability,
     defaultInitialBPM
 } from './vars.js';
+import {handleLoopSkipProbabilityChange, handleNoteSkipProbabilityChange} from './trainingModeManager.js';
+import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
 
 let selectedSounds = [];
 let soundSettings = [];
@@ -199,21 +201,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        // console.log(e.target.value);
         handleLoopSkipProbabilityChange(e.target.value / 100);
     });
-    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, defaultLoopSkipProbability * 100));
+    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
 
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
         handleNoteSkipProbabilityChange(e.target.value / 100);
     });
-    elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, defaultNoteSkipProbability * 100));
+    elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
 
 
-    buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
-    buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
-    buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
-    buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
+    buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01, loopSkipProbability));
+    buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05, loopSkipProbability));
+    buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01, loopSkipProbability));
+    buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05, loopSkipProbability));
+
+    buttons.increaseNoteSkipProbabilityButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.01, noteSkipProbability));
+    buttons.increaseNoteSkipProbabilityFiveButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.05, noteSkipProbability));
+    buttons.decreaseNoteSkipProbabilityButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.01, noteSkipProbability));
+    buttons.decreaseNoteSkipProbabilityFiveButton.addEventListener('click', () => handleNoteSkipProbabilityChange(0.05, noteSkipProbability));
 
 
     document.addEventListener('change', function (event) {
@@ -316,57 +322,6 @@ function handleBpmChange(newBpm) {
     }
 }
 
-function handleLoopSkipProbabilityChange(newProbability) {
-    if (isNaN(newProbability) || loopSkipProbability === newProbability) {
-        return;
-    }
-    if (newProbability > 1) {
-        loopSkipProbability = 0;
-        elements.loopSkipProbabilityInput.value = 100;
-    } else if (newProbability < 0) {
-        loopSkipProbability = 0;
-        elements.loopSkipProbabilityInput.value = 0;
-    } else {
-        elements.loopSkipProbabilityInput.value = elements.loopSkipProbabilityInput.value.replace(/^0+/, '');
-        loopSkipProbability = newProbability;
-    }
-
-    checkSkipProbabilityLimit({
-        probability: loopSkipProbability,
-        probButtons: {
-            increaseButton: buttons.increaseLoopSkipProbabilityButton,
-            decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
-            increaseFiveButton: buttons.increaseLoopSkipProbabilityFiveButton,
-            decreaseFiveButton: buttons.decreaseLoopSkipProbabilityFiveButton
-        }
-    });
-}
-
-function handleNoteSkipProbabilityChange(newProbability) {
-    if (isNaN(newProbability) || noteSkipProbability === newProbability) {
-        return;
-    }
-    if (newProbability > 1) {
-        noteSkipProbability = 0;
-        elements.noteSkipProbabilityInput.value = 100;
-    } else if (newProbability < 0) {
-        noteSkipProbability = 0;
-        elements.noteSkipProbabilityInput.value = 0;
-    } else {
-        elements.noteSkipProbabilityInput.value = elements.loopSkipProbabilityInput.value.replace(/^0+/, '');
-        noteSkipProbability = newProbability;
-    }
-    checkSkipProbabilityLimit({
-        probability: noteSkipProbability,
-        probButtons: {
-            increaseButton: buttons.increaseNoteSkipProbabilityButton,
-            decreaseButton: buttons.decreaseNoteSkipProbabilityButton,
-            increaseFiveButton: buttons.increaseNoteSkipProbabilityFiveButton,
-            decreaseFiveButton: buttons.decreaseNoteSkipProbabilityFiveButton
-        }
-    });
-}
-
 function restartMetronomeAndPendulum() {
     stopMetronome();
     resetPendulumAnimation();
@@ -412,18 +367,6 @@ function countSize() {
     });
 
     return {beatAmount: beatAmount, tactSize: denominator};
-}
-
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
-
-function lcm(a, b) {
-    return (a * b) / gcd(a, b);
-}
-
-function lcmArray(arr) {
-    return arr.reduce((a, b) => lcm(a, b));
 }
 
 function movePendulum() {
@@ -723,28 +666,12 @@ function checkBeatsLimit() {
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
 }
 
-
-function checkSkipProbabilityLimit({probability, probButtons}) {
-    const isMinLimit = probability <= 0;
-    const isMaxLimit = probability >= 1;
-
-    toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseButton, probButtons.decreaseButton);
-    toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseFiveButton, probButtons.decreaseFiveButton);
-}
-
 function checkBPMLimit() {
     const minLimit = bpm <= 1;
     const maxLimit = bpm >= 500;
 
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
-}
-
-function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
-    increasingButton.disabled = maxLimit;
-    decreasingButton.disabled = minLimit;
-    increasingButton.classList.toggle('button-limit', maxLimit);
-    decreasingButton.classList.toggle('button-limit', minLimit);
 }
 
 function setTrainingMode(enabled) {
@@ -786,13 +713,5 @@ function isBeatToggleChecked() {
 function generateSelectedSounds() {
     for (let i = 0; i < initialNumberOfBeats; i++) {
         selectedSounds.push(1);
-    }
-}
-
-function handleInputBlur(element, defaultElementValue) {
-    if (element.value === '') {
-        element.value = defaultElementValue;
-
-        element.dispatchEvent(new Event('input', {bubbles: true}));
     }
 }
