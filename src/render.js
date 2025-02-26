@@ -8,8 +8,6 @@ import {
     buttons,
     elements,
     maxBeatsAmount,
-    defaultLoopSkipProbability,
-    defaultNoteSkipProbability,
     defaultInitialBPM
 } from './vars.js';
 import {
@@ -271,8 +269,8 @@ function stopMetronome() {
     buttons.startStopButton.textContent = 'Start';
 
     // Сбросить маятник в начальное положение
-    const pendulumElement = document.querySelector('.pendulum');
-    pendulumElement.style.left = '0px';
+    resetPendulumAnimation();
+
     count = 0;
     loopCount = 0;
     document.getElementById('loop-counter').textContent = loopCount;
@@ -301,7 +299,6 @@ function handleBpmChange(newBpm) {
 
 function restartMetronomeAndPendulum() {
     stopMetronome();
-    resetPendulumAnimation();
     startMetronome();
 }
 
