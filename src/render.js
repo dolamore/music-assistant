@@ -137,8 +137,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.bpmInput.addEventListener('input', (e) => {
-        const newBpm = isNaN(parseInt(e.target.value, 10)) ? 120 : parseInt(e.target.value, 10);
-        handleBpmChange(newBpm);
+        handleBpmChange(parseInt(e.target.value, 10));
+    });
+
+    elements.bpmInput.addEventListener('blur', () => {
+        const oldBpm = bpm;
+        handleInputBlur(elements.bpmInput, defaultInitialBPM, bpm);
+        if (isPlaying && oldBpm !== defaultInitialBPM) {
+            restartMetronomeAndPendulum();
+        }
     });
 
     elements.bpmInput.addEventListener('keypress', (e) => {
@@ -201,11 +208,15 @@ document.addEventListener('DOMContentLoaded', function () {
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
         noteSkipProbability = parseInt(e.target.value, 10) / 100;
     });
+    elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, defaultNoteSkipProbability * 100));
+    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, defaultLoopSkipProbability * 100));
+
 
     buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
     buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
     buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.01));
     buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => handleLoopSkipProbabilityChange(0.05));
+
 
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
@@ -287,8 +298,7 @@ function stopMetronome() {
 }
 
 function handleBpmChange(newBpm) {
-    if (elements.bpmInput.value === '') {
-        elements.bpmInput.value = bpm;
+    if (isNaN(newBpm) || bpm === newBpm) {
         return;
     }
     if (newBpm > 500) {
@@ -304,17 +314,11 @@ function handleBpmChange(newBpm) {
     checkBPMLimit();
     if (loop) loop.stop();  // Останавливаем текущий цикл метронома
     if (isPlaying) {
-        stopMetronome();  // Останавливаем метроном
-        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
-        startMetronome();  // Перезапускаем метроном с новым BPM
+        restartMetronomeAndPendulum();
     }
 }
 
 function handleLoopSkipProbabilityChange(newProbability) {
-    if (elements.loopSkipProbabilityInput.value === '') {
-        elements.loopSkipProbabilityInput.value = parseInt(loopSkipProbability * 100);
-        return;
-    }
     if (newProbability > 1) {
         loopSkipProbability = 0;
         elements.loopSkipProbabilityInput.value = 100;
@@ -751,5 +755,13 @@ function isBeatToggleChecked() {
 function generateSelectedSounds() {
     for (let i = 0; i < initialNumberOfBeats; i++) {
         selectedSounds.push(1);
+    }
+}
+
+function handleInputBlur(element, defaultElementValue) {
+    if (element.value === '') {
+        element.value = defaultElementValue;
+
+        element.dispatchEvent(new Event('input', {bubbles: true}));
     }
 }
