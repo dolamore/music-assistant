@@ -24,10 +24,21 @@ label {
     align-items: center;
 }
 
-.bpm-controls {
+.probability-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.bpm-controls, .probability-controls {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.probability-controls {
+    margin-bottom: 0;
 }
 
 input[type="number"] {
@@ -211,12 +222,6 @@ button:hover {
 
 #training-settings {
     margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.probability-container {
     display: flex;
     flex-direction: column;
     gap: 10px;

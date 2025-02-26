@@ -7,12 +7,18 @@ import {
     beatHTML,
     buttons,
     elements,
-    maxBeatsAmount
+    maxBeatsAmount,
+    defaultInitialBPM
 } from './vars.js';
+import {
+    TrainingModeManager,
+    renderTrainingModeElements
+} from './trainingModeManager.js';
+import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
 
-let selectedSounds = [1, 1, 1, 1]; // Default to the first sound for all notes
+let selectedSounds = [];
 let soundSettings = [];
-let bpm = 120;
+let bpm = defaultInitialBPM;
 let isPlaying = false;
 let loop;
 let count = 0;
@@ -20,13 +26,15 @@ let loopCount = 0;
 let isPendulumMode = false;
 let pendulumAnimationFrame;
 let currentNoteSizeIndex = 2;
-let isTrainingMode = false;
-let loopSkipProbability = 0;
-let noteSkipProbability = 0;
+let sequence;
+let skipper = 0;
+let currentStep = 0;
+let isStartOfLoop = false;
+const trainingModeManager = new TrainingModeManager();
 
 document.addEventListener('DOMContentLoaded', function () {
+    generateSelectedSounds();
     renderSoundSettings();
-
     initialBeatRender();
 
     document.addEventListener('keydown', (event) => {
@@ -88,8 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     buttons.toggleBeatBars.addEventListener('change', function (e) {
-        document.querySelectorAll('.beat').forEach(note => {
-            note.classList.toggle('hidden', !e.target.checked);
+        document.querySelectorAll('.beat').forEach(beat => {
+            beat.classList.toggle('hidden', !e.target.checked);
         });
     });
 
@@ -129,8 +137,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.bpmInput.addEventListener('input', (e) => {
-        const newBpm = isNaN(parseInt(e.target.value, 10)) ? 120 : parseInt(e.target.value, 10);
-        handleBpmChange(newBpm);
+        handleBpmChange(parseInt(e.target.value, 10));
+    });
+    elements.bpmInput.addEventListener('blur', () => {
+        const oldBpm = bpm;
+        handleInputBlur(elements.bpmInput, defaultInitialBPM, bpm);
+        if (isPlaying && oldBpm !== defaultInitialBPM) {
+            restartMetronomeAndPendulum();
+        }
     });
 
     elements.bpmInput.addEventListener('keypress', (e) => {
@@ -139,27 +153,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
     buttons.increaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 1;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.increaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm + 5;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 1;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
     buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
-        elements.bpmInput.value = newBpm;
         handleBpmChange(newBpm);
     });
 
@@ -172,21 +194,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        setTrainingMode(e.target.checked);
-    });
-
-    elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        loopSkipProbability = parseInt(e.target.value, 10) / 100;
-    });
-
-    elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        noteSkipProbability = parseInt(e.target.value, 10) / 100;
-    });
+    renderTrainingModeElements(trainingModeManager);
 
     document.addEventListener('change', function (event) {
         if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
             updateTimeSignature();
+
+            if (isPlaying) {
+                updateMetronomeSequence();
+            }
         }
     });
 
@@ -197,40 +213,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function createMetronomeLoop() {
-    const sequence = generateFixedMetronomeSequence();
-    let skipper = 0;
-
-    return new Tone.Loop((time) => {
-        const currentStep = count % sequence.length;
-        const isStartOfLoop = currentStep === 0;
-
-        if (isTrainingMode && isStartOfLoop && Math.random() < loopSkipProbability) {
-            skipper = sequence.length;
-        }
-
-        if (skipper > 0) {
-            skipper--;
-        } else {
-            playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability);
-        }
-
-        if (isStartOfLoop) {
-            document.getElementById('loop-counter').textContent = loopCount++;
-        }
-
-        count++;
-    }, '64n');
-}
-
 function startMetronome() {
+    console.log(trainingModeManager.getIsTrainingMode(), trainingModeManager.getNoteSkipProbability(), trainingModeManager.getLoopSkipProbability());
     isPlaying = true;
     isPendulumMode = true;
 
     Tone.Transport.bpm.value = bpm * 3;
 
+    sequence = generateFixedMetronomeSequence();
+    skipper = 0;
+
     // Создаем новый луп с нужными параметрами
-    loop = createMetronomeLoop();
+    loop = new Tone.Loop(getMetronomeLoopCallback, '64n');
 
     loop.start(0); // Стартуем луп
 
@@ -263,12 +257,8 @@ function changeBeatSound(beatElement) {
 }
 
 function updateMetronomeSequence() {
-    const sequence = generateFixedMetronomeSequence();
-    loop.callback = (time) => {
-        const currentStep = count % sequence.length;
-        playMetronomeStep(sequence, currentStep, time, isTrainingMode, loopSkipProbability);
-        count++;
-    };
+    sequence = generateFixedMetronomeSequence();
+    loop.callback = (time) => getMetronomeLoopCallback(time);
 }
 
 function stopMetronome() {
@@ -279,16 +269,15 @@ function stopMetronome() {
     buttons.startStopButton.textContent = 'Start';
 
     // Сбросить маятник в начальное положение
-    const pendulumElement = document.querySelector('.pendulum');
-    pendulumElement.style.left = '0px';
+    resetPendulumAnimation();
+
     count = 0;
     loopCount = 0;
     document.getElementById('loop-counter').textContent = loopCount;
 }
 
 function handleBpmChange(newBpm) {
-    if (elements.bpmInput.value === '') {
-        elements.bpmInput.value = bpm;
+    if (isNaN(newBpm) || bpm === newBpm) {
         return;
     }
     if (newBpm > 500) {
@@ -299,19 +288,17 @@ function handleBpmChange(newBpm) {
         elements.bpmInput.value = 1;
     } else {
         bpm = newBpm;
+        elements.bpmInput.value = newBpm;
     }
     checkBPMLimit();
     if (loop) loop.stop();  // Останавливаем текущий цикл метронома
     if (isPlaying) {
-        stopMetronome();  // Останавливаем метроном
-        resetPendulumAnimation();  // Сбрасываем и перезапускаем анимацию маятника
-        startMetronome();  // Перезапускаем метроном с новым BPM
+        restartMetronomeAndPendulum();
     }
 }
 
 function restartMetronomeAndPendulum() {
     stopMetronome();
-    resetPendulumAnimation();
     startMetronome();
 }
 
@@ -356,18 +343,6 @@ function countSize() {
     return {beatAmount: beatAmount, tactSize: denominator};
 }
 
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
-
-function lcm(a, b) {
-    return (a * b) / gcd(a, b);
-}
-
-function lcmArray(arr) {
-    return arr.reduce((a, b) => lcm(a, b));
-}
-
 function movePendulum() {
     const pendulumElement = document.querySelector('.pendulum');
     const barElement = document.querySelector('.horizontal-bar');
@@ -386,8 +361,7 @@ function movePendulum() {
         const elapsed = (currentTime - startTime) % pendulumPeriod;
         const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
 
-        const position = normalizedTime <= 0.5
-            ? normalizedTime * 2 * maxPosition // Move right
+        const position = normalizedTime <= 0.5 ? normalizedTime * 2 * maxPosition // Move right
             : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
 
         pendulumElement.style.left = `${position}px`;
@@ -543,7 +517,7 @@ function createBeatWrapper(index) {
     const beatWrapper = document.createElement('div');
     beatWrapper.classList.add('beat-wrapper');
     beatWrapper.innerHTML = beatHTML(index);
-
+    beatWrapper.querySelector('.beat').classList.toggle('hidden', !isBeatToggleChecked())
     return beatWrapper;
 }
 
@@ -564,10 +538,10 @@ function initialBeatRender() {
     }
 }
 
-function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkipProbability) {
+function playMetronomeStep(sequence, currentStep, time) {
     const currentNote = sequence[currentStep];
     if (!currentNote || !currentNote.sound) return;
-    if (!(isTrainingMode && Math.random() < noteSkipProbability)) {
+    if (!(trainingModeManager.getIsTrainingMode() && Math.random() < trainingModeManager.getNoteSkipProbability())) {
         const {sound, settings} = currentNote;
 
         // Динамически применяем все параметры из settings к sound
@@ -604,15 +578,10 @@ function playMetronomeStep(sequence, currentStep, time, isTrainingMode, noteSkip
 }
 
 function getSoundSettings(row) {
-    return Object.fromEntries(
-        Object.keys(defaultSoundSettings).map(key => {
-            const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
-            return [
-                key,
-                input ? parseFloat(input.value) : defaultSoundSettings[key]
-            ];
-        })
-    );
+    return Object.fromEntries(Object.keys(defaultSoundSettings).map(key => {
+        const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
+        return [key, input ? parseFloat(input.value) : defaultSoundSettings[key]];
+    }));
 }
 
 function renderSoundSettings() {
@@ -679,15 +648,38 @@ function checkBPMLimit() {
     toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
 }
 
-function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
-    increasingButton.disabled = maxLimit;
-    decreasingButton.disabled = minLimit;
-    increasingButton.classList.toggle('button-limit', maxLimit);
-    decreasingButton.classList.toggle('button-limit', minLimit);
+function getMetronomeLoopCallback(time) {
+    currentStep = count % sequence.length;
+    isStartOfLoop = currentStep === 0;
+
+    // Применяем вероятность пропуска такта
+    if (trainingModeManager.getIsTrainingMode()) {
+        if (trainingModeManager.getIsFirstLoop()) {
+            trainingModeManager.setIsTrainingMode(false);
+        } else if (Math.random() < trainingModeManager.getLoopSkipProbability()) {
+            skipper = sequence.length;
+        }
+    }
+
+    if (skipper > 0) {
+        skipper--;
+    } else {
+        playMetronomeStep(sequence, currentStep, time);
+    }
+
+    if (isStartOfLoop) {
+        document.getElementById('loop-counter').textContent = loopCount++;
+    }
+
+    count++;
 }
 
-function setTrainingMode(enabled) {
-    isTrainingMode = enabled;
-    elements.trainingSettings.classList.toggle('hidden', !enabled);
-    updateMetronomeSequence();
+function isBeatToggleChecked() {
+    return buttons.toggleBeatBars.checked;
+}
+
+function generateSelectedSounds() {
+    for (let i = 0; i < initialNumberOfBeats; i++) {
+        selectedSounds.push(1);
+    }
 }
