@@ -26,7 +26,7 @@ export class TrainingModeManager {
             this.setLoopSkipProbability(0);
             elements.loopSkipProbabilityInput.value = 0;
         } else {
-            elements.loopSkipProbabilityInput.value += newProbability * 100;
+            elements.loopSkipProbabilityInput.value = parseInt(elements.loopSkipProbabilityInput.value) + newProbability * 100;
             this.loopSkipProbability += newProbability
         }
 
@@ -55,7 +55,7 @@ export class TrainingModeManager {
             this.setNoteSkipProbability(0);
             elements.noteSkipProbabilityInput.value = 0;
         } else {
-            elements.noteSkipProbabilityInput.value += newProbability * 100;
+            elements.noteSkipProbabilityInput.value = parseInt(elements.noteSkipProbabilityInput.value) + newProbability * 100;
             this.noteSkipProbability += newProbability;
         }
         this.checkSkipProbabilityLimit({
