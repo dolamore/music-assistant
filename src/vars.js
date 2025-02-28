@@ -76,7 +76,21 @@ export const buttons = {
     decreaseLoopSkipProbabilityFiveButton: document.getElementById('decrease-loop-skip-probability-5-button'),
     increaseLoopSkipProbabilityButton: document.getElementById('increase-loop-skip-probability-button'),
     increaseLoopSkipProbabilityFiveButton: document.getElementById('increase-loop-skip-probability-5-button'),
+}
 
+export const probButtons = {
+    noteSkipProbability: {
+        increaseButton: buttons.increaseNoteSkipProbabilityButton,
+        decreaseButton: buttons.decreaseNoteSkipProbabilityButton,
+        increaseFiveButton: buttons.increaseNoteSkipProbabilityFiveButton,
+        decreaseFiveButton: buttons.decreaseNoteSkipProbabilityFiveButton,
+    },
+    loopSkipProbability: {
+        increaseButton: buttons.increaseLoopSkipProbabilityButton,
+        decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
+        increaseFiveButton: buttons.increaseLoopSkipProbabilityFiveButton,
+        decreaseFiveButton: buttons.decreaseLoopSkipProbabilityFiveButton,
+    }
 }
 
 export const elements = {
@@ -85,6 +99,7 @@ export const elements = {
     trainingSettings: document.getElementById('training-settings'),
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
     loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
+    beatsCounter: document.getElementById('beats-counter'),
 }
 
 export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100

@@ -1,4 +1,4 @@
-import {buttons, defaultLoopSkipProbability, defaultNoteSkipProbability, elements} from "./vars.js";
+import {buttons, defaultLoopSkipProbability, defaultNoteSkipProbability, elements, probButtons} from "./vars.js";
 import {handleInputBlur, toggleButtonsLimit} from "./utils.js";
 
 export class TrainingModeManager {
@@ -16,64 +16,55 @@ export class TrainingModeManager {
     }
 
     handleLoopSkipProbabilityChange(changeProbability) {
-        if (isNaN(changeProbability) || this.loopSkipProbability === changeProbability) {
+        if (isNaN(changeProbability)) {
             return;
         }
-        if (changeProbability > 1) {
+        const possibility = Number((this.loopSkipProbability + changeProbability).toFixed(5));
+
+        if (possibility > 1) {
             this.setLoopSkipProbability(1);
             elements.loopSkipProbabilityInput.value = 100;
-        } else if (changeProbability < 0) {
+        } else if (possibility < 0) {
             this.setLoopSkipProbability(0);
             elements.loopSkipProbabilityInput.value = 0;
         } else {
-            elements.loopSkipProbabilityInput.value = parseInt(elements.loopSkipProbabilityInput.value) + changeProbability * 100;
-            this.loopSkipProbability += changeProbability
+            const roundedPossibility = Math.round(possibility * 100);
+            elements.loopSkipProbabilityInput.value = roundedPossibility;
+            this.loopSkipProbability = roundedPossibility / 100;
         }
 
-        this.checkSkipProbabilityLimit({
-            probability: this.loopSkipProbability, probButtons: {
-                increaseButton: buttons.increaseLoopSkipProbabilityButton,
-                decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
-                increaseFiveButton: buttons.increaseLoopSkipProbabilityFiveButton,
-                decreaseFiveButton: buttons.decreaseLoopSkipProbabilityFiveButton
-            }
-        });
+        this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbability);
+    }
+
+    handleNoteSkipProbabilityChange(changeProbability) {
+        if (isNaN(changeProbability)) {
+            return;
+        }
+        const possibility = Number((this.noteSkipProbability + changeProbability).toFixed(5));
+
+        if (possibility > 1) {
+            this.setNoteSkipProbability(1);
+            elements.noteSkipProbabilityInput.value = 100;
+        } else if (possibility < 0) {
+            this.setNoteSkipProbability(0);
+            elements.noteSkipProbabilityInput.value = 0;
+        } else {
+            const roundedPossibility = Math.round(possibility * 100);
+            elements.noteSkipProbabilityInput.value = roundedPossibility;
+            this.noteSkipProbability = roundedPossibility / 100;
+        }
+        this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbability);
+    }
+
+    checkSkipProbabilityLimit(probability, checkButtons) {
+        const isMinLimit = probability <= 0;
+        const isMaxLimit = probability >= 1;
+        toggleButtonsLimit(isMinLimit, isMaxLimit, checkButtons.increaseButton, checkButtons.decreaseButton);
+        toggleButtonsLimit(isMinLimit, isMaxLimit, checkButtons.increaseFiveButton, checkButtons.decreaseFiveButton);
     }
 
     setLoopSkipProbability(probability) {
         this.loopSkipProbability = probability;
-    }
-
-    handleNoteSkipProbabilityChange(newProbability, increase) {
-        if (isNaN(newProbability) || this.noteSkipProbability === newProbability) {
-            return;
-        }
-        if (newProbability > 1) {
-            this.setNoteSkipProbability(1);
-            elements.noteSkipProbabilityInput.value = 100;
-        } else if (newProbability < 0) {
-            this.setNoteSkipProbability(0);
-            elements.noteSkipProbabilityInput.value = 0;
-        } else {
-            elements.noteSkipProbabilityInput.value = parseInt(elements.noteSkipProbabilityInput.value) + newProbability * 100;
-            this.noteSkipProbability += newProbability;
-        }
-        this.checkSkipProbabilityLimit({
-            probability: this.noteSkipProbability, probButtons: {
-                increaseButton: buttons.increaseNoteSkipProbabilityButton,
-                decreaseButton: buttons.decreaseNoteSkipProbabilityButton,
-                increaseFiveButton: buttons.increaseNoteSkipProbabilityFiveButton,
-                decreaseFiveButton: buttons.decreaseNoteSkipProbabilityFiveButton
-            }
-        });
-    }
-
-    checkSkipProbabilityLimit({probability, probButtons}) {
-        const isMinLimit = probability <= 0;
-        const isMaxLimit = probability >= 1;
-
-        toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseButton, probButtons.decreaseButton);
-        toggleButtonsLimit(isMinLimit, isMaxLimit, probButtons.increaseFiveButton, probButtons.decreaseFiveButton);
     }
 
     setNoteSkipProbability(probability) {
@@ -106,17 +97,21 @@ export class TrainingModeManager {
 }
 
 export function renderTrainingModeElements(trainingModeManager) {
+    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getLoopSkipProbability(), probButtons.loopSkipProbability);
+
+    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getNoteSkipProbability(), probButtons.noteSkipProbability);
+
     buttons.toggleTrainingMode.addEventListener('change', function (e) {
         trainingModeManager.setTrainingMode(e.target.checked);
     });
 
     elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        trainingModeManager.handleLoopSkipProbabilityChange(e.target.value / 100);
+        trainingModeManager.handleLoopSkipProbabilityChange(e.target.value / 100 - trainingModeManager.getLoopSkipProbability());
     });
     elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
 
     elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        trainingModeManager.handleNoteSkipProbabilityChange(e.target.value / 100);
+        trainingModeManager.handleNoteSkipProbabilityChange(e.target.value / 100 - trainingModeManager.getNoteSkipProbability());
     });
     elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
 
