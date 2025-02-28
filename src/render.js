@@ -651,19 +651,21 @@ function checkBPMLimit() {
 function getMetronomeLoopCallback(time) {
     currentStep = count % sequence.length;
     isStartOfLoop = currentStep === 0;
-    let isTrainingMode = trainingModeManager.getIsTrainingMode();
 
-    // Применяем вероятность пропуска такта
-    if (isTrainingMode) {
-        if (trainingModeManager.getIsFirstLoop()) {
-            trainingModeManager.setIsTrainingMode(false);
-        } else if (Math.random() < trainingModeManager.getLoopSkipProbability()) {
+    if (trainingModeManager.getIsTrainingMode()) {
+        if (isStartOfLoop && (trainingModeManager.getIsFirstLoop() || Math.random() < trainingModeManager.getLoopSkipProbability())) {
             skipper = sequence.length;
         }
     }
 
     if (skipper > 0) {
         skipper--;
+        if (trainingModeManager.getIsFirstLoop()) {
+            playMetronomeStep(sequence, currentStep, time);
+        }
+        if (skipper === 0) {
+            trainingModeManager.setIsFirstLoop(false);
+        }
     } else {
         playMetronomeStep(sequence, currentStep, time);
     }
@@ -673,7 +675,6 @@ function getMetronomeLoopCallback(time) {
     }
 
     count++;
-    trainingModeManager.setIsTrainingMode(isTrainingMode);
 }
 
 function isBeatToggleChecked() {
