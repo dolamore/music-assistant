@@ -19,8 +19,7 @@ export class TrainingModeManager {
         if (isNaN(changeProbability)) {
             return;
         }
-
-        const possibility = this.loopSkipProbability + changeProbability;
+        const possibility = Number((this.loopSkipProbability + changeProbability).toFixed(5));
 
         if (possibility > 1) {
             this.setLoopSkipProbability(1);
@@ -29,22 +28,19 @@ export class TrainingModeManager {
             this.setLoopSkipProbability(0);
             elements.loopSkipProbabilityInput.value = 0;
         } else {
-            elements.loopSkipProbabilityInput.value = parseInt(possibility * 100);
-            this.loopSkipProbability += changeProbability
+            const roundedPossibility = Math.round(possibility * 100);
+            elements.loopSkipProbabilityInput.value = roundedPossibility;
+            this.loopSkipProbability = roundedPossibility / 100;
         }
 
         this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbability);
-    }
-
-    setLoopSkipProbability(probability) {
-        this.loopSkipProbability = probability;
     }
 
     handleNoteSkipProbabilityChange(changeProbability) {
         if (isNaN(changeProbability)) {
             return;
         }
-        const possibility = this.noteSkipProbability + changeProbability;
+        const possibility = Number((this.noteSkipProbability + changeProbability).toFixed(5));
 
         if (possibility > 1) {
             this.setNoteSkipProbability(1);
@@ -53,8 +49,9 @@ export class TrainingModeManager {
             this.setNoteSkipProbability(0);
             elements.noteSkipProbabilityInput.value = 0;
         } else {
-            elements.noteSkipProbabilityInput.value = parseInt(possibility * 100);
-            this.noteSkipProbability += changeProbability;
+            const roundedPossibility = Math.round(possibility * 100);
+            elements.noteSkipProbabilityInput.value = roundedPossibility;
+            this.noteSkipProbability = roundedPossibility / 100;
         }
         this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbability);
     }
@@ -64,6 +61,10 @@ export class TrainingModeManager {
         const isMaxLimit = probability >= 1;
         toggleButtonsLimit(isMinLimit, isMaxLimit, checkButtons.increaseButton, checkButtons.decreaseButton);
         toggleButtonsLimit(isMinLimit, isMaxLimit, checkButtons.increaseFiveButton, checkButtons.decreaseFiveButton);
+    }
+
+    setLoopSkipProbability(probability) {
+        this.loopSkipProbability = probability;
     }
 
     setNoteSkipProbability(probability) {
