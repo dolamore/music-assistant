@@ -99,6 +99,7 @@ export const elements = {
     trainingSettings: document.getElementById('training-settings'),
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
     loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
+    beatsCounter: document.getElementById('beats-counter'),
 }
 
 export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100

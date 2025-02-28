@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    elements.beatsCounter.textContent = initialNumberOfBeats;
+
     elements.settingsPanel.classList.add('hidden');
 
     elements.trainingSettings.classList.add('hidden');
@@ -397,7 +399,7 @@ function decreaseBeat() {
     soundSettings.pop();
 
     // Пересчитываем количество битов
-    document.getElementById('beats-count').textContent = document.querySelectorAll('.beat-wrapper').length;
+    elements.beatsCounter.textContent = document.querySelectorAll('.beat-wrapper').length;
 
     // Используем setTimeout, чтобы подождать завершения обновления DOM
     setTimeout(() => {
@@ -425,7 +427,7 @@ function increaseBeat() {
     soundSettings.push(defaultSoundSettings);
 
     // Обновляем количество битов
-    document.getElementById('beats-count').textContent = newBeatIndex + 1;
+    elements.beatsCounter.textContent = newBeatIndex + 1;
 
     // Обновляем последовательность метронома без перезапуска
     if (isPlaying) {
