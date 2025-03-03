@@ -131,6 +131,18 @@ export const elements = {
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
     loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
     beatsCounter: document.getElementById('beats-counter'),
+    timeSignature: document.getElementById('time-signature'),
+    noteSizeDropdowns: document.querySelectorAll('.note-size-dropdown'),
+    beatsRows: document.querySelector('.beats-rows'), //sound-row????
+
+    pendulumElement: document.querySelector('.pendulum'),
+    pendulumBarElement: document.querySelector('.horizontal-bar'),
+
+    loopCounter: document.getElementById('loop-counter'),
+
+    labelsContainer: document.querySelector('.labels'),
+
+    soundSettingsContainer: document.querySelector('.sound-settings'),
 }
 
 export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
