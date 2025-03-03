@@ -22,12 +22,7 @@ export class MetronomeManager {
         this.soundManager = new SoundManager();
         this.beatBarsManager = new BeatBarsManager(this);
         this.elementsManager = new ElementsManager(this);
-        this.buttonsManager = new ButtonsManager();
         this.trainingModeManager = new TrainingModeManager();
-    }
-
-    getSoundManager() {
-        return this.soundManager;
     }
 
     getBeatBarsManager() {
@@ -38,24 +33,16 @@ export class MetronomeManager {
         return this.elementsManager;
     }
 
-    getButtonsManager() {
-        return this.buttonsManager;
-    }
-
-    isPlaying() {
-        return this.isPlaying;
-    }
-
     startMetronome() {
         this.isPlaying = true;
 
-        Tone.Transport.bpm.value = bpm * 3;
+        Tone.Transport.bpm.value = this.bpm * 3;
 
         this.sequence = this.generateFixedMetronomeSequence();
         this.skipper = 0;
 
         // Создаем новый луп с нужными параметрами
-        this.loop = new Tone.Loop(getMetronomeLoopCallback, '64n');
+        this.loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
 
         this.loop.start(0);
 
@@ -103,7 +90,7 @@ export class MetronomeManager {
             const isTriplet = parsedNote.isTriplet;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
             const sound = sounds[this.soundManager.getSelectedSounds()[index]];
-            const settings = soundSettings[index]; // Получаем актуальные настройки звука
+            const settings = this.soundManager.getSoundSettings()[index]; // Получаем актуальные настройки звука
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 sequence[position] = {sound, settings, beatIndex: index};
@@ -115,7 +102,7 @@ export class MetronomeManager {
     }
 
     getMetronomeLoopCallback(time) {
-        this.currentStep = count % sequence.length;
+        this.currentStep = this.count % this.sequence.length;
         this.isStartOfLoop = this.currentStep === 0;
 
         if (this.trainingModeManager.getIsTrainingMode()) {
@@ -182,10 +169,10 @@ export class MetronomeManager {
         }
     }
 
-
     renderMetronomeElements() {
         this.soundManager.renderSoundElements();
         this.beatBarsManager.renderBeatBars();
         this.trainingModeManager.renderTrainingModeElements();
+        this.elementsManager.renderElements();
     }
 }

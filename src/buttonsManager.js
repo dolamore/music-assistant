@@ -1,4 +1,5 @@
 import {buttons, elements} from "./vars.js";
+import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class ButtonsManager {
     constructor(metronomeManager) {
@@ -18,6 +19,15 @@ export class ButtonsManager {
 
     }
 
+    async toggleStartStopButton() {
+        await Tone.start();
+        if (this.metronomeManager.isPlaying) {
+            this.metronomeManager.stopMetronome();
+        } else {
+            this.metronomeManager.startMetronome();
+        }
+    }
+
     renderButtons() {
         buttons.decreaseBeatsButton.addEventListener('click', this.beatsBarsManager.decreaseBeat);
 
@@ -26,5 +36,7 @@ export class ButtonsManager {
         buttons.increaseNotesButton.addEventListener('click', this.changeNoteSize.bind(this, true));
 
         buttons.decreaseNotesButton.addEventListener('click', this.changeNoteSize.bind(this, false));
+
+        buttons.startStopButton.addEventListener('click', this.toggleStartStopButton.bind(this));
     }
 }

@@ -1,4 +1,3 @@
-import * as Tone from 'https://cdn.skypack.dev/tone';
 import {
     sounds,
     initialNumberOfBeats,
@@ -11,7 +10,6 @@ import {
 import {toggleButtonsLimit, handleInputBlur} from './utils.js';
 import {MetronomeManager} from "./metronomeManager.js";
 import {HotBindManager} from "./hotBindManager.js";
-import {ElementsManager} from "./elementsManager.js";
 import {ButtonsManager} from "./buttonsManager.js";
 
 
@@ -20,7 +18,6 @@ let isPlaying = false;
 let loop;
 let sequence;
 const hotBindManager = new HotBindManager();
-const elementsManager = new ElementsManager();
 const metronomeManager = new MetronomeManager();
 const buttonsManager = new ButtonsManager(metronomeManager);
 
@@ -31,8 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initialBeatRender();
 
     hotBindManager.renderHotBinds();
-
-    elementsManager.renderElements();
 
     buttonsManager.renderButtons();
 
@@ -138,15 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
     buttons.decreaseFiveBPMButton.addEventListener('click', () => {
         const newBpm = bpm - 5;
         handleBpmChange(newBpm);
-    });
-
-    buttons.startStopButton.addEventListener('click', async () => {
-        await Tone.start();
-        if (isPlaying) {
-            stopMetronome();
-        } else {
-            startMetronome();
-        }
     });
 
     document.addEventListener('change', function (event) {
