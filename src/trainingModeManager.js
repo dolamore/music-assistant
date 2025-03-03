@@ -33,7 +33,7 @@ export class TrainingModeManager {
             this.loopSkipProbability = roundedPossibility / 100;
         }
 
-        this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbability);
+        this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbabilityButtons);
     }
 
     handleNoteSkipProbabilityChange(changeProbability) {
@@ -53,7 +53,7 @@ export class TrainingModeManager {
             elements.noteSkipProbabilityInput.value = roundedPossibility;
             this.noteSkipProbability = roundedPossibility / 100;
         }
-        this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbability);
+        this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbabilityButtons);
     }
 
     checkSkipProbabilityLimit(probability, checkButtons) {
@@ -97,9 +97,9 @@ export class TrainingModeManager {
 }
 
 export function renderTrainingModeElements(trainingModeManager) {
-    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getLoopSkipProbability(), probButtons.loopSkipProbability);
+    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getLoopSkipProbability(), probButtons.loopSkipProbabilityButtons);
 
-    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getNoteSkipProbability(), probButtons.noteSkipProbability);
+    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getNoteSkipProbability(), probButtons.noteSkipProbabilityButtons);
 
     buttons.toggleTrainingMode.addEventListener('change', function (e) {
         trainingModeManager.setTrainingMode(e.target.checked);

@@ -17,6 +17,8 @@ import {
 import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
 import {MetronomeManager} from "./metronomeManager.js";
 import {HotBindManager} from "./hotBindManager.js";
+import {ElementsManager} from "./elementsManager.js";
+import {ButtonsManager} from "./buttonsManager.js";
 
 let soundSettings = [];
 let bpm = defaultInitialBPM;
@@ -34,6 +36,8 @@ let isStartOfLoop = false;
 const trainingModeManager = new TrainingModeManager();
 const metronomeManager = new MetronomeManager();
 const hotBindManager = new HotBindManager();
+const elementsManager = new ElementsManager();
+const buttonsManager = new ButtonsManager()
 
 document.addEventListener('DOMContentLoaded', function () {
     metronomeManager.renderMetronomeElements();
@@ -43,13 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     hotBindManager.renderHotBinds();
 
-    elements.beatsCounter.textContent = initialNumberOfBeats;
-
-    elements.settingsPanel.classList.add('hidden');
-
-    elements.trainingSettings.classList.add('hidden');
-
-    elements.bpmInput.value = bpm;
+    elementsManager.renderElements();
 
     buttons.decreaseBeatsButton.addEventListener('click', () => {
         decreaseBeat();

@@ -55,19 +55,26 @@ export const beatHTML = (index) => `
 export const buttons = {
     startStopButton: document.getElementById('start-stop-button'),
     settingsButton: document.getElementById('settings-button'),
+
     increaseBPMButton: document.getElementById('increase-bpm-1-button'),
     decreaseBPMButton: document.getElementById('decrease-bpm-1-button'),
     increaseFiveBPMButton: document.getElementById('increase-bpm-5-button'),
     decreaseFiveBPMButton: document.getElementById('decrease-bpm-5-button'),
+
     saveSettingsButton: document.getElementById('save-settings-button'),
+
     increaseBeatsButton: document.getElementById('increase-beats-button'),
     decreaseBeatsButton: document.getElementById('decrease-beats-button'),
+
     increaseNotesButton: document.getElementById('increase-notes-button'),
     decreaseNotesButton: document.getElementById('decrease-notes-button'),
+
     togglePendulumBar: document.getElementById('toggle-pendulum'),
     toggleFlashingBar: document.getElementById('toggle-flashing-bar'),
     toggleBeatBars: document.getElementById('toggle-beat-bars'),
+
     toggleTrainingMode: document.getElementById('toggle-training-mode'),
+
     decreaseNoteSkipProbabilityButton: document.getElementById('decrease-note-skip-probability-button'),
     decreaseNoteSkipProbabilityFiveButton: document.getElementById('decrease-note-skip-probability-5-button'),
     increaseNoteSkipProbabilityButton: document.getElementById('increase-note-skip-probability-button'),
@@ -78,14 +85,38 @@ export const buttons = {
     increaseLoopSkipProbabilityFiveButton: document.getElementById('increase-loop-skip-probability-5-button'),
 }
 
+export const effectsButtons = {
+    togglePendulumBar: buttons.togglePendulumBar,
+    toggleFlashingBar: buttons.toggleFlashingBar,
+    toggleBeatBars: buttons.toggleBeatBars,
+}
+
+export const beatsButtons = {
+    increaseButton: buttons.increaseBeatsButton,
+    decreaseButton: buttons.decreaseBeatsButton,
+}
+
+export const notesButtons = {
+    increaseButton: buttons.increaseNotesButton,
+    decreaseButton: buttons.decreaseNotesButton,
+}
+
+export const BPMButtons = {
+    increaseButton: buttons.increaseBPMButton,
+    decreaseButton: buttons.decreaseBPMButton,
+    increaseFiveButton: buttons.increaseFiveBPMButton,
+    decreaseFiveButton: buttons.decreaseFiveBPMButton,
+}
+
 export const probButtons = {
-    noteSkipProbability: {
+    toggleTrainingMode: buttons.toggleTrainingMode,
+    noteSkipProbabilityButtons: {
         increaseButton: buttons.increaseNoteSkipProbabilityButton,
         decreaseButton: buttons.decreaseNoteSkipProbabilityButton,
         increaseFiveButton: buttons.increaseNoteSkipProbabilityFiveButton,
         decreaseFiveButton: buttons.decreaseNoteSkipProbabilityFiveButton,
     },
-    loopSkipProbability: {
+    loopSkipProbabilityButtons: {
         increaseButton: buttons.increaseLoopSkipProbabilityButton,
         decreaseButton: buttons.decreaseLoopSkipProbabilityButton,
         increaseFiveButton: buttons.increaseLoopSkipProbabilityFiveButton,
