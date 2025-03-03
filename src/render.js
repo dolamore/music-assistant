@@ -16,6 +16,7 @@ import {
 } from './trainingModeManager.js';
 import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
 import {MetronomeManager} from "./metronomeManager.js";
+import {HotBindManager} from "./hotBindManager.js";
 
 let soundSettings = [];
 let bpm = defaultInitialBPM;
@@ -32,18 +33,15 @@ let currentStep = 0;
 let isStartOfLoop = false;
 const trainingModeManager = new TrainingModeManager();
 const metronomeManager = new MetronomeManager();
+const hotBindManager = new HotBindManager();
 
 document.addEventListener('DOMContentLoaded', function () {
     metronomeManager.renderMetronomeElements();
+
     renderSoundSettings();
     initialBeatRender();
 
-    document.addEventListener('keydown', (event) => {
-        if (event.code === 'Space') {
-            event.preventDefault(); // Предотвращаем скролл страницы
-            buttons.startStopButton.click();
-        }
-    });
+    hotBindManager.renderHotBinds();
 
     elements.beatsCounter.textContent = initialNumberOfBeats;
 

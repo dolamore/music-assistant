@@ -20,5 +20,6 @@ export class MetronomeManager {
 
     renderMetronomeElements() {
         this.soundManager.renderSoundElements();
+        this.beatBarsManager.renderBeatBars();
     }
 }
