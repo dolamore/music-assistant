@@ -15,7 +15,7 @@ import {
     renderTrainingModeElements
 } from './trainingModeManager.js';
 import {toggleButtonsLimit, lcmArray, handleInputBlur} from './utils.js';
-import {MetronomeManager, renderMetronomeElements} from './metronomeManager.js';
+import {MetronomeManager} from "./metronomeManager.js";
 
 let soundSettings = [];
 let bpm = defaultInitialBPM;
@@ -34,7 +34,7 @@ const trainingModeManager = new TrainingModeManager();
 const metronomeManager = new MetronomeManager();
 
 document.addEventListener('DOMContentLoaded', function () {
-    renderMetronomeElements(metronomeManager);
+    metronomeManager.renderMetronomeElements();
     renderSoundSettings();
     initialBeatRender();
 
@@ -116,20 +116,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     buttons.saveSettingsButton.addEventListener('click', function () {
         const beatRows = document.querySelectorAll('.sound-row');
-        metronomeManager.clearSelectedSounds();
+        metronomeManager.soundManager.clearSelectedSounds();
         // selectedSounds = [];
         soundSettings = [];
 
         // Извлекаем и обновляем настройки для каждого бита
         beatRows.forEach((row) => {
-            metronomeManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
+            metronomeManager.soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
             // selectedSounds.push(parseInt(row.querySelector('select').value, 10));
             soundSettings.push(getSoundSettings(row));
         });
 
         // Обновляем данные в DOM
         document.querySelectorAll('.beat').forEach((beat, index) => {
-            beat.dataset.sound = metronomeManager.getSelectedSounds()[index];  // Обновляем звук для каждого бита
+            beat.dataset.sound = metronomeManager.soundManager.getSelectedSounds()[index];  // Обновляем звук для каждого бита
         });
 
         // Обновляем метроном, не останавливая его
@@ -246,7 +246,7 @@ function changeBeatSound(beatElement) {
     beatElement.dataset.sound = nextSound;
 
     // Update selectedSounds array
-    metronomeManager.getSelectedSounds()[beatIndex] = nextSound;
+    metronomeManager.soundManager.getSelectedSounds()[beatIndex] = nextSound;
 
     // Update select in sound settings
     const soundSelect = document.getElementById(`sound-${beatIndex}`);
@@ -397,7 +397,7 @@ function decreaseBeat() {
     }
 
     // Обновляем массивы
-    metronomeManager.popSelectedSound();
+    metronomeManager.soundManager.popSelectedSound();
     soundSettings.pop();
 
     // Пересчитываем количество битов
@@ -425,7 +425,7 @@ function increaseBeat() {
     createBeatElement(newBeatIndex);
 
     // Обновляем массивы
-    metronomeManager.addSelectedSound(1); // Звук по умолчанию
+    metronomeManager.soundManager.addSelectedSound(1); // Звук по умолчанию
     soundSettings.push(defaultSoundSettings);
 
     // Обновляем количество битов
@@ -460,7 +460,7 @@ function generateFixedMetronomeSequence() {
         const noteSize = parsedNote.number;
         const isTriplet = parsedNote.isTriplet;
         const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-        const sound = sounds[metronomeManager.getSelectedSounds()[index]];
+        const sound = sounds[metronomeManager.soundManager.getSelectedSounds()[index]];
         const settings = soundSettings[index]; // Получаем актуальные настройки звука
 
         for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {

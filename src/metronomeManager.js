@@ -1,34 +1,24 @@
-import {initialNumberOfBeats} from "./vars.js";
+import {SoundManager} from "./soundManager.js";
+import {defaultInitialBPM} from "./vars.js";
+import {BeatBarsManager} from "./beatBarsManager.js";
 
 export class MetronomeManager {
     constructor() {
-        this.selectedSounds = [];
+        this.bpm = defaultInitialBPM;
+        this.isPlaying = false;
+        let loop;
+        let count = 0;
+        let loopCount = 0;
+        let currentNoteSizeIndex = 2;
+        let sequence;
+        let skipper = 0;
+        let currentStep = 0;
+        let isStartOfLoop = false;
+        this.soundManager = new SoundManager();
+        this.beatBarsManager = new BeatBarsManager();
     }
 
-    generateSelectedSounds() {
-        for (let i = 0; i < initialNumberOfBeats; i++) {
-            this.selectedSounds.push(1);
-        }
-    }
-
-    getSelectedSounds() {
-        return this.selectedSounds;
-    }
-
-    clearSelectedSounds() {
-        this.selectedSounds = [];
-    }
-
-    addSelectedSound(sound) {
-        this.selectedSounds.push(sound);
-    }
-
-    popSelectedSound() {
-        this.selectedSounds.pop();
+    renderMetronomeElements() {
+        this.soundManager.renderSoundElements();
     }
 }
-
-export function renderMetronomeElements(metronomeManager) {
-    metronomeManager.generateSelectedSounds();
-}
-
