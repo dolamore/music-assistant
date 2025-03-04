@@ -1,4 +1,13 @@
-import {buttons, defaultInitialBPM, elements, initialNumberOfBeats, maxBeatsAmount, noteMultipliers} from "./vars.js";
+import {
+    beatHTML,
+    buttons,
+    defaultInitialBPM,
+    defaultSoundSettings,
+    elements,
+    initialNumberOfBeats,
+    maxBeatsAmount,
+    noteMultipliers
+} from "./vars.js";
 import {lcmArray, toggleButtonsLimit} from "./utils.js";
 
 export class ElementsManager {
@@ -120,8 +129,91 @@ export class ElementsManager {
         elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
     }
 
+    renderSoundSettings() {
+
+        Object.keys(defaultSoundSettings).forEach((key) => {
+            const label = document.createElement('span');
+            label.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Преобразуем ключ в читаемое имя (например, 'frequency' -> 'Frequency')
+
+            // Добавляем label в контейнер labels
+            elements.labelsContainer.appendChild(label);
+            const numColumns = Object.keys(defaultSoundSettings).length;
+            elements.soundSettingsContainer.style.gridTemplateColumns = `150px repeat(${numColumns + 1}, 1fr)`;
+        });
+    }
+
+    initialBeatRender() {
+        for (let i = 0; i < initialNumberOfBeats; i++) {
+            this.createBeatElement(i);
+        }
+    }
+
+    createBeatElement(index) {
+        const soundSettingsContainer = document.querySelector('.sound-settings');
+        soundSettingsContainer.appendChild(this.createSoundRow(index));
+
+        const beatContainer = document.querySelector('.beat-container');
+        beatContainer.appendChild(this.createBeatWrapper(index));
+
+        // Добавляем настройки звука в массив
+        this.metronomeManager.soundManager.addSoundSetting(defaultSoundSettings);
+    }
+
+    createSoundRow(index) {
+        const soundRow = document.createElement('div');
+        soundRow.classList.add('sound-row');
+
+        // Создаём метку и выпадающий список звуков
+        const label = document.createElement('label');
+        label.setAttribute('for', `sound-${index}`);
+        label.textContent = `Beat ${index + 1}:`;
+        soundRow.appendChild(label);
+
+        const select = document.createElement('select');
+        select.id = `sound-${index}`;
+        select.innerHTML = `
+        <option value="0">No Sound</option>
+        <option value="1" selected>Sine</option>
+        <option value="2">Triangle</option>
+        <option value="3">Square</option>
+        <option value="4">Sawtooth</option>
+    `;
+        soundRow.appendChild(select);
+
+        // Добавляем поля ввода на основе defaultSoundSettings
+        Object.keys(defaultSoundSettings).forEach(key => {
+            soundRow.appendChild(this.createInputField(key, index));
+        });
+
+        return soundRow;
+    }
+
+    createBeatWrapper(index) {
+        const beatWrapper = document.createElement('div');
+        beatWrapper.classList.add('beat-wrapper');
+        beatWrapper.innerHTML = beatHTML(index);
+        beatWrapper.querySelector('.beat').classList.toggle('hidden', !this.isBeatToggleChecked())
+        return beatWrapper;
+    }
+
+    createInputField(key, index) {
+        const input = document.createElement('input');
+        input.id = `${key}-${index}`;
+        input.type = 'number';
+        input.placeholder = key.charAt(0).toUpperCase() + key.slice(1);
+        input.value = defaultSoundSettings[key];
+        return input;
+    }
+
+    isBeatToggleChecked() {
+        return buttons.toggleBeatBars.checked;
+    }
+
+
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;
         elements.bpmInput.value = defaultInitialBPM;
+        this.renderSoundSettings();
+        this.initialBeatRender();
     }
 }
