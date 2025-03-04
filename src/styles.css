@@ -69,7 +69,7 @@ button:hover {
     gap: 10px;
 }
 
-.beat-wrapper {
+.beat-row {
     display: flex;
     flex-direction: column;
     align-items: center;

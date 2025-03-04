@@ -33,7 +33,7 @@ export class TrainingModeManager {
             this.loopSkipProbability = roundedPossibility / 100;
         }
 
-        this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbability);
+        this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbabilityButtons);
     }
 
     handleNoteSkipProbabilityChange(changeProbability) {
@@ -53,7 +53,7 @@ export class TrainingModeManager {
             elements.noteSkipProbabilityInput.value = roundedPossibility;
             this.noteSkipProbability = roundedPossibility / 100;
         }
-        this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbability);
+        this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbabilityButtons);
     }
 
     checkSkipProbabilityLimit(probability, checkButtons) {
@@ -94,36 +94,34 @@ export class TrainingModeManager {
     getIsFirstLoop() {
         return this.isFirstLoop;
     }
-}
 
-export function renderTrainingModeElements(trainingModeManager) {
-    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getLoopSkipProbability(), probButtons.loopSkipProbability);
+    renderTrainingModeElements() {
+        this.checkSkipProbabilityLimit(this.getLoopSkipProbability(), probButtons.loopSkipProbabilityButtons);
 
-    trainingModeManager.checkSkipProbabilityLimit(trainingModeManager.getNoteSkipProbability(), probButtons.noteSkipProbability);
+        this.checkSkipProbabilityLimit(this.getNoteSkipProbability(), probButtons.noteSkipProbabilityButtons);
 
-    buttons.toggleTrainingMode.addEventListener('change', function (e) {
-        trainingModeManager.setTrainingMode(e.target.checked);
-    });
+        buttons.toggleTrainingMode.addEventListener('change', (e) => this.setTrainingMode(e.target.checked));
 
-    elements.loopSkipProbabilityInput.addEventListener('input', function (e) {
-        trainingModeManager.handleLoopSkipProbabilityChange(e.target.value / 100 - trainingModeManager.getLoopSkipProbability());
-    });
-    elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
+        elements.loopSkipProbabilityInput.addEventListener('input', (e) => {
+            this.handleLoopSkipProbabilityChange(e.target.value / 100 - this.getLoopSkipProbability());
+        });
+        elements.loopSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.loopSkipProbabilityInput, 0));
 
-    elements.noteSkipProbabilityInput.addEventListener('input', function (e) {
-        trainingModeManager.handleNoteSkipProbabilityChange(e.target.value / 100 - trainingModeManager.getNoteSkipProbability());
-    });
-    elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
+        elements.noteSkipProbabilityInput.addEventListener('input', (e) => {
+            this.handleNoteSkipProbabilityChange(e.target.value / 100 - this.getNoteSkipProbability());
+        });
+        elements.noteSkipProbabilityInput.addEventListener('blur', () => handleInputBlur(elements.noteSkipProbabilityInput, 0));
 
 
-    buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => trainingModeManager.handleLoopSkipProbabilityChange(0.01));
-    buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => trainingModeManager.handleLoopSkipProbabilityChange(0.05));
-    buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => trainingModeManager.handleLoopSkipProbabilityChange(-0.01));
-    buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => trainingModeManager.handleLoopSkipProbabilityChange(-0.05));
+        buttons.increaseLoopSkipProbabilityButton.addEventListener('click', () => this.handleLoopSkipProbabilityChange(0.01));
+        buttons.increaseLoopSkipProbabilityFiveButton.addEventListener('click', () => this.handleLoopSkipProbabilityChange(0.05));
+        buttons.decreaseLoopSkipProbabilityButton.addEventListener('click', () => this.handleLoopSkipProbabilityChange(-0.01));
+        buttons.decreaseLoopSkipProbabilityFiveButton.addEventListener('click', () => this.handleLoopSkipProbabilityChange(-0.05));
 
-    buttons.increaseNoteSkipProbabilityButton.addEventListener('click', () => trainingModeManager.handleNoteSkipProbabilityChange(0.01));
-    buttons.increaseNoteSkipProbabilityFiveButton.addEventListener('click', () => trainingModeManager.handleNoteSkipProbabilityChange(0.05));
-    buttons.decreaseNoteSkipProbabilityButton.addEventListener('click', () => trainingModeManager.handleNoteSkipProbabilityChange(-0.01));
-    buttons.decreaseNoteSkipProbabilityFiveButton.addEventListener('click', () => trainingModeManager.handleNoteSkipProbabilityChange(-0.05));
+        buttons.increaseNoteSkipProbabilityButton.addEventListener('click', () => this.handleNoteSkipProbabilityChange(0.01));
+        buttons.increaseNoteSkipProbabilityFiveButton.addEventListener('click', () => this.handleNoteSkipProbabilityChange(0.05));
+        buttons.decreaseNoteSkipProbabilityButton.addEventListener('click', () => this.handleNoteSkipProbabilityChange(-0.01));
+        buttons.decreaseNoteSkipProbabilityFiveButton.addEventListener('click', () => this.handleNoteSkipProbabilityChange(-0.05));
+    }
 }
 
