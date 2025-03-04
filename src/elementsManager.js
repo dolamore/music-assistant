@@ -53,7 +53,7 @@ export class ElementsManager {
         let beatAmount = 0;
         let beatPattern = [];
 
-        elements.beatRows.forEach((beatRow) => {
+        Elements.beatRows.forEach((beatRow) => {
             const noteData = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
             const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
             const isTriplet = noteData.isTriplet;
@@ -66,7 +66,7 @@ export class ElementsManager {
 
         const denominator = lcmArray(beatPattern);
 
-        elements.beatRows.forEach((beat) => {
+        Elements.beatRows.forEach((beat) => {
             const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
             const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
             const isTriplet = noteData.isTriplet;
