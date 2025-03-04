@@ -132,7 +132,7 @@ export class MetronomeManager {
     playMetronomeStep(sequence, currentStep, time) {
         const currentNote = sequence[currentStep];
         if (!currentNote || !currentNote.sound) return;
-        if (!(this.trainingModeManager.getIsTrainingMode() && Math.random() < this.trainingModeManager.getNoteSkipProbability())) {
+        if (!(this.trainingModeManager.getIsTrainingMode() && Math.random() < this.trainingModeManager.getNoteSkipProbability() && !this.trainingModeManager.getIsFirstLoop())) {
             const {sound, settings} = currentNote;
 
             // Динамически применяем все параметры из settings к sound
@@ -158,9 +158,8 @@ export class MetronomeManager {
             sound.triggerAttackRelease('C4', '64n', time);
 
             // Визуальные эффекты
-            const flashingBar = document.querySelector('.flashing-bar');
-            flashingBar.style.opacity = 1;
-            setTimeout(() => flashingBar.style.opacity = 0, 100);
+            elements.flashingBar.style.opacity = 1;
+            setTimeout(() => elements.flashingBar.style.opacity = 0, 100);
 
             const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
             beatElement.classList.add('playing');

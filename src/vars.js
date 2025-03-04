@@ -133,6 +133,7 @@ export const elements = {
     beatsCounter: document.getElementById('beats-counter'),
     timeSignature: document.getElementById('time-signature'),
     noteSizeDropdowns: document.querySelectorAll('.note-size-dropdown'),
+    noteAmountDropdowns: document.querySelectorAll('.note-amount-dropdown'),
 
     flashingBar: document.querySelector('.flashing-bar'),
 
