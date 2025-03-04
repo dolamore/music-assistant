@@ -195,6 +195,11 @@ export class MetronomeManager {
         }
     }
 
+    handleNewBPM(newBPM) {
+        const difference = newBPM - this.bpm;
+        this.handleBpmChange(difference);
+    }
+
     checkBPMLimit() {
         const minLimit = this.bpm <= 1;
         const maxLimit = this.bpm >= 500;

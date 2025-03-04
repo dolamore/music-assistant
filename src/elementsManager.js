@@ -234,6 +234,36 @@ export class ElementsManager {
         elements.settingsPanel.classList.toggle('hidden');
     }
 
+    handleBpmInputChanges() {
+        const oldBpm = this.metronomeManager.bpm;
+        handleInputBlur(elements.bpmInput, defaultInitialBPM);
+        if (this.metronomeManager.isPlaying && oldBpm !== defaultInitialBPM) {
+            this.metronomeManager.restartMetronomeAndPendulum();
+        }
+    }
+
+    preventNonDigitInput(e) {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    updateBeatDropdowns(e) {
+        if (e.target.matches('.note-size-dropdown') || e.target.matches('.note-amount-dropdown')) {
+            this.metronomeManager.updateTimeSignature();
+
+            if (this.metronomeManager.isPlaying) {
+                this.metronomeManager.updateMetronomeSequence();
+            }
+        }
+    }
+
+    handleBeatClick(e) {
+        if (e.target.classList.contains('beat')) {
+            this.metronomeManager.soundManager.changeBeatSound(e.target);
+        }
+    }
+
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;
@@ -244,51 +274,21 @@ export class ElementsManager {
         window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
 
 
-
-
         elements.bpmInput.addEventListener('input', (e) => {
-            metronomeManager.handleBpmChange(parseInt(e.target.value, 10));
-        });
-        elements.bpmInput.addEventListener('blur', () => {
-            const oldBpm = bpm;
-            handleInputBlur(elements.bpmInput, defaultInitialBPM, bpm);
-            if (isPlaying && oldBpm !== defaultInitialBPM) {
-                restartMetronomeAndPendulum();
-            }
+            this.metronomeManager.handleNewBPM(parseInt(e.target.value, 10));
         });
 
-        elements.bpmInput.addEventListener('keypress', (e) => {
-            if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-            }
-        });
+        elements.bpmInput.addEventListener('blur', () => this.handleBpmInputChanges());
 
-        elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => {
-            if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-            }
-        });
 
-        elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => {
-            if (!/[0-9]/.test(e.key)) {
-                e.preventDefault();
-            }
-        });
+        elements.bpmInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
-        document.addEventListener('change', function (event) {
-            if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
-                updateTimeSignature();
+        elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
-                if (isPlaying) {
-                    updateMetronomeSequence();
-                }
-            }
-        });
+        elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
-        document.addEventListener('click', function (event) {
-            if (event.target.classList.contains('beat')) {
-                changeBeatSound(event.target);
-            }
-        });
+        document.addEventListener('change', (e) => this.updateBeatDropdowns(e));
+
+        document.addEventListener('click', (e) => this.handleBeatClick(e));
     }
 }
