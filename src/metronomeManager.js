@@ -2,7 +2,6 @@ import {SoundManager} from "./soundManager.js";
 import {buttons, defaultInitialBPM, elements, sounds} from "./vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
-import {ButtonsManager} from "./buttonsManager.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
 import {parseNoteSize, toggleButtonsLimit} from "./utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
@@ -114,10 +113,10 @@ export class MetronomeManager {
         if (this.skipper > 0) {
             this.skipper--;
             if (this.trainingModeManager.getIsFirstLoop()) {
-                playMetronomeStep(sequence, currentStep, time);
+                this.playMetronomeStep(this.sequence, this.currentStep, time);
             }
             if (this.skipper === 0) {
-                trainingModeManager.setIsFirstLoop(false);
+                this.trainingModeManager.setIsFirstLoop(false);
             }
         } else {
             this.playMetronomeStep(this.sequence, this.currentStep, time);
@@ -174,8 +173,9 @@ export class MetronomeManager {
         this.loop.callback = (time) => this.getMetronomeLoopCallback(time);
     }
 
-    handleBpmChange(newBpm) {
-        if (isNaN(newBpm) || bpm === newBpm) {
+    handleBpmChange(difference) {
+        const newBpm = this.bpm + difference;
+        if (isNaN(newBpm) || this.bpm === newBpm) {
             return;
         }
         if (newBpm > 500) {
@@ -196,8 +196,8 @@ export class MetronomeManager {
     }
 
     checkBPMLimit() {
-        const minLimit = bpm <= 1;
-        const maxLimit = bpm >= 500;
+        const minLimit = this.bpm <= 1;
+        const maxLimit = this.bpm >= 500;
 
         toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
         toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);

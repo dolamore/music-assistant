@@ -53,6 +53,8 @@ export class ButtonsManager {
     }
 
     renderButtons() {
+        const elementsManager = this.elementsManager;
+
         buttons.decreaseBeatsButton.addEventListener('click', this.beatsBarsManager.decreaseBeat);
 
         buttons.increaseBeatsButton.addEventListener('click', this.beatsBarsManager.increaseBeat);
@@ -63,40 +65,23 @@ export class ButtonsManager {
 
         buttons.startStopButton.addEventListener('click', this.toggleStartStopButton.bind(this));
 
-        buttons.togglePendulumBar.addEventListener('change', (e) => this.elementsManager.togglePendulumBar(e));
+        buttons.togglePendulumBar.addEventListener('change', (e) => elementsManager.togglePendulumBar(e));
 
-        buttons.toggleFlashingBar.addEventListener('change', (e) => this.elementsManager.toggleFlashingBar(e));
+        buttons.toggleFlashingBar.addEventListener('change', (e) => elementsManager.toggleFlashingBar(e));
 
-        buttons.toggleBeatBars.addEventListener('change', (e) => this.elementsManager.toggleBeatBars(e));
+        buttons.toggleBeatBars.addEventListener('change', (e) => elementsManager.toggleBeatBars(e));
 
-        buttons.settingsButton.addEventListener('click', () => this.elementsManager.toggleSettingsPanel());
+        buttons.settingsButton.addEventListener('click', () => elementsManager.toggleSettingsPanel());
 
         buttons.saveSettingsButton.addEventListener('click', () => this.handleSaveSettings());
 
 
+        buttons.increaseBPMButton.addEventListener('click', () => elementsManager.handleBpmChange(1));
 
+        buttons.increaseFiveBPMButton.addEventListener('click', () => elementsManager.handleBpmChange(5));
 
+        buttons.decreaseBPMButton.addEventListener('click', () => elementsManager.handleBpmChange(-1));
 
-
-
-        buttons.increaseBPMButton.addEventListener('click', () => {
-            const newBpm = bpm + 1;
-            handleBpmChange(newBpm);
-        });
-
-        buttons.increaseFiveBPMButton.addEventListener('click', () => {
-            const newBpm = bpm + 5;
-            handleBpmChange(newBpm);
-        });
-
-        buttons.decreaseBPMButton.addEventListener('click', () => {
-            const newBpm = bpm - 1;
-            handleBpmChange(newBpm);
-        });
-
-        buttons.decreaseFiveBPMButton.addEventListener('click', () => {
-            const newBpm = bpm - 5;
-            handleBpmChange(newBpm);
-        });
+        buttons.decreaseFiveBPMButton.addEventListener('click', () => elementsManager.handleBpmChange(-5));
     }
 }
