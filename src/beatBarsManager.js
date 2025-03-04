@@ -8,9 +8,6 @@ export class BeatBarsManager {
 
 
     decreaseBeat() {
-        // Удаляем последнюю строку из DOM
-        Elements.beatRows[Elements.beatRows.length - 1].remove();
-
         // Удаляем последний элемент из beat-container
         const lastBeatRow = elements.beatContainer.lastElementChild;
         if (lastBeatRow) {
