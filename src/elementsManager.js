@@ -8,7 +8,7 @@ import {
     maxBeatsAmount,
     noteMultipliers
 } from "./vars.js";
-import {lcmArray, toggleButtonsLimit} from "./utils.js";
+import {lcmArray, parseNoteSize, toggleButtonsLimit} from "./utils.js";
 
 export class ElementsManager {
     constructor(metronomeManager) {
@@ -207,6 +207,27 @@ export class ElementsManager {
 
     isBeatToggleChecked() {
         return buttons.toggleBeatBars.checked;
+    }
+
+    toggleFlashingBar(e) {
+        elements.flashingBar.classList.toggle('hidden', !e.target.checked);
+    }
+
+
+    toggleBeatBars(e) {
+        elements.beats.forEach(beat => {
+            beat.classList.toggle('hidden', !e.target.checked);
+        });
+    }
+
+    togglePendulumBar(e) {
+        if (e.target.checked) {
+            elements.pendulumElement.style.opacity = '1';
+            elements.pendulumBarElement.style.opacity = '1';
+        } else {
+            elements.pendulumElement.style.opacity = '0';
+            elements.pendulumBarElement.style.opacity = '0';
+        }
     }
 
 

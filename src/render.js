@@ -1,13 +1,9 @@
 import {
-    sounds,
-    initialNumberOfBeats,
-    defaultSoundSettings,
-    beatHTML,
     buttons,
     elements,
     defaultInitialBPM
 } from './vars.js';
-import {toggleButtonsLimit, handleInputBlur} from './utils.js';
+import {handleInputBlur} from './utils.js';
 import {MetronomeManager} from "./metronomeManager.js";
 import {HotBindManager} from "./hotBindManager.js";
 import {ButtonsManager} from "./buttonsManager.js";
@@ -15,8 +11,6 @@ import {ButtonsManager} from "./buttonsManager.js";
 
 let bpm = defaultInitialBPM;
 let isPlaying = false;
-let loop;
-let sequence;
 const hotBindManager = new HotBindManager();
 const metronomeManager = new MetronomeManager();
 const buttonsManager = new ButtonsManager(metronomeManager);
@@ -27,28 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
     hotBindManager.renderHotBinds();
 
     buttonsManager.renderButtons();
-
-    buttons.togglePendulumBar.addEventListener('change', function (e) {
-        const pendulumElement = document.querySelector('.pendulum');
-        const barElement = document.querySelector('.horizontal-bar');
-        if (e.target.checked) {
-            pendulumElement.style.opacity = '1';
-            barElement.style.opacity = '1';
-        } else {
-            pendulumElement.style.opacity = '0';
-            barElement.style.opacity = '0';
-        }
-    });
-
-    buttons.toggleFlashingBar.addEventListener('change', function (e) {
-        document.querySelector('.flashing-bar').classList.toggle('hidden', !e.target.checked);
-    });
-
-    buttons.toggleBeatBars.addEventListener('change', function (e) {
-        document.querySelectorAll('.beat').forEach(beat => {
-            beat.classList.toggle('hidden', !e.target.checked);
-        });
-    });
 
     window.addEventListener('resize', () => {
         if (isPlaying) {
@@ -62,11 +34,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     buttons.saveSettingsButton.addEventListener('click', function () {
         metronomeManager.soundManager.clearSelectedSounds();
-        metronomeManager.soundManager.clearSelectedSounds();
+        metronomeManager.soundManager.clearSoundSettings();
         // Извлекаем и обновляем настройки для каждого бита
         elements.beatsRows.forEach((row) => {
             metronomeManager.soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
-            metronomeManager.soundManager.addSoundSettings(getSoundSettings(row));
+            metronomeManager.soundManager.addSoundSetting(metronomeManager.soundManager.getSoundSettingsData(row));
         });
 
         // Обновляем данные в DOM
@@ -84,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     elements.bpmInput.addEventListener('input', (e) => {
-        handleBpmChange(parseInt(e.target.value, 10));
+        metronomeManager.handleBpmChange(parseInt(e.target.value, 10));
     });
     elements.bpmInput.addEventListener('blur', () => {
         const oldBpm = bpm;
@@ -149,67 +121,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function changeBeatSound(beatElement) {
-    const beatIndex = parseInt(beatElement.dataset.beat, 10);
-    const currentSound = parseInt(beatElement.dataset.sound, 10);
-
-    // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
-    const nextSound = (currentSound % sounds.length) + 1;
-    beatElement.dataset.sound = nextSound;
-
-    // Update selectedSounds array
-    metronomeManager.soundManager.getSelectedSounds()[beatIndex] = nextSound;
-
-    // Update select in sound settings
-    const soundSelect = document.getElementById(`sound-${beatIndex}`);
-    if (soundSelect) {
-        soundSelect.value = nextSound;
-    }
-
-    // Update metronome sequence without restarting
-    if (isPlaying) {
-        updateMetronomeSequence();
-    }
-}
-
-function updateMetronomeSequence() {
-    sequence = generateFixedMetronomeSequence();
-    loop.callback = (time) => getMetronomeLoopCallback(time);
-}
-
-function handleBpmChange(newBpm) {
-    if (isNaN(newBpm) || bpm === newBpm) {
-        return;
-    }
-    if (newBpm > 500) {
-        bpm = 500;
-        elements.bpmInput.value = 500;
-    } else if (newBpm < 1) {
-        bpm = 1;
-        elements.bpmInput.value = 1;
-    } else {
-        bpm = newBpm;
-        elements.bpmInput.value = newBpm;
-    }
-    checkBPMLimit();
-    if (loop) loop.stop();  // Останавливаем текущий цикл метронома
-    if (isPlaying) {
-        restartMetronomeAndPendulum();
-    }
-}
-
-
-function getSoundSettings(row) {
-    return Object.fromEntries(Object.keys(defaultSoundSettings).map(key => {
-        const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
-        return [key, input ? parseFloat(input.value) : defaultSoundSettings[key]];
-    }));
-}
-
-function checkBPMLimit() {
-    const minLimit = bpm <= 1;
-    const maxLimit = bpm >= 500;
-
-    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
-    toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
-}

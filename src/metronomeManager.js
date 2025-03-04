@@ -4,7 +4,7 @@ import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import {ButtonsManager} from "./buttonsManager.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {parseNoteSize} from "./utils.js";
+import {parseNoteSize, toggleButtonsLimit} from "./utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 
 export class MetronomeManager {
@@ -19,7 +19,7 @@ export class MetronomeManager {
         this.skipper = 0;
         this.currentStep = 0;
         this.isStartOfLoop = false;
-        this.soundManager = new SoundManager();
+        this.soundManager = new SoundManager(this);
         this.beatBarsManager = new BeatBarsManager(this);
         this.elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
@@ -169,9 +169,42 @@ export class MetronomeManager {
         }
     }
 
+    updateMetronomeSequence() {
+        this.sequence = this.generateFixedMetronomeSequence();
+        this.loop.callback = (time) => this.getMetronomeLoopCallback(time);
+    }
+
+    handleBpmChange(newBpm) {
+        if (isNaN(newBpm) || bpm === newBpm) {
+            return;
+        }
+        if (newBpm > 500) {
+            this.bpm = 500;
+            elements.bpmInput.value = 500;
+        } else if (newBpm < 1) {
+            this.bpm = 1;
+            elements.bpmInput.value = 1;
+        } else {
+            this.bpm = newBpm;
+            elements.bpmInput.value = newBpm;
+        }
+        this.checkBPMLimit();
+        if (this.loop) this.loop.stop();  // Останавливаем текущий цикл метронома
+        if (this.isPlaying) {
+            this.restartMetronomeAndPendulum();
+        }
+    }
+
+    checkBPMLimit() {
+        const minLimit = bpm <= 1;
+        const maxLimit = bpm >= 500;
+
+        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
+        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
+    }
+
     renderMetronomeElements() {
         this.soundManager.renderSoundElements();
-        this.beatBarsManager.renderBeatBars();
         this.trainingModeManager.renderTrainingModeElements();
         this.elementsManager.renderElements();
     }

@@ -133,7 +133,13 @@ export const elements = {
     beatsCounter: document.getElementById('beats-counter'),
     timeSignature: document.getElementById('time-signature'),
     noteSizeDropdowns: document.querySelectorAll('.note-size-dropdown'),
-    beatsRows: document.querySelector('.beats-rows'), //sound-row????
+
+    flashingBar: document.querySelector('.flashing-bar'),
+
+    beatsRows: document.querySelector('.beats-row'), //sound-row????
+    beatWrappers: document.querySelectorAll('.beat-wrapper'),
+    beatContainer: document.querySelector('.beat-container'),
+    beats: document.querySelectorAll('.beat'),
 
     pendulumElement: document.querySelector('.pendulum'),
     pendulumBarElement: document.querySelector('.horizontal-bar'),

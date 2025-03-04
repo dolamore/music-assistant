@@ -38,5 +38,11 @@ export class ButtonsManager {
         buttons.decreaseNotesButton.addEventListener('click', this.changeNoteSize.bind(this, false));
 
         buttons.startStopButton.addEventListener('click', this.toggleStartStopButton.bind(this));
+
+        buttons.togglePendulumBar.addEventListener('change', (e) => this.elementsManager.togglePendulumBar(e));
+
+        buttons.toggleFlashingBar.addEventListener('change', (e) => this.elementsManager.toggleFlashingBar(e));
+
+        buttons.toggleBeatBars.addEventListener('change', (e) => this.elementsManager.toggleBeatBars(e));
     }
 }
