@@ -137,8 +137,7 @@ export const elements = {
 
     flashingBar: document.querySelector('.flashing-bar'),
 
-    beatsRows: document.querySelector('.beats-row'), //sound-row????
-    beatWrappers: document.querySelectorAll('.beat-wrapper'),
+    beatRows: document.querySelectorAll('.beat-row'),
     beatContainer: document.querySelector('.beat-container'),
     beats: document.querySelectorAll('.beat'),
 

@@ -69,12 +69,11 @@ export class MetronomeManager {
     }
 
     generateFixedMetronomeSequence() {
-        const beats = document.querySelectorAll('.beat-wrapper');
         let totalSteps = 0;
 
-        beats.forEach((beatWrapper) => {
-            const noteSize = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value).number;
-            const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
+        elements.beatRows.forEach((beatRow) => {
+            const noteSize = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value).number;
+            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
         });
@@ -82,9 +81,9 @@ export class MetronomeManager {
         const sequence = new Array(totalSteps).fill(null);
         let position = 0; // Current position pointer
 
-        beats.forEach((beatWrapper, index) => {
-            const parsedNote = parseNoteSize(beatWrapper.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beatWrapper.querySelector('.note-amount-dropdown').value, 10);
+        elements.beatRows.forEach((beatRow, index) => {
+            const parsedNote = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
+            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
             const noteSize = parsedNote.number;
             const isTriplet = parsedNote.isTriplet;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);

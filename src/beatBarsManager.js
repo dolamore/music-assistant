@@ -8,12 +8,12 @@ export class BeatBarsManager {
 
     decreaseBeat() {
         // Удаляем последнюю строку из DOM
-        elements.beatsRows[elements.beatsRows.length - 1].remove();
+        elements.beatRows[elements.beatRows.length - 1].remove();
 
         // Удаляем последний элемент из beat-container
-        const lastBeatWrapper = elements.beatContainer.lastElementChild;
-        if (lastBeatWrapper) {
-            lastBeatWrapper.remove();
+        const lastBeatRow = elements.beatContainer.lastElementChild;
+        if (lastBeatRow) {
+            lastBeatRow.remove();
         }
 
         // Обновляем массивы
@@ -21,7 +21,7 @@ export class BeatBarsManager {
         this.metronomeManager.soundManager.popSoundSetting();
 
         // Пересчитываем количество битов
-        elements.beatsCounter.textContent = elements.beatWrappers.length;
+        elements.beatsCounter.textContent = elements.beatRows.length;
 
         // Используем setTimeout, чтобы подождать завершения обновления DOM
         setTimeout(() => {
@@ -37,10 +37,9 @@ export class BeatBarsManager {
     }
 
     increaseBeat() {
-        const beatRows = document.querySelectorAll('.sound-row');
+        const newBeatIndex = elements.beatRows.length;
 
-        const newBeatIndex = beatRows.length;
-
+        console.log('newBeatIndex', newBeatIndex, this.metronomeManager);
         // Создаём новый элемент и добавляем его на страницу
         this.metronomeManager.elementsManager.createBeatElement(newBeatIndex);
 

@@ -43,20 +43,19 @@ export class ElementsManager {
     }
 
     checkBeatsLimit() {
-        const minLimit = elements.beatsRows.length <= 1;
-        const maxLimit = elements.beatsRows.length >= maxBeatsAmount;
+        const minLimit = elements.beatRows.length <= 1;
+        const maxLimit = elements.beatRows.length >= maxBeatsAmount;
 
         toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
     }
 
     countSize() {
         let beatAmount = 0;
-        const beats = document.querySelectorAll('.beat-wrapper');
         let beatPattern = [];
 
-        beats.forEach((beat) => {
-            const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
+        elements.beatRows.forEach((beatRow) => {
+            const noteData = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
+            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
             const isTriplet = noteData.isTriplet;
             const noteSize = noteData.number;
 
@@ -67,7 +66,7 @@ export class ElementsManager {
 
         const denominator = lcmArray(beatPattern);
 
-        beats.forEach((beat) => {
+        elements.beatRows.forEach((beat) => {
             const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
             const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
             const isTriplet = noteData.isTriplet;
@@ -190,7 +189,7 @@ export class ElementsManager {
 
     createBeatWrapper(index) {
         const beatWrapper = document.createElement('div');
-        beatWrapper.classList.add('beat-wrapper');
+        beatWrapper.classList.add('beat-row');
         beatWrapper.innerHTML = beatHTML(index);
         beatWrapper.querySelector('.beat').classList.toggle('hidden', !this.isBeatToggleChecked())
         return beatWrapper;
