@@ -1,4 +1,4 @@
-import {defaultSoundSettings, elements} from "./vars.js";
+import {defaultSoundSettings, Elements, elements} from "./vars.js";
 
 export class BeatBarsManager {
 
@@ -6,9 +6,10 @@ export class BeatBarsManager {
         this.metronomeManager = metronomeManager;
     }
 
+
     decreaseBeat() {
         // Удаляем последнюю строку из DOM
-        elements.beatRows[elements.beatRows.length - 1].remove();
+        Elements.beatRows[Elements.beatRows.length - 1].remove();
 
         // Удаляем последний элемент из beat-container
         const lastBeatRow = elements.beatContainer.lastElementChild;
@@ -37,9 +38,8 @@ export class BeatBarsManager {
     }
 
     increaseBeat() {
-        const newBeatIndex = elements.beatRows.length;
+        const newBeatIndex = Elements.beatRows.length;
 
-        console.log('newBeatIndex', newBeatIndex, this.metronomeManager);
         // Создаём новый элемент и добавляем его на страницу
         this.metronomeManager.elementsManager.createBeatElement(newBeatIndex);
 
@@ -56,6 +56,6 @@ export class BeatBarsManager {
         }
 
         // Обновляем тактовую сетку (если нужно)
-        this.metronomeManager.soundManager.updateTimeSignature();
+        this.metronomeManager.elementsManager.updateTimeSignature();
     }
 }

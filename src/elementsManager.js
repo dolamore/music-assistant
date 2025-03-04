@@ -2,7 +2,7 @@ import {
     beatHTML,
     buttons,
     defaultInitialBPM,
-    defaultSoundSettings,
+    defaultSoundSettings, Elements,
     elements,
     initialNumberOfBeats,
     maxBeatsAmount,
@@ -27,7 +27,7 @@ export class ElementsManager {
         let minLimit = false;
         let maxLimit = false;
 
-        elements.noteSizeDropdowns.forEach((dropdown) => {
+        Elements.noteSizeDropdowns.forEach((dropdown) => {
             const currentValue = parseInt(dropdown.value);
 
             if (currentValue === 1) {
@@ -43,8 +43,8 @@ export class ElementsManager {
     }
 
     checkBeatsLimit() {
-        const minLimit = elements.beatRows.length <= 1;
-        const maxLimit = elements.beatRows.length >= maxBeatsAmount;
+        const minLimit = Elements.beatRows.length <= 1;
+        const maxLimit = Elements.beatRows.length >= maxBeatsAmount;
 
         toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
     }
@@ -148,13 +148,10 @@ export class ElementsManager {
     }
 
     createBeatElement(index) {
-        const soundSettingsContainer = document.querySelector('.sound-settings');
-        soundSettingsContainer.appendChild(this.createSoundRow(index));
+        elements.soundSettingsContainer.appendChild(this.createSoundRow(index));
 
-        const beatContainer = document.querySelector('.beat-container');
-        beatContainer.appendChild(this.createBeatWrapper(index));
+        elements.beatContainer.appendChild(this.createBeatWrapper(index));
 
-        // Добавляем настройки звука в массив
         this.metronomeManager.soundManager.addSoundSetting(defaultSoundSettings);
     }
 

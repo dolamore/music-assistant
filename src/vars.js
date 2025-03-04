@@ -124,6 +124,24 @@ export const probButtons = {
     }
 }
 
+export class Elements {
+    static get beatRows() {
+        return document.querySelectorAll('.beat-row');
+    }
+
+    static get beats() {
+        return document.querySelectorAll('.beat');
+    }
+
+    static get noteSizeDropdowns() {
+        return document.querySelectorAll('.note-size-dropdown');
+    }
+
+    static get noteAmountDropdowns() {
+        return document.querySelectorAll('.note-amount-dropdown');
+    }
+}
+
 export const elements = {
     bpmInput: document.getElementById('bpm-input'),
     settingsPanel: document.getElementById('settings-panel'),
@@ -137,9 +155,9 @@ export const elements = {
 
     flashingBar: document.querySelector('.flashing-bar'),
 
-    beatRows: document.querySelectorAll('.beat-row'),
+    beatRows: Elements.beatRows,
     beatContainer: document.querySelector('.beat-container'),
-    beats: document.querySelectorAll('.beat'),
+    beats: Elements.beats,
 
     pendulumElement: document.querySelector('.pendulum'),
     pendulumBarElement: document.querySelector('.horizontal-bar'),
