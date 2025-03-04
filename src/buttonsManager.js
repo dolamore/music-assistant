@@ -1,4 +1,4 @@
-import {buttons, elements} from "./vars.js";
+import {buttons, Elements, elements} from "./vars.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class ButtonsManager {
@@ -33,7 +33,7 @@ export class ButtonsManager {
         soundManager.clearSelectedSounds();
         soundManager.clearSoundSettings();
         // Извлекаем и обновляем настройки для каждого бита
-        elements.beatRows.forEach((row) => {
+        Elements.beatRows.forEach((row) => {
             soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
             soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
         });

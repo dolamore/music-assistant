@@ -1,5 +1,5 @@
 import {SoundManager} from "./soundManager.js";
-import {buttons, defaultInitialBPM, elements, sounds} from "./vars.js";
+import {buttons, defaultInitialBPM, Elements, elements, sounds} from "./vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
@@ -71,7 +71,7 @@ export class MetronomeManager {
     generateFixedMetronomeSequence() {
         let totalSteps = 0;
 
-        elements.beatRows.forEach((beatRow) => {
+        Elements.beatRows.forEach((beatRow) => {
             const noteSize = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value).number;
             const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
 
@@ -81,7 +81,7 @@ export class MetronomeManager {
         const sequence = new Array(totalSteps).fill(null);
         let position = 0; // Current position pointer
 
-        elements.beatRows.forEach((beatRow, index) => {
+        Elements.beatRows.forEach((beatRow, index) => {
             const parsedNote = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
             const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
             const noteSize = parsedNote.number;

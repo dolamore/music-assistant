@@ -22,7 +22,7 @@ export class BeatBarsManager {
         this.metronomeManager.soundManager.popSoundSetting();
 
         // Пересчитываем количество битов
-        elements.beatsCounter.textContent = elements.beatRows.length;
+        elements.beatsCounter.textContent = Elements.beatRows.length;
 
         // Используем setTimeout, чтобы подождать завершения обновления DOM
         setTimeout(() => {
