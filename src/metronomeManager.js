@@ -203,6 +203,12 @@ export class MetronomeManager {
         toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
     }
 
+    restartIfPlaying() {
+        if (this.isPlaying) {
+            this.restartMetronomeAndPendulum();
+        }
+    }
+
     renderMetronomeElements() {
         this.soundManager.renderSoundElements();
         this.trainingModeManager.renderTrainingModeElements();

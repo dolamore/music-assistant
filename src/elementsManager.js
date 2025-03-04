@@ -8,7 +8,7 @@ import {
     maxBeatsAmount,
     noteMultipliers
 } from "./vars.js";
-import {lcmArray, parseNoteSize, toggleButtonsLimit} from "./utils.js";
+import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "./utils.js";
 
 export class ElementsManager {
     constructor(metronomeManager) {
@@ -230,11 +230,65 @@ export class ElementsManager {
         }
     }
 
+    toggleSettingsPanel() {
+        elements.settingsPanel.classList.toggle('hidden');
+    }
+
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;
         elements.bpmInput.value = defaultInitialBPM;
         this.renderSoundSettings();
         this.initialBeatRender();
+
+        window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
+
+
+
+
+        elements.bpmInput.addEventListener('input', (e) => {
+            metronomeManager.handleBpmChange(parseInt(e.target.value, 10));
+        });
+        elements.bpmInput.addEventListener('blur', () => {
+            const oldBpm = bpm;
+            handleInputBlur(elements.bpmInput, defaultInitialBPM, bpm);
+            if (isPlaying && oldBpm !== defaultInitialBPM) {
+                restartMetronomeAndPendulum();
+            }
+        });
+
+        elements.bpmInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('change', function (event) {
+            if (event.target.matches('.note-size-dropdown') || event.target.matches('.note-amount-dropdown')) {
+                updateTimeSignature();
+
+                if (isPlaying) {
+                    updateMetronomeSequence();
+                }
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('beat')) {
+                changeBeatSound(event.target);
+            }
+        });
     }
 }
