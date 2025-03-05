@@ -140,6 +140,10 @@ export class Elements {
     static get noteAmountDropdowns() {
         return document.querySelectorAll('.note-amount-dropdown');
     }
+
+    static get soundSettingsRows() {
+        return document.querySelectorAll('.sound-row');
+    }
 }
 
 export const elements = {

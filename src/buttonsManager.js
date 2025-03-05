@@ -34,7 +34,7 @@ export class ButtonsManager {
         soundManager.clearSelectedSounds();
         soundManager.clearSoundSettings();
         // Извлекаем и обновляем настройки для каждого бита
-        Elements.beatRows.forEach((row) => {
+        Elements.soundSettingsRows.forEach((row) => {
             soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
             soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
         });

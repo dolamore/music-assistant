@@ -2,7 +2,8 @@ import {
     beatHTML,
     buttons,
     defaultInitialBPM,
-    defaultSoundSettings, Elements as Elementslements, Elements,
+    defaultSoundSettings,
+    Elements,
     elements,
     initialNumberOfBeats,
     maxBeatsAmount,
@@ -209,7 +210,6 @@ export class ElementsManager {
     toggleFlashingBar(e) {
         elements.flashingBar.classList.toggle('hidden', !e.target.checked);
     }
-
 
     toggleBeatBars(e) {
         Elements.beats.forEach(beat => {
