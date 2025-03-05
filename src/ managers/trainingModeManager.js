@@ -1,5 +1,5 @@
-import {buttons, defaultLoopSkipProbability, defaultNoteSkipProbability, elements, probButtons} from "./vars.js";
-import {handleInputBlur, toggleButtonsLimit} from "./utils.js";
+import {buttons, defaultLoopSkipProbability, defaultNoteSkipProbability, elements, probButtons} from "../vars.js";
+import {handleInputBlur, toggleButtonsLimit} from "../utils.js";
 
 export class TrainingModeManager {
     constructor() {
@@ -32,8 +32,8 @@ export class TrainingModeManager {
             elements.loopSkipProbabilityInput.value = roundedPossibility;
             this.loopSkipProbability = roundedPossibility / 100;
         }
-
         this.checkSkipProbabilityLimit(this.loopSkipProbability, probButtons.loopSkipProbabilityButtons);
+        this.setIsFirstLoop(true);
     }
 
     handleNoteSkipProbabilityChange(changeProbability) {
@@ -53,6 +53,7 @@ export class TrainingModeManager {
             elements.noteSkipProbabilityInput.value = roundedPossibility;
             this.noteSkipProbability = roundedPossibility / 100;
         }
+        this.setIsFirstLoop(true);
         this.checkSkipProbabilityLimit(this.noteSkipProbability, probButtons.noteSkipProbabilityButtons);
     }
 

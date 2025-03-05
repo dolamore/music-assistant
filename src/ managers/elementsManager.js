@@ -8,8 +8,8 @@ import {
     initialNumberOfBeats,
     maxBeatsAmount,
     noteMultipliers
-} from "./vars.js";
-import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "./utils.js";
+} from "../vars.js";
+import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "../utils.js";
 
 export class ElementsManager {
     constructor(metronomeManager) {
@@ -84,7 +84,6 @@ export class ElementsManager {
     }
 
     changeDropdownSize(dropdown, direction) {
-        console.log("entered changeDropdownSize");
         const options = Array.from(dropdown.options);
         const currentIndex = options.findIndex(option => option.value === dropdown.value);
         // Изменяем индекс с учетом пропуска триолей
@@ -261,6 +260,12 @@ export class ElementsManager {
         }
     }
 
+    deleteLastSoundSettingsRow() {
+        const lastSoundRow = Elements.soundSettingsRows[Elements.soundSettingsRows.length - 1];
+        if (lastSoundRow) {
+            lastSoundRow.remove();
+        }
+    }
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;

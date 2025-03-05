@@ -1,4 +1,4 @@
-import {defaultSoundSettings, initialNumberOfBeats, sounds} from "./vars.js";
+import {defaultSoundSettings, initialNumberOfBeats, sounds} from "../vars.js";
 
 export class SoundManager {
     constructor(metronomeManager) {

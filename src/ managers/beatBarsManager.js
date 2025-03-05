@@ -1,4 +1,4 @@
-import {defaultSoundSettings, Elements, elements} from "./vars.js";
+import {defaultSoundSettings, Elements, elements} from "../vars.js";
 
 export class BeatBarsManager {
 
@@ -9,10 +9,9 @@ export class BeatBarsManager {
 
     decreaseBeat() {
         // Удаляем последний элемент из beat-container
-        const lastBeatRow = elements.beatContainer.lastElementChild;
-        if (lastBeatRow) {
-            lastBeatRow.remove();
-        }
+        this.deleteLastBeatRow();
+
+        this.metronomeManager.elementsManager.deleteLastSoundSettingsRow();
 
         // Обновляем массивы
         this.metronomeManager.soundManager.popSelectedSound();
@@ -32,6 +31,13 @@ export class BeatBarsManager {
         }
 
         this.metronomeManager.elementsManager.updateTimeSignature();
+    }
+
+    deleteLastBeatRow() {
+        const lastBeatRow = elements.beatContainer.lastElementChild;
+        if (lastBeatRow) {
+            lastBeatRow.remove();
+        }
     }
 
     increaseBeat() {

@@ -1,4 +1,4 @@
-import {buttons, Elements, elements} from "./vars.js";
+import {buttons, Elements, elements} from "../vars.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class ButtonsManager {
@@ -9,7 +9,6 @@ export class ButtonsManager {
     }
 
     changeNoteSize(increase) {
-        console.log("entered changeNoteSize");
         Elements.noteSizeDropdowns.forEach((dropdown) => {
             this.elementsManager.changeDropdownSize(dropdown, increase);
         });

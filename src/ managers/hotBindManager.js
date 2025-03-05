@@ -1,4 +1,4 @@
-import {buttons} from "./vars.js";
+import {buttons} from "../vars.js";
 
 export class HotBindManager {
     renderHotBinds() {
