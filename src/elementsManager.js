@@ -2,7 +2,7 @@ import {
     beatHTML,
     buttons,
     defaultInitialBPM,
-    defaultSoundSettings, Elements,
+    defaultSoundSettings, Elements as Elementslements, Elements,
     elements,
     initialNumberOfBeats,
     maxBeatsAmount,
@@ -83,6 +83,7 @@ export class ElementsManager {
     }
 
     changeDropdownSize(dropdown, direction) {
+        console.log("entered changeDropdownSize");
         const options = Array.from(dropdown.options);
         const currentIndex = options.findIndex(option => option.value === dropdown.value);
         // Изменяем индекс с учетом пропуска триолей
@@ -211,7 +212,7 @@ export class ElementsManager {
 
 
     toggleBeatBars(e) {
-        elements.beats.forEach(beat => {
+        Elements.beats.forEach(beat => {
             beat.classList.toggle('hidden', !e.target.checked);
         });
     }
@@ -246,7 +247,7 @@ export class ElementsManager {
 
     updateBeatDropdowns(e) {
         if (e.target.matches('.note-size-dropdown') || e.target.matches('.note-amount-dropdown')) {
-            this.metronomeManager.updateTimeSignature();
+            this.updateTimeSignature();
 
             if (this.metronomeManager.isPlaying) {
                 this.metronomeManager.updateMetronomeSequence();

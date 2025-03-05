@@ -150,14 +150,10 @@ export const elements = {
     loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
     beatsCounter: document.getElementById('beats-counter'),
     timeSignature: document.getElementById('time-signature'),
-    noteSizeDropdowns: document.querySelectorAll('.note-size-dropdown'),
-    noteAmountDropdowns: document.querySelectorAll('.note-amount-dropdown'),
 
     flashingBar: document.querySelector('.flashing-bar'),
 
-    beatRows: Elements.beatRows,
     beatContainer: document.querySelector('.beat-container'),
-    beats: Elements.beats,
 
     pendulumElement: document.querySelector('.pendulum'),
     pendulumBarElement: document.querySelector('.horizontal-bar'),
