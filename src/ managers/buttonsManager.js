@@ -1,4 +1,4 @@
-import {buttons, Elements, elements} from "./vars.js";
+import {buttons, Elements, elements} from "../vars.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class ButtonsManager {
@@ -9,7 +9,7 @@ export class ButtonsManager {
     }
 
     changeNoteSize(increase) {
-        elements.noteSizeDropdowns.forEach((dropdown) => {
+        Elements.noteSizeDropdowns.forEach((dropdown) => {
             this.elementsManager.changeDropdownSize(dropdown, increase);
         });
         this.elementsManager.updateTimeSignature();
@@ -33,13 +33,13 @@ export class ButtonsManager {
         soundManager.clearSelectedSounds();
         soundManager.clearSoundSettings();
         // Извлекаем и обновляем настройки для каждого бита
-        Elements.beatRows.forEach((row) => {
+        Elements.soundSettingsRows.forEach((row) => {
             soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
             soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
         });
 
         // Обновляем данные в DOM
-        elements.beats.forEach((beat, index) => {
+        Elements.beats.forEach((beat, index) => {
             beat.dataset.sound = soundManager.getSelectedSounds()[index];  // Обновляем звук для каждого бита
         });
 
@@ -55,11 +55,11 @@ export class ButtonsManager {
     renderButtons() {
         buttons.decreaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.decreaseBeat());
 
-        buttons.increaseBeatsButton.addEventListener('click', () =>  this.beatsBarsManager.increaseBeat());
+        buttons.increaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.increaseBeat());
 
-        buttons.increaseNotesButton.addEventListener('click', this.changeNoteSize.bind(this, true));
+        buttons.increaseNotesButton.addEventListener('click', () => this.changeNoteSize(true));
 
-        buttons.decreaseNotesButton.addEventListener('click', this.changeNoteSize.bind(this, false));
+        buttons.decreaseNotesButton.addEventListener('click', () => this.changeNoteSize(false));
 
         buttons.startStopButton.addEventListener('click', this.toggleStartStopButton.bind(this));
 

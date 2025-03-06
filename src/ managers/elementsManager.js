@@ -2,13 +2,14 @@ import {
     beatHTML,
     buttons,
     defaultInitialBPM,
-    defaultSoundSettings, Elements,
+    defaultSoundSettings,
+    Elements,
     elements,
     initialNumberOfBeats,
     maxBeatsAmount,
     noteMultipliers
-} from "./vars.js";
-import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "./utils.js";
+} from "../vars.js";
+import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "../utils.js";
 
 export class ElementsManager {
     constructor(metronomeManager) {
@@ -209,9 +210,8 @@ export class ElementsManager {
         elements.flashingBar.classList.toggle('hidden', !e.target.checked);
     }
 
-
     toggleBeatBars(e) {
-        elements.beats.forEach(beat => {
+        Elements.beats.forEach(beat => {
             beat.classList.toggle('hidden', !e.target.checked);
         });
     }
@@ -246,7 +246,7 @@ export class ElementsManager {
 
     updateBeatDropdowns(e) {
         if (e.target.matches('.note-size-dropdown') || e.target.matches('.note-amount-dropdown')) {
-            this.metronomeManager.updateTimeSignature();
+            this.updateTimeSignature();
 
             if (this.metronomeManager.isPlaying) {
                 this.metronomeManager.updateMetronomeSequence();
@@ -260,6 +260,12 @@ export class ElementsManager {
         }
     }
 
+    deleteLastSoundSettingsRow() {
+        const lastSoundRow = Elements.soundSettingsRows[Elements.soundSettingsRows.length - 1];
+        if (lastSoundRow) {
+            lastSoundRow.remove();
+        }
+    }
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;

@@ -23,7 +23,12 @@
       ]
     }
   },
-  "keywords": ["metronome", "music", "electron", "app"],
+  "keywords": [
+    "metronome",
+    "music",
+    "electron",
+    "app"
+  ],
   "author": "dolamore",
   "license": "MIT",
   "description": "A simple metronome application built with Electron.",
@@ -33,6 +38,8 @@
   },
   "dependencies": {
     "howler": "^2.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tone": "^15.0.4"
   }
 }

@@ -1,9 +1,9 @@
 import {SoundManager} from "./soundManager.js";
-import {buttons, defaultInitialBPM, Elements, elements, sounds} from "./vars.js";
+import {buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from 'https://cdn.skypack.dev/tone';
-import {parseNoteSize, toggleButtonsLimit} from "./utils.js";
+import {parseNoteSize, toggleButtonsLimit} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 
 export class MetronomeManager {
@@ -104,7 +104,8 @@ export class MetronomeManager {
         this.isStartOfLoop = this.currentStep === 0;
 
         if (this.trainingModeManager.getIsTrainingMode()) {
-            if (this.isStartOfLoop && (this.trainingModeManager.getIsFirstLoop() || Math.random() < this.trainingModeManager.getLoopSkipProbability())) {
+            if (this.isStartOfLoop &&
+                (this.trainingModeManager.getIsFirstLoop() || Math.random() < this.trainingModeManager.getLoopSkipProbability())) {
                 this.skipper = this.sequence.length;
             }
         }
