@@ -6,7 +6,6 @@ export class BeatBarsManager {
         this.metronomeManager = metronomeManager;
     }
 
-
     decreaseBeat() {
         // Удаляем последний элемент из beat-container
         this.deleteLastBeatRow();
