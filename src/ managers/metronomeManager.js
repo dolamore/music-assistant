@@ -8,7 +8,7 @@ import {TrainingModeManager} from "./trainingModeManager.js";
 
 export class MetronomeManager {
     constructor() {
-        this.bpm = defaultInitialBPM;
+        this._bpm = defaultInitialBPM;
         this.isPlaying = false;
         this.loop = null;
         this.count = 0;
@@ -22,6 +22,14 @@ export class MetronomeManager {
         this.beatBarsManager = new BeatBarsManager(this);
         this.elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
+    }
+
+    get bpm() {
+        return this._bpm;
+    }
+
+    set bpm(value) {
+        this._bpm = value;
     }
 
     getBeatBarsManager() {
