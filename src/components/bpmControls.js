@@ -1,4 +1,5 @@
 import React from "react";
+import {bpmMaxLimit, defaultInitialBPM} from "../vars.js";
 
 export default function BpmControls({metronomeManager}) {
     return (
@@ -15,35 +16,67 @@ export default function BpmControls({metronomeManager}) {
     )
 }
 
-function IncreaseBpmButton(metronomeManager) {
+function IncreaseBpmButton({metronomeManager}) {
     return (
-        <button onClick={() => metronomeManager.handleBpmChange(1)}>+1</button>
+        <button
+            onClick={() => metronomeManager.handleBpmChange(1)}
+            disabled={metronomeManager.bpmMaxLimitReached}
+            className={`${metronomeManager.bpmMaxLimitReached ? 'button-limit' : ''}`}
+        >
+            +1
+        </button>
     )
 }
 
 function BpmInput({metronomeManager}) {
     return (
         <input type="number" id="bpm-input" value={metronomeManager.bpm}
-               onChange={metronomeManager.handleNewBPM}
-               onBlur={metronomeManager.elementsManager.handleBpmInputChanges}/>
+               onChange={
+                   (e) => {
+                       console.log(e);
+                       metronomeManager.handleNewBPM(e.target.value)
+                   }
+               }
+               onBlur={
+                   () =>
+                       metronomeManager.elementsManager.handleBpmInputChanges(metronomeManager.bpm, defaultInitialBPM)
+               }/>
     )
 }
 
-function DecreaseBpmButton(metronomeManager) {
+function DecreaseBpmButton({metronomeManager}) {
     return (
-        <button onClick={() => metronomeManager.handleBpmChange(-1)}>-1</button>
+        <button
+            onClick={() => metronomeManager.handleBpmChange(-1)}
+            disabled={metronomeManager.bpmMinLimitReached}
+            className={`${metronomeManager.bpmMinLimitReached ? 'button-limit' : ''}`}
+        >
+            -1
+        </button>
     )
 }
 
-function IncreaseFiveBpmButton(metronomeManager) {
+function IncreaseFiveBpmButton({metronomeManager}) {
     return (
-        <button onClick={() => metronomeManager.handleBpmChange(5)}>+5</button>
+        <button
+            onClick={() => metronomeManager.handleBpmChange(-1)}
+            disabled={metronomeManager.bpmMinLimitReached}
+            className={`${metronomeManager.bpmMinLimitReached ? 'button-limit' : ''}`}
+        >
+            +5
+        </button>
     )
 }
 
-function DecreaseFiveBpmButton(metronomeManager) {
+function DecreaseFiveBpmButton({metronomeManager}) {
     return (
-        <button onClick={() => metronomeManager.handleBpmChange(-5)}>-5</button>
+        <button
+            onClick={() => metronomeManager.handleBpmChange(-1)}
+            disabled={metronomeManager.bpmMinLimitReached}
+            className={`${metronomeManager.bpmMinLimitReached ? 'button-limit' : ''}`}
+        >
+            -5
+        </button>
     )
 }
 

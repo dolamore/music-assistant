@@ -232,7 +232,7 @@ export class ElementsManager {
 
     handleBpmInputChanges() {
         const oldBpm = this.metronomeManager.bpm;
-        handleInputBlur(elements.bpmInput, defaultInitialBPM);
+       handleInputBlur(elements.bpmInput, defaultInitialBPM);
         if (this.metronomeManager.isPlaying && oldBpm !== defaultInitialBPM) {
             this.metronomeManager.restartMetronomeAndPendulum();
         }

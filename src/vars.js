@@ -172,3 +172,5 @@ export const elements = {
 export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
 export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
 export const defaultInitialBPM = 120;
+export const bpmMaxLimit = 500;
+export const bpmMinLimit = 1;

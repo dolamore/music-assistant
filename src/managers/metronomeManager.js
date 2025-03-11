@@ -24,6 +24,24 @@ export class MetronomeManager {
         this.beatBarsManager = new BeatBarsManager(this);
         this.elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
+        this._bpmMaxLimitReached = false;
+        this._bpmMinLimitReached = false;
+    }
+
+    get bpmMaxLimitReached() {
+        return this._bpmMaxLimitReached;
+    }
+
+    set bpmMaxLimitReached(value) {
+        this._bpmMaxLimitReached = value;
+    }
+
+    get bpmMinLimitReached() {
+        return this._bpmMinLimitReached;
+    }
+
+    set bpmMinLimitReached(value) {
+        this._bpmMinLimitReached = value
     }
 
     get bpm() {
@@ -189,13 +207,10 @@ export class MetronomeManager {
         }
         if (newBpm > 500) {
             this.bpm = 500;
-            elements.bpmInput.value = 500;
         } else if (newBpm < 1) {
             this.bpm = 1;
-            elements.bpmInput.value = 1;
         } else {
             this.bpm = newBpm;
-            elements.bpmInput.value = newBpm;
         }
         this.checkBPMLimit();
         if (this.loop) this.loop.stop();  // Останавливаем текущий цикл метронома
@@ -210,11 +225,8 @@ export class MetronomeManager {
     }
 
     checkBPMLimit() {
-        const minLimit = this.bpm <= 1;
-        const maxLimit = this.bpm >= 500;
-
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
+        this.bpmMinLimitReached = this.bpm <= 1;
+        this.bpmMaxLimitReached = this.bpm >= 500;
     }
 
     restartIfPlaying() {
