@@ -1,11 +1,16 @@
+import React from "react";
+
 export default function BpmControls({metronomeManager}) {
     return (
-        <div className="bpm-controls">
-            <IncreaseBpmButton/>
-            <IncreaseFiveBpmButton/>
-            <BpmInput/>
-            <DecreaseFiveBpmButton/>
-            <DecreaseBpmButton/>
+        <div className="bpm-controls-container">
+            <label htmlFor="bpm-input">BPM:</label>
+            <div className="bpm-controls">
+                <DecreaseFiveBpmButton metronomeManager={metronomeManager}/>
+                <DecreaseBpmButton metronomeManager={metronomeManager}/>
+                <BpmInput metronomeManager={metronomeManager}/>
+                <IncreaseBpmButton metronomeManager={metronomeManager}/>
+                <IncreaseFiveBpmButton metronomeManager={metronomeManager}/>
+            </div>
         </div>
     )
 }
@@ -16,11 +21,11 @@ function IncreaseBpmButton(metronomeManager) {
     )
 }
 
-function BpmInput({metronomeManger}) {
+function BpmInput({metronomeManager}) {
     return (
-        <input type="number" id="bpm-input" value={metronomeManger.bpm}
-               onChange={metronomeManger.handleNewBPM}
-               onBlur={metronomeManger.elementsManager.handleBpmInputChanges}/>
+        <input type="number" id="bpm-input" value={metronomeManager.bpm}
+               onChange={metronomeManager.handleNewBPM}
+               onBlur={metronomeManager.elementsManager.handleBpmInputChanges}/>
     )
 }
 
