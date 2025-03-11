@@ -2,7 +2,7 @@
   "name": "metronome",
   "version": "1.0.0",
   "type": "module",
-  "main": "src/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -37,9 +37,15 @@
     "electron-builder": "^25.1.8"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "babel-loader": "^10.0.0",
     "howler": "^2.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tone": "^15.0.4"
+    "tone": "^15.0.4",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
   }
 }
