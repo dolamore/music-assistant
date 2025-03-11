@@ -4,6 +4,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
+    "start:prod": "webpack --mode production && electron .",
     "start": "electron .",
     "build": "electron-builder"
   },

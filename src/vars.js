@@ -1,4 +1,4 @@
-import * as Tone from 'https://cdn.skypack.dev/tone';
+import * as Tone from "tone";
 // Default to '4n' (quarter note)
 export const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
 

@@ -2,9 +2,11 @@ import {SoundManager} from "./soundManager.js";
 import {buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
-import * as Tone from 'https://cdn.skypack.dev/tone';
+import * as Tone from "tone";
 import {parseNoteSize, toggleButtonsLimit} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
+
+// import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class MetronomeManager {
     constructor() {

@@ -1,5 +1,5 @@
 import {buttons, Elements, elements} from "../vars.js";
-import * as Tone from 'https://cdn.skypack.dev/tone';
+import * as Tone from "tone";
 
 export class ButtonsManager {
     constructor(metronomeManager) {
