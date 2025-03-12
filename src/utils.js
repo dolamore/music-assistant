@@ -5,10 +5,10 @@ export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreas
     decreasingButton.classList.toggle('button-limit', minLimit);
 }
 
-export function handleInputBlur(element, defaultElementValue) {
+export function handleInputBlur(element, setter, defaultElementValue, handleChange) {
     if (element === '') {
-        element = defaultElementValue;
-        element.dispatchEvent(new Event('input', {bubbles: true}));
+        setter(defaultElementValue);
+        handleChange({ target: { value: defaultElementValue } });
     }
 }
 

@@ -1,5 +1,6 @@
-import React from "react";
-import {bpmMaxLimit, defaultInitialBPM} from "../vars.js";
+import React, {useState} from "react";
+import {bpmMaxLimit, bpmMinLimit, defaultInitialBPM} from "../vars.js";
+import {handleInputBlur} from "../utils.js";
 
 export default function BpmControls({metronomeManager}) {
     return (
@@ -29,19 +30,32 @@ function IncreaseBpmButton({metronomeManager}) {
 }
 
 function BpmInput({metronomeManager}) {
+    const [bpm, setBpm] = useState(metronomeManager.bpm);
+
+    const handleChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) { // Allow only numeric input
+            const newBpm = parseInt(value, 10);
+            if (newBpm >= bpmMinLimit && newBpm <= bpmMaxLimit) { // Restrict value between 1 and 500
+                setBpm(newBpm);
+                metronomeManager.handleNewBPM(newBpm);
+            } else if (value === "") {
+                setBpm(value); // Allow empty input temporarily
+            }
+        }
+    };
+
     return (
-        <input type="number" id="bpm-input" value={metronomeManager.bpm}
-               onChange={
-                   (e) => {
-                       console.log(e);
-                       metronomeManager.handleNewBPM(e.target.value)
-                   }
-               }
-               onBlur={
-                   () =>
-                       metronomeManager.elementsManager.handleBpmInputChanges(metronomeManager.bpm, defaultInitialBPM)
-               }/>
-    )
+        <input
+            type="number"
+            id="bpm-input"
+            value={bpm}
+            onChange={handleChange}
+            onBlur={() => handleInputBlur(bpm, setBpm, defaultInitialBPM, handleChange)}
+            min={bpmMinLimit}
+            max={bpmMaxLimit}
+        />
+    );
 }
 
 function DecreaseBpmButton({metronomeManager}) {
