@@ -199,7 +199,12 @@ export class MetronomeManager {
     }
 
     handleBpmChange(newBpm, setBpm) {
-        if (isNaN(newBpm)) {
+        console.log("newBpm: ", newBpm);
+        if (/^0\d/.test(newBpm)) {
+            newBpm = newBpm.replace(/^0+/, '');
+        }
+
+        if (isNaN(newBpm) || newBpm === '') {
             setBpm('');
             return;
         }

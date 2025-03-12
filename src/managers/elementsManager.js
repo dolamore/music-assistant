@@ -232,14 +232,16 @@ export class ElementsManager {
 
     handleBpmInputChanges(bpm, setBpm) {
         const oldBpm = this.metronomeManager.bpm;
-       handleInputBlur(bpm, setBpm, defaultInitialBPM);
+        handleInputBlur(bpm, setBpm, defaultInitialBPM);
         if (this.metronomeManager.isPlaying && oldBpm !== defaultInitialBPM) {
             this.metronomeManager.restartMetronomeAndPendulum();
         }
     }
 
     preventNonDigitInput(e) {
-        if (!/[0-9]/.test(e.key)) {
+        const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
+
+        if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
             e.preventDefault();
         }
     }
