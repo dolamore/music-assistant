@@ -3,10 +3,8 @@ import {buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
-import {parseNoteSize, toggleButtonsLimit} from "../utils.js";
+import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
-
-// import * as Tone from 'https://cdn.skypack.dev/tone';
 
 export class MetronomeManager {
     constructor() {
@@ -200,28 +198,29 @@ export class MetronomeManager {
         this.loop.callback = (time) => this.getMetronomeLoopCallback(time);
     }
 
-    handleBpmChange(difference) {
-        const newBpm = this.bpm + difference;
-        if (isNaN(newBpm) || this.bpm === newBpm) {
+    handleBpmChange(newBpm, setBpm) {
+        if (isNaN(newBpm)) {
+            setBpm('');
+            return;
+        }
+        if (this.bpm === newBpm) {
             return;
         }
         if (newBpm > 500) {
             this.bpm = 500;
+            setBpm(500);
         } else if (newBpm < 1) {
             this.bpm = 1;
+            setBpm(1);
         } else {
             this.bpm = newBpm;
+            setBpm(newBpm);
         }
         this.checkBPMLimit();
         if (this.loop) this.loop.stop();  // Останавливаем текущий цикл метронома
         if (this.isPlaying) {
             this.restartMetronomeAndPendulum();
         }
-    }
-
-    handleNewBPM(newBPM) {
-        const difference = newBPM - this.bpm;
-        this.handleBpmChange(difference);
     }
 
     checkBPMLimit() {

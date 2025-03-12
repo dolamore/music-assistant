@@ -5,10 +5,9 @@ export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreas
     decreasingButton.classList.toggle('button-limit', minLimit);
 }
 
-export function handleInputBlur(element, setter, defaultElementValue, handleChange) {
-    if (element === '') {
-        setter(defaultElementValue);
-        handleChange({ target: { value: defaultElementValue } });
+export function handleInputBlur(inputValue, setter, defaultElementValue, metronomeManager) {
+    if (inputValue === '') {
+        metronomeManager.handleBpmChange(defaultElementValue, setter)
     }
 }
 
