@@ -61,8 +61,8 @@ function IncreaseFiveBpmButton({bpm, setBpm, metronomeManager}) {
     return (
         <button
             onClick={() => metronomeManager.handleBpmChange(bpm + 5, setBpm)}
-            disabled={metronomeManager.bpmMinLimitReached}
-            className={`${metronomeManager.bpmMinLimitReached ? 'button-limit' : ''}`}
+            disabled={metronomeManager.bpmMaxLimitReached}
+            className={`${metronomeManager.bpmMaxLimitReached ? 'button-limit' : ''}`}
         >
             +5
         </button>

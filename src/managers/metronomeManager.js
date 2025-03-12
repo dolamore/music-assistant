@@ -204,6 +204,7 @@ export class MetronomeManager {
             return;
         }
         if (this.bpm === newBpm) {
+            setBpm(newBpm);
             return;
         }
         if (newBpm > 500) {
