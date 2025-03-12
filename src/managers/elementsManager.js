@@ -271,21 +271,11 @@ export class ElementsManager {
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;
-        elements.bpmInput.value = defaultInitialBPM;
+
         this.renderSoundSettings();
         this.initialBeatRender();
 
         window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
-
-
-        elements.bpmInput.addEventListener('input', (e) => {
-            this.metronomeManager.handleNewBPM(parseInt(e.target.value, 10));
-        });
-
-        elements.bpmInput.addEventListener('blur', () => this.handleBpmInputChanges());
-
-
-        elements.bpmInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 

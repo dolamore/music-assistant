@@ -199,7 +199,6 @@ export class MetronomeManager {
     }
 
     handleBpmChange(newBpm, setBpm) {
-        console.log("newBpm: ", newBpm);
         if (/^0\d/.test(newBpm)) {
             newBpm = newBpm.replace(/^0+/, '');
         }
