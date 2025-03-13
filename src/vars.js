@@ -147,7 +147,7 @@ export class Elements {
 }
 
 export const elements = {
-    bpmInput: document.getElementById('bpm-input'),
+ //   bpmInput: document.getElementById('bpm-input'),
     settingsPanel: document.getElementById('settings-panel'),
     trainingSettings: document.getElementById('training-settings'),
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
@@ -162,7 +162,7 @@ export const elements = {
     pendulumElement: document.querySelector('.pendulum'),
     pendulumBarElement: document.querySelector('.horizontal-bar'),
 
-    loopCounter: document.getElementById('loop-counter'),
+    // loopCounter: document.getElementById('loop-counter'),
 
     labelsContainer: document.querySelector('.labels'),
 

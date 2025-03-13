@@ -4,7 +4,6 @@ import {handleInputBlur} from "../utils.js";
 
 export default function BpmControls({metronomeManager}) {
     const [bpm, setBpm] = useState(metronomeManager.bpm);
-
     const handleBpmChange = (change) => {
         const newBpm = bpm + change;
         metronomeManager.handleBpmChange(newBpm, setBpm);
