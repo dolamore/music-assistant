@@ -1,5 +1,5 @@
 import {buttons, Elements, elements} from "../vars.js";
-import * as Tone from 'https://cdn.skypack.dev/tone';
+import * as Tone from "tone";
 
 export class ButtonsManager {
     constructor(metronomeManager) {
@@ -72,14 +72,5 @@ export class ButtonsManager {
         buttons.settingsButton.addEventListener('click', () => this.elementsManager.toggleSettingsPanel());
 
         buttons.saveSettingsButton.addEventListener('click', () => this.handleSaveSettings());
-
-
-        buttons.increaseBPMButton.addEventListener('click', () => this.metronomeManager.handleBpmChange(1));
-
-        buttons.increaseFiveBPMButton.addEventListener('click', () => this.metronomeManager.handleBpmChange(5));
-
-        buttons.decreaseBPMButton.addEventListener('click', () => this.metronomeManager.handleBpmChange(-1));
-
-        buttons.decreaseFiveBPMButton.addEventListener('click', () => this.metronomeManager.handleBpmChange(-5));
     }
 }

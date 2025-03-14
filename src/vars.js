@@ -1,4 +1,4 @@
-import * as Tone from 'https://cdn.skypack.dev/tone';
+import * as Tone from "tone";
 // Default to '4n' (quarter note)
 export const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
 
@@ -147,7 +147,7 @@ export class Elements {
 }
 
 export const elements = {
-    bpmInput: document.getElementById('bpm-input'),
+ //   bpmInput: document.getElementById('bpm-input'),
     settingsPanel: document.getElementById('settings-panel'),
     trainingSettings: document.getElementById('training-settings'),
     noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
@@ -162,7 +162,7 @@ export const elements = {
     pendulumElement: document.querySelector('.pendulum'),
     pendulumBarElement: document.querySelector('.horizontal-bar'),
 
-    loopCounter: document.getElementById('loop-counter'),
+    // loopCounter: document.getElementById('loop-counter'),
 
     labelsContainer: document.querySelector('.labels'),
 
@@ -172,3 +172,5 @@ export const elements = {
 export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
 export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
 export const defaultInitialBPM = 120;
+export const bpmMaxLimit = 500;
+export const bpmMinLimit = 1;

@@ -1,18 +1,18 @@
 import {SoundManager} from "./soundManager.js";
-import {buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
+import {bpmMaxLimit, bpmMinLimit, buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
-import * as Tone from 'https://cdn.skypack.dev/tone';
-import {parseNoteSize, toggleButtonsLimit} from "../utils.js";
+import * as Tone from "tone";
+import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 
 export class MetronomeManager {
     constructor() {
-        this.bpm = defaultInitialBPM;
+        this._bpm = defaultInitialBPM;
         this.isPlaying = false;
         this.loop = null;
         this.count = 0;
-        this.loopCount = 0;
+        this._loopCount = 0;
         this.currentNoteSizeIndex = 2;
         this.sequence = [];
         this.skipper = 0;
@@ -22,6 +22,40 @@ export class MetronomeManager {
         this.beatBarsManager = new BeatBarsManager(this);
         this.elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
+        this._bpmMaxLimitReached = false;
+        this._bpmMinLimitReached = false;
+    }
+
+    get loopCount() {
+        return this._loopCount;
+    }
+
+    set loopCount(value) {
+        this._loopCount = value;
+    }
+
+    get bpmMaxLimitReached() {
+        return this._bpmMaxLimitReached;
+    }
+
+    set bpmMaxLimitReached(value) {
+        this._bpmMaxLimitReached = value;
+    }
+
+    get bpmMinLimitReached() {
+        return this._bpmMinLimitReached;
+    }
+
+    set bpmMinLimitReached(value) {
+        this._bpmMinLimitReached = value
+    }
+
+    get bpm() {
+        return this._bpm;
+    }
+
+    set bpm(value) {
+        this._bpm = value;
     }
 
     getBeatBarsManager() {
@@ -45,7 +79,7 @@ export class MetronomeManager {
 
         this.loop.start(0);
 
-        Tone.Transport.start();
+        Tone.getTransport().start(); //used to be trasnport
         buttons.startStopButton.textContent = 'Stop';
         this.elementsManager.movePendulum();
     }
@@ -53,14 +87,14 @@ export class MetronomeManager {
     stopMetronome() {
         this.isPlaying = false;
         if (this.loop) this.loop.stop();
-        Tone.Transport.stop();
+        Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
         buttons.startStopButton.textContent = 'Start';
 
         this.elementsManager.resetPendulumAnimation();
 
         this.count = 0;
         this.loopCount = 0;
-        elements.loopCounter.textContent = this.loopCount;
+        //elements.loopCounter.textContent = this.loopCount;
     }
 
     restartMetronomeAndPendulum() {
@@ -123,7 +157,8 @@ export class MetronomeManager {
         }
 
         if (this.isStartOfLoop) {
-            elements.loopCounter.textContent = this.loopCount++;
+            /* elements.loopCounter.textContent = this.loopCount += 1;
+             */
         }
 
         this.count++;
@@ -172,20 +207,28 @@ export class MetronomeManager {
         this.loop.callback = (time) => this.getMetronomeLoopCallback(time);
     }
 
-    handleBpmChange(difference) {
-        const newBpm = this.bpm + difference;
-        if (isNaN(newBpm) || this.bpm === newBpm) {
+    handleBpmChange(newBpm, setBpm) {
+        if (/^0\d/.test(newBpm)) {
+            newBpm = newBpm.replace(/^0+/, '');
+        }
+
+        if (isNaN(newBpm) || newBpm === '') {
+            setBpm('');
             return;
         }
-        if (newBpm > 500) {
-            this.bpm = 500;
-            elements.bpmInput.value = 500;
-        } else if (newBpm < 1) {
-            this.bpm = 1;
-            elements.bpmInput.value = 1;
+        if (this.bpm === newBpm) {
+            setBpm(newBpm);
+            return;
+        }
+        if (newBpm > bpmMaxLimit) {
+            this.bpm = bpmMaxLimit;
+            setBpm(bpmMaxLimit);
+        } else if (newBpm < bpmMinLimit) {
+            this.bpm = bpmMinLimit;
+            setBpm(bpmMinLimit);
         } else {
             this.bpm = newBpm;
-            elements.bpmInput.value = newBpm;
+            setBpm(newBpm);
         }
         this.checkBPMLimit();
         if (this.loop) this.loop.stop();  // Останавливаем текущий цикл метронома
@@ -194,17 +237,9 @@ export class MetronomeManager {
         }
     }
 
-    handleNewBPM(newBPM) {
-        const difference = newBPM - this.bpm;
-        this.handleBpmChange(difference);
-    }
-
     checkBPMLimit() {
-        const minLimit = this.bpm <= 1;
-        const maxLimit = this.bpm >= 500;
-
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBPMButton, buttons.decreaseBPMButton);
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseFiveBPMButton, buttons.decreaseFiveBPMButton);
+        this.bpmMinLimitReached = this.bpm <= bpmMinLimit;
+        this.bpmMaxLimitReached = this.bpm >= bpmMaxLimit;
     }
 
     restartIfPlaying() {

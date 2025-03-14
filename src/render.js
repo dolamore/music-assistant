@@ -1,6 +1,6 @@
-import {MetronomeManager} from "./ managers/metronomeManager.js";
-import {HotBindManager} from "./ managers/hotBindManager.js";
-import {ButtonsManager} from "./ managers/buttonsManager.js";
+import {MetronomeManager} from "./managers/metronomeManager.js";
+import {HotBindManager} from "./managers/hotBindManager.js";
+import {ButtonsManager} from "./managers/buttonsManager.js";
 
 
 const hotBindManager = new HotBindManager();

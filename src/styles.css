@@ -18,7 +18,22 @@ label {
     margin-bottom: 10px;
 }
 
-.bpm-container {
+.loop-counter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирует содержимое */
+    gap: 5px; /* Добавляет небольшой отступ между лейблом и счетчиком */
+}
+
+#loop-counter {
+    font-size: 24px;
+    font-weight: bold;
+    background: lightgray;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.bpm-controls-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -234,3 +249,4 @@ button:hover {
 .button-limit:hover {
     background-color: #000000 !important;
 }
+

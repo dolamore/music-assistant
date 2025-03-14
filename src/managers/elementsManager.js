@@ -230,16 +230,18 @@ export class ElementsManager {
         elements.settingsPanel.classList.toggle('hidden');
     }
 
-    handleBpmInputChanges() {
+    handleBpmInputChanges(bpm, setBpm) {
         const oldBpm = this.metronomeManager.bpm;
-        handleInputBlur(elements.bpmInput, defaultInitialBPM);
+        handleInputBlur(bpm, setBpm, defaultInitialBPM);
         if (this.metronomeManager.isPlaying && oldBpm !== defaultInitialBPM) {
             this.metronomeManager.restartMetronomeAndPendulum();
         }
     }
 
     preventNonDigitInput(e) {
-        if (!/[0-9]/.test(e.key)) {
+        const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
+
+        if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
             e.preventDefault();
         }
     }
@@ -269,21 +271,11 @@ export class ElementsManager {
 
     renderElements() {
         elements.beatsCounter.textContent = initialNumberOfBeats;
-        elements.bpmInput.value = defaultInitialBPM;
+
         this.renderSoundSettings();
         this.initialBeatRender();
 
         window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
-
-
-        elements.bpmInput.addEventListener('input', (e) => {
-            this.metronomeManager.handleNewBPM(parseInt(e.target.value, 10));
-        });
-
-        elements.bpmInput.addEventListener('blur', () => this.handleBpmInputChanges());
-
-
-        elements.bpmInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 
