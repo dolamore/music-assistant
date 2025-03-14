@@ -1,12 +1,13 @@
 # Metronome
 
-A simple web-based metronome built using Tone.js.
+A web-based application built using JS, React, and Tone.js lib.
 
 ## Features
 
-- Start/stop the metronome
-- Adjust BPM (beats per minute) using input or buttons
-- Increase/decrease BPM by 1 or 5 units
+- Metronome
+- Sequencer
+- Training Mode
+- Sound Design
 
 ## Installation
 
