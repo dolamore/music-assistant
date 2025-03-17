@@ -5,6 +5,7 @@ import Metronome from "./Metronome.js";
 import LoopCounter from "./components/loopCounter.js";
 import BpmControls from "./components/bpmControls.js";
 import {MetronomeManager} from "./managers/metronomeManager.js";
+import CheckBoxControls from "./components/checkBoxControls.js";
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
@@ -16,6 +17,7 @@ function App() {
             <Metronome>
                 <BpmControls />
                 <LoopCounter />
+                <CheckBoxControls />
             </Metronome>
         </Provider>
     );
