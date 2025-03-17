@@ -63,6 +63,7 @@ const BpmInput = observer(({metronomeManager}) => {
             value = bpmMinLimit;
         }
         setInputValue(value);
+        metronomeManager.handleBpmChange(value);
     };
 
     const handleBlur = () => {
@@ -83,11 +84,12 @@ const BpmInput = observer(({metronomeManager}) => {
     );
 });
 
-const BpmChangeButton = (({label, onClick, disabled}) => {
-    const buttonClass = disabled ? 'button-limit' : '';
-    return (
-        <button onClick={onClick} disabled={disabled} className={buttonClass}>
-            {label}
-        </button>
-    );
-});
+function BpmChangeButton({label, onClick, disabled}) {
+    return <button
+        onClick={onClick}
+        disabled={disabled}
+        className={disabled ? 'button-limit' : ''}
+    >
+        {label}
+    </button>;
+}
