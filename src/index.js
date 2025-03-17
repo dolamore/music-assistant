@@ -1,4 +1,5 @@
 import React from "react";
+import {Provider} from "mobx-react";
 import ReactDOM from "react-dom/client";
 import Metronome from "./Metronome.js";
 import LoopCounter from "./components/loopCounter.js";
@@ -9,9 +10,15 @@ const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
 const metronomeManager = new MetronomeManager();
 
-root.render(
-    <Metronome>
-        <BpmControls metronomeManager={metronomeManager}/>
-        <LoopCounter/>
-    </Metronome>
-);
+function App() {
+    return (
+        <Provider metronomeManager={metronomeManager}>
+            <Metronome>
+                <BpmControls metronomeManager={metronomeManager}/>
+                <LoopCounter metronomeManager={metronomeManager}/>
+            </Metronome>
+        </Provider>
+    );
+}
+
+root.render(<App/>);
