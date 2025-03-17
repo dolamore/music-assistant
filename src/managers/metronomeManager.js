@@ -6,6 +6,7 @@ import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
 import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
+import loopCounter from "../components/loopCounter.js";
 
 export class MetronomeManager {
     _bpm = defaultInitialBPM;

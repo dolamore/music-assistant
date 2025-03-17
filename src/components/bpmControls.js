@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {bpmMaxLimit, bpmMinLimit, defaultInitialBPM} from "../vars.js";
-import {handleInputBlur} from "../utils.js";
+import {inject} from "mobx-react";
 
-export default observer(function BpmControls({metronomeManager}) {
+export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
     const handleBpmChange = (change) => {
-        const newBpm = parseInt(metronomeManager.bpm, 10) + parseInt(change, 10);
-        metronomeManager.handleBpmChange(newBpm);
+        metronomeManager.handleBpmChange(metronomeManager.bpm + change);
     };
 
     return (
@@ -39,7 +38,7 @@ export default observer(function BpmControls({metronomeManager}) {
             </div>
         </div>
     );
-});
+}));
 
 const BpmInput = observer(({metronomeManager}) => {
     const [inputValue, setInputValue] = useState(metronomeManager.bpm);

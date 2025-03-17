@@ -14,8 +14,8 @@ function App() {
     return (
         <Provider metronomeManager={metronomeManager}>
             <Metronome>
-                <BpmControls metronomeManager={metronomeManager}/>
-                <LoopCounter metronomeManager={metronomeManager}/>
+                <BpmControls />
+                <LoopCounter />
             </Metronome>
         </Provider>
     );
