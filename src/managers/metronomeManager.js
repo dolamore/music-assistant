@@ -1,3 +1,4 @@
+import {makeAutoObservable} from "mobx";
 import {SoundManager} from "./soundManager.js";
 import {bpmMaxLimit, bpmMinLimit, buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
@@ -5,25 +6,30 @@ import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
 import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
+import loopCounter from "../components/loopCounter.js";
+import {VisualEffectsManager} from "./visualEffectsManager.js";
 
 export class MetronomeManager {
+    _bpm = defaultInitialBPM;
+    isPlaying = false;
+    loop = null;
+    count = 0;
+    _loopCount = 0;
+    currentNoteSizeIndex = 2;
+    sequence = [];
+    skipper = 0;
+    currentStep = 0;
+    isStartOfLoop = false;
+    soundManager = new SoundManager(this);
+    beatBarsManager = new BeatBarsManager(this);
+    elementsManager = new ElementsManager(this);
+    trainingModeManager = new TrainingModeManager();
+    _bpmMaxLimitReached = false;
+    _bpmMinLimitReached = false;
+    visualEffectsManager = new VisualEffectsManager();
+
     constructor() {
-        this._bpm = defaultInitialBPM;
-        this.isPlaying = false;
-        this.loop = null;
-        this.count = 0;
-        this._loopCount = 0;
-        this.currentNoteSizeIndex = 2;
-        this.sequence = [];
-        this.skipper = 0;
-        this.currentStep = 0;
-        this.isStartOfLoop = false;
-        this.soundManager = new SoundManager(this);
-        this.beatBarsManager = new BeatBarsManager(this);
-        this.elementsManager = new ElementsManager(this);
-        this.trainingModeManager = new TrainingModeManager();
-        this._bpmMaxLimitReached = false;
-        this._bpmMinLimitReached = false;
+        makeAutoObservable(this)
     }
 
     get loopCount() {
@@ -207,28 +213,23 @@ export class MetronomeManager {
         this.loop.callback = (time) => this.getMetronomeLoopCallback(time);
     }
 
-    handleBpmChange(newBpm, setBpm) {
+    handleBpmChange(newBpm) {
         if (/^0\d/.test(newBpm)) {
             newBpm = newBpm.replace(/^0+/, '');
         }
 
         if (isNaN(newBpm) || newBpm === '') {
-            setBpm('');
             return;
         }
         if (this.bpm === newBpm) {
-            setBpm(newBpm);
             return;
         }
         if (newBpm > bpmMaxLimit) {
             this.bpm = bpmMaxLimit;
-            setBpm(bpmMaxLimit);
         } else if (newBpm < bpmMinLimit) {
             this.bpm = bpmMinLimit;
-            setBpm(bpmMinLimit);
         } else {
             this.bpm = newBpm;
-            setBpm(newBpm);
         }
         this.checkBPMLimit();
         if (this.loop) this.loop.stop();  // Останавливаем текущий цикл метронома

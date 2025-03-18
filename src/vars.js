@@ -149,9 +149,9 @@ export class Elements {
 export const elements = {
  //   bpmInput: document.getElementById('bpm-input'),
     settingsPanel: document.getElementById('settings-panel'),
-    trainingSettings: document.getElementById('training-settings'),
-    noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
-    loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
+    //trainingSettings: document.getElementById('training-settings'),
+ //   noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
+  //  loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
     beatsCounter: document.getElementById('beats-counter'),
     timeSignature: document.getElementById('time-signature'),
 
@@ -169,8 +169,8 @@ export const elements = {
     soundSettingsContainer: document.querySelector('.sound-settings'),
 }
 
-export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
-export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
+//export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
+//export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
 export const defaultInitialBPM = 120;
 export const bpmMaxLimit = 500;
 export const bpmMinLimit = 1;

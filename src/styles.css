@@ -173,6 +173,22 @@ button:hover {
     width: 100%;
 }
 
+.checkbox-controls-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.pendulum-container {
+    width: 100vw; /* Ensure the pendulum container spans the full viewport width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0; /* Add margin to separate containers */
+}
+
 .horizontal-bar {
     position: relative; /* Ensure it is positioned correctly */
     width: 100%;
@@ -203,9 +219,9 @@ button:hover {
     z-index: 10; /* Ensure it is above other elements */
 }
 
-.controls-container {
+.time-signature-controls-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 20px;
 }
@@ -248,5 +264,12 @@ button:hover {
 
 .button-limit:hover {
     background-color: #000000 !important;
+}
+
+.main-panel-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 

@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
+import {inject} from "mobx-react";
+import {observer} from "mobx-react-lite";
 
-export default function LoopCounter({metronomeManager}) {
-    const [loopCounter, setLoopCounter] = useState(0);
+export default inject("metronomeManager")(observer(function LoopCounter({metronomeManager}) {
     return (
-        <div className="loop-counter-container">
+        <div className="loop-counter-container container">
             <label htmlFor="loop-counter">Loops played:</label>
-            <div id="loop-counter">{loopCounter}</div>
+            <div id="loop-counter">{metronomeManager.loopCount}</div>
         </div>
     );
-}
+}));
