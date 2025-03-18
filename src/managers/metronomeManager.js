@@ -7,6 +7,7 @@ import * as Tone from "tone";
 import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 import loopCounter from "../components/loopCounter.js";
+import {VisualEffectsManager} from "./visualEffectsManager.js";
 
 export class MetronomeManager {
     _bpm = defaultInitialBPM;
@@ -25,6 +26,7 @@ export class MetronomeManager {
     trainingModeManager = new TrainingModeManager();
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
+    visualEffectsManager = new VisualEffectsManager();
 
     constructor() {
         makeAutoObservable(this)
