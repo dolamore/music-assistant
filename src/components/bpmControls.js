@@ -9,7 +9,7 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
     };
 
     return (
-        <div className="bpm-controls-container">
+        <div className="bpm-controls-container container">
             <label htmlFor="bpm-input">BPM:</label>
             <div className="bpm-controls">
                 <BpmChangeButton
