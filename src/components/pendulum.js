@@ -7,7 +7,8 @@ export default inject("metronomeManager")(observer(function Pendulum({metronomeM
         <div
             className={`pendulum-container
                         container
-                        ${!metronomeManager.visualEffectsManager.isPendulumVisible ? 'hidden' : ''}`}>
+                        ${!metronomeManager.visualEffectsManager.isPendulumVisible ? 'hidden' : ''}`}
+        >
             <div className="horizontal-bar">
                 <div className="pendulum"></div>
             </div>
