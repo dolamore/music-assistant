@@ -1,12 +1,20 @@
 import {makeAutoObservable} from "mobx";
 import {SoundManager} from "./soundManager.js";
-import {bpmMaxLimit, bpmMinLimit, buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
+import {
+    bpmMaxLimit,
+    bpmMinLimit,
+    buttons,
+    defaultInitialBPM,
+    Elements,
+    elements,
+    initialNumberOfBeats,
+    sounds
+} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
 import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
-import loopCounter from "../components/loopCounter.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
 
 export class MetronomeManager {
@@ -27,9 +35,18 @@ export class MetronomeManager {
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
     visualEffectsManager = new VisualEffectsManager();
+    _numberOfBeats = initialNumberOfBeats;
 
     constructor() {
         makeAutoObservable(this)
+    }
+
+    get numberOfBeats() {
+        return this._numberOfBeats;
+    }
+
+    set numberOfBeats(value) {
+        this._numberOfBeats = value;
     }
 
     get loopCount() {

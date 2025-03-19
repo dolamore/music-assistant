@@ -1,10 +1,9 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {initialNumberOfBeats} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
-    const indices = Array.from({length: initialNumberOfBeats},
+    const indices = Array.from({length: metronomeManager.numberOfBeats},
         (_, i) => i + 1);
     return (
         <div id="beat-container"
@@ -13,11 +12,10 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
                          ${!metronomeManager.visualEffectsManager.areBeatBarsVisible ? 'hidden' : ''}`}
         >
             {indices.map(index => (
-                <BeatRow key={index} metronomeManager={metronomeManager} index={index}/>
+                <BeatRow key={`beat-row-${index}`} metronomeManager={metronomeManager} index={index}/>
             ))}
         </div>
     )
-    //Сюда будет динамически добавляться содержимое через renderBeats
 }));
 
 const BeatRow = observer(({metronomeManager, index}) => {

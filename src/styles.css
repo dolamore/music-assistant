@@ -228,14 +228,14 @@ button:hover {
     margin-bottom: 20px;
 }
 
-.control-group {
+.time-signature-control-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 20px; /* Add margin to increase spacing */
 }
 
-.time-signature {
+.time-signature-info {
     display: flex;
     flex-direction: column;
     align-items: center;
