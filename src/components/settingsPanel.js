@@ -4,7 +4,9 @@ import {inject} from "mobx-react";
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
     return (
-        <div id="settings-panel" className="hidden container">
+        <div id="settings-panel"
+             className={`${metronomeManager.elementsManager.isSettingsPanelVisible ? '' : 'hidden'}
+                        container`}>
             <h2>Sound Settings</h2>
             <div className="sound-settings">
                 <div className="labels">
@@ -12,7 +14,10 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
                     <span>Oscillator</span>
                 </div>
             </div>
-            <button id="save-settings-button">Save</button>
+            <button id="save-settings-button"
+                    onClick={() => metronomeManager.elementsManager.toggleSettingsPanel()}
+            >Save
+            </button>
         </div>
     )                 // Сюда будет динамически добавляться содержимое через renderSoundSettings
 }));
