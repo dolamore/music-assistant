@@ -5,7 +5,7 @@ import {inject} from "mobx-react";
 export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
     return (
         <div className="main-panel-controls container">
-            <button id="start-stop-button">Start</button>
+            <StartStopButton metronomeManager={metronomeManager}/>
             <button id="settings-button">Settings</button>
             <label>
                 <input type="checkbox" id="toggle-training-mode"/> Training Mode
@@ -13,3 +13,14 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
         </div>
     );
 }));
+
+const StartStopButton = observer(({metronomeManager}) => {
+    return (
+        <button
+            id="start-stop-button"
+            onClick={() => metronomeManager.startMetronome()}
+        >
+            Start
+        </button>
+    );
+});

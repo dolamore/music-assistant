@@ -75,7 +75,7 @@ export class MetronomeManager {
     startMetronome() {
         this.isPlaying = true;
 
-        Tone.Transport.bpm.value = this.bpm * 3;
+        Tone.getTransport().bpm.value = this.bpm * 3;
 
         this.sequence = this.generateFixedMetronomeSequence();
         this.skipper = 0;
@@ -86,8 +86,10 @@ export class MetronomeManager {
         this.loop.start(0);
 
         Tone.getTransport().start(); //used to be trasnport
-        buttons.startStopButton.textContent = 'Stop';
-        this.elementsManager.movePendulum();
+        //  buttons.startStopButton.textContent = 'Stop';
+
+        //TODO: move pendulum!
+        //    this.elementsManager.movePendulum();
     }
 
     stopMetronome() {
