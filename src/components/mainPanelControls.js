@@ -6,10 +6,8 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
     return (
         <div className="main-panel-controls container">
             <StartStopButton metronomeManager={metronomeManager}/>
-            <button id="settings-button">Settings</button>
-            <label>
-                <input type="checkbox" id="toggle-training-mode"/> Training Mode
-            </label>
+            <SettingsButton metronomeManager={metronomeManager}/>
+            <ToggleTrainingMode metronomeManager={metronomeManager}/>
         </div>
     );
 }));
@@ -22,5 +20,24 @@ const StartStopButton = observer(({metronomeManager}) => {
         >
             Start
         </button>
+    );
+});
+
+const SettingsButton = observer(({metronomeManager}) => {
+    return (
+        <button
+            id="settings-button"
+            onClick={() => metronomeManager.elementsManager.toggleSettingsPanel()}
+        >
+            Settings
+        </button>
+    );
+});
+
+const ToggleTrainingMode = observer(({metronomeManager}) => {
+    return (
+        <label>
+            <input type="checkbox" id="toggle-training-mode"/> Training Mode
+        </label>
     );
 });

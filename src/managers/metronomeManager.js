@@ -17,6 +17,9 @@ import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
 
+import document from "react";
+
+
 export class MetronomeManager {
     _bpm = defaultInitialBPM;
     isPlaying = false;
@@ -29,8 +32,8 @@ export class MetronomeManager {
     currentStep = 0;
     isStartOfLoop = false;
     soundManager = new SoundManager(this);
-    beatBarsManager = new BeatBarsManager(this);
-    elementsManager = new ElementsManager(this);
+    _beatBarsManager = new BeatBarsManager(this);
+    _elementsManager = new ElementsManager(this);
     trainingModeManager = new TrainingModeManager();
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
@@ -81,12 +84,12 @@ export class MetronomeManager {
         this._bpm = value;
     }
 
-    getBeatBarsManager() {
-        return this.beatBarsManager;
+    get beatBarsManager() {
+        return this._beatBarsManager;
     }
 
-    getElementsManager() {
-        return this.elementsManager;
+    get elementsManager() {
+        return this._elementsManager;
     }
 
     startMetronome() {

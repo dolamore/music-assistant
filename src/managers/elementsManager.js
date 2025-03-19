@@ -10,11 +10,30 @@ import {
     noteMultipliers
 } from "../vars.js";
 import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "../utils.js";
+import {makeAutoObservable} from "mobx";
+import * as performance from "tone";
+import document from "react";
 
 export class ElementsManager {
+    _isSettingsPanelVisible = false;
+    pendulumAnimationFrame;
+    metronomeManager;
+
     constructor(metronomeManager) {
-        this.pendulumAnimationFrame = null;
         this.metronomeManager = metronomeManager;
+        makeAutoObservable(this)
+    }
+
+    get isSettingsPanelVisible() {
+        return this._isSettingsPanelVisible;
+    }
+
+    set isSettingsPanelVisible(value) {
+        this._isSettingsPanelVisible = value;
+    }
+
+    toggleSettingsPanel() {
+        this.isSettingsPanelVisible = !this.isSettingsPanelVisible;
     }
 
     updateTimeSignature() {
@@ -224,10 +243,6 @@ export class ElementsManager {
             elements.pendulumElement.style.opacity = '0';
             elements.pendulumBarElement.style.opacity = '0';
         }
-    }
-
-    toggleSettingsPanel() {
-        elements.settingsPanel.classList.toggle('hidden');
     }
 
     handleBpmInputChanges(bpm, setBpm) {

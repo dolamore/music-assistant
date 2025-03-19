@@ -1,11 +1,29 @@
 import {buttons, Elements, elements} from "../vars.js";
 import * as Tone from "tone";
+import {makeAutoObservable} from "mobx";
 
 export class ButtonsManager {
+    _metronomeManager;
+    _beatsBarsManager;
+    _elementsManager;
+
     constructor(metronomeManager) {
-        this.metronomeManager = metronomeManager;
-        this.beatsBarsManager = metronomeManager.getBeatBarsManager();
-        this.elementsManager = metronomeManager.getElementsManager();
+        this._metronomeManager = metronomeManager;
+        this._beatsBarsManager = metronomeManager.beatBarsManager;
+        this._elementsManager = metronomeManager.elementsManager;
+        makeAutoObservable(this)
+    }
+
+    get metronomeManager() {
+        return this._metronomeManager;
+    }
+
+    get beatsBarsManager() {
+        return this._beatsBarsManager;
+    }
+
+    get elementsManager() {
+        return this._elementsManager;
     }
 
     changeNoteSize(increase) {
@@ -49,7 +67,7 @@ export class ButtonsManager {
         }
 
         // Скрываем панель настроек
-        elements.settingsPanel.classList.add('hidden');
+        elements.settingsPanel.classList.toggle('hidden');
     }
 
     renderButtons() {
@@ -69,7 +87,7 @@ export class ButtonsManager {
 
         buttons.toggleBeatBars.addEventListener('change', (e) => this.elementsManager.toggleBeatBars(e));
 
-        buttons.settingsButton.addEventListener('click', () => this.elementsManager.toggleSettingsPanel());
+        buttons.settingsButton.addEventListener('click', () => elements.settingsPanel.classList.toggle('hidden'));
 
         buttons.saveSettingsButton.addEventListener('click', () => this.handleSaveSettings());
     }
