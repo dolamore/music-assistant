@@ -150,9 +150,8 @@ button:hover {
     z-index: 1000;
 }
 
-.sound-settings {
+.sound-settings-grid {
     display: grid;
-    grid-template-columns: 150px repeat(5, 1fr);
     gap: 10px;
     margin-bottom: 10px;
 }
