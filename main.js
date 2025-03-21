@@ -1,5 +1,9 @@
 import {app, BrowserWindow} from 'electron';
 import path from 'path';
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let mainWindow;
 
@@ -18,7 +22,9 @@ app.on('ready', async () => {
     // Uncomment the following line to open DevTools
     mainWindow.webContents.openDevTools();
 
-    await mainWindow.loadFile(path.join(app.getAppPath(), 'src', 'index.html'));
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+
+    await mainWindow.loadFile(indexPath);
 });
 
 app.on('window-all-closed', () => {

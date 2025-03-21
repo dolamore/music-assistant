@@ -28,7 +28,8 @@ export default defineConfig({
     },
     esbuild: {
         loader: {
-            '.js': 'jsx',  // Treat .js files as JSX
+            '.js': 'jsx',
+            '.jsx': 'jsx',// Treat .js files as JSX
         },
         include: /src\/.*\.js$/,  // Only include .js files in the src directory
     },
