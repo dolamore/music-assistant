@@ -245,6 +245,8 @@ export class ElementsManager {
         }
     }
 
+
+    //TODO: проверить что метроном будет перезапускаться в нужный момент
     handleBpmInputChanges(bpm, setBpm) {
         const oldBpm = this.metronomeManager.bpm;
         handleInputBlur(bpm, setBpm, defaultInitialBPM);
