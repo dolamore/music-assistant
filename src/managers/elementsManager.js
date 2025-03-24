@@ -96,18 +96,16 @@ export class ElementsManager {
                 maxLimit = true;
             }
         });
- //TODO забиндить их на кнопки
-        this.decreaseNoteButtonLimit = minLimit;
-        this.increaseNoteButtonLimit = maxLimit;
+        this._decreaseNoteButtonLimit = minLimit;
+        this._increaseNoteButtonLimit = maxLimit;
     }
 
     checkBeatsLimit() {
         const minLimit = this.metronomeManager.beatBarsManager.numberOfBeats <= minBeatsAmount;
         const maxLimit = this.metronomeManager.beatBarsManager.numberOfBeats >= maxBeatsAmount;
-
-        //TODO: здесь тоже забиндить на кнопки
-        this.decreaseNoteButtonLimit = minLimit;
-        this.increaseNoteButtonLimit = maxLimit;
+        
+        this._decreaseBeatsButtonLimit = minLimit;
+        this._decreaseBeatsButtonLimit = maxLimit;
     }
 
     countSize() {

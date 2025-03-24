@@ -25,9 +25,23 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
         <div className="time-signature-control-group">
             <label>Beats</label>
             <div>
-                <button id="increase-beats-button" onClick={increaseBeats}>+</button>
+                <button
+                    id="increase-beats-button"
+                    onClick={increaseBeats}
+                    disabled={metronomeManager.elementsManager.increaseBeatsButtonLimit}
+                    className={metronomeManager.elementsManager.increaseBeatsButtonLimit ? 'button-limit' : ''}
+                >
+                    +
+                </button>
                 <span id="beats-counter">{metronomeManager.beatBarsManager.numberOfBeats}</span>
-                <button id="decrease-beats-button" onClick={decreaseBeats}>-</button>
+                <button
+                    id="decrease-beats-button"
+                    onClick={decreaseBeats}
+                    disabled={metronomeManager.elementsManager.decreaseBeatsButtonLimit}
+                    className={metronomeManager.elementsManager.decreaseBeatsButtonLimit ? 'button-limit' : ''}
+                >
+                    -
+                </button>
             </div>
         </div>
     );
@@ -42,24 +56,31 @@ const NotesControlGroup = observer(({disabled}) => {
                     id="increase-notes-button"
                     disabled={disabled}
                     className={disabled ? 'button-limit' : ''}
-                >+</button>
+                >
+                    +
+                </button>
                 <button
                     id="decrease-notes-button"
 
-                >-</button>
+                >
+                    -
+                </button>
             </div>
         </div>
     );
 });
 
 const TimeSignatureInfo = observer(({timeSignature}) => {
-    const { beatAmount, tactSize } = timeSignature;
+    const {beatAmount, tactSize} = timeSignature;
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>
-            <div id="time-signature" className="signature-box">
+            <div
+                id="time-signature"
+                className="signature-box"
+            >
                 {`${beatAmount}/${tactSize}`}
-                </div>
+            </div>
         </div>
     );
 });
