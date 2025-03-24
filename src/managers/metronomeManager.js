@@ -31,7 +31,7 @@ export class MetronomeManager {
     skipper = 0;
     currentStep = 0;
     isStartOfLoop = false;
-    soundManager = new SoundManager(this);
+    _soundManager = new SoundManager(this);
     _beatBarsManager = new BeatBarsManager(this);
     _elementsManager = new ElementsManager(this);
     trainingModeManager = new TrainingModeManager();
@@ -90,6 +90,10 @@ export class MetronomeManager {
 
     get elementsManager() {
         return this._elementsManager;
+    }
+
+    get soundManager() {
+        return this._soundManager;
     }
 
     startMetronome() {

@@ -8,8 +8,8 @@ export class SoundManager {
     _metronomeManager = null;
 
     constructor(metronomeManager) {
-        this._selectedSounds = [];
-        this._soundSettings = [];
+        this.generateSelectedSounds();
+        this.generateSoundSettings();
         this._metronomeManager = metronomeManager;
         makeAutoObservable(this);
     }
@@ -62,6 +62,12 @@ export class SoundManager {
 
     popSoundSetting() {
         this._soundSettings.pop();
+    }
+
+    generateSoundSettings() {
+        for (let i = 0; i < initialNumberOfBeats; i++) {
+            this._soundSettings.push(defaultSoundSettings);
+        }
     }
 
     clearSoundSettings() {

@@ -8,7 +8,7 @@
     "dev:webpack": "webpack serve --mode development",
     "build:prod": "NODE_ENV=production webpack --mode production",
     "build:vite": "vite build",
-    "start": "electron ."
+    "start": "npm run build:prod && electron ."
   },
   "build": {
     "appId": "com.example.metronome",

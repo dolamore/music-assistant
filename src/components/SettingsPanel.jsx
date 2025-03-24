@@ -42,14 +42,14 @@ const SoundRow = observer(({metronomeManager, index}) => {
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
         set(metronomeManager.soundManager.soundSettings[index - 1], key, newValue);
-    }
+    };
 
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index}:</label>
             <select
                 id={`sound-${index}`}
-                value={metronomeManager.selectedSounds[index - 1]}
+                value={metronomeManager.soundManager.selectedSounds[index - 1]}
                 onChange={handleSelectedSoundsChange}
             >
                 <option value="0">No Sound</option>
