@@ -1,27 +1,73 @@
 import {
-    beatHTML,
     buttons,
     defaultInitialBPM,
     defaultSoundSettings,
     Elements,
     elements,
     initialNumberOfBeats,
-    maxBeatsAmount,
+    maxBeatsAmount, minBeatsAmount, noteAmounts,
     noteMultipliers
 } from "../vars.js";
 import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "../utils.js";
 import {makeAutoObservable} from "mobx";
-import * as performance from "tone";
 import document from "react";
+import * as performance from "tone";
 
 export class ElementsManager {
     _isSettingsPanelVisible = false;
     pendulumAnimationFrame;
     metronomeManager;
+    _timeSignature = this.countSize();
+    _increaseNoteButtonLimit = false;
+    _decreaseNoteButtonLimit = false;
+    _increaseBeatsButtonLimit = false;
+    _decreaseBeatsButtonLimit = false;
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
         makeAutoObservable(this)
+    }
+
+    get increaseBeatsButtonLimit() {
+        return this._increaseBeatsButtonLimit;
+    }
+
+    set increaseBeatsButtonLimit(value) {
+        this._increaseBeatsButtonLimit = value;
+    }
+
+    get decreaseBeatsButtonLimit() {
+        return this._decreaseBeatsButtonLimit;
+    }
+
+    set decreaseBeatsButtonLimit(value) {
+        this._decreaseBeatsButtonLimit = value;
+    }
+
+    get increaseNoteButtonLimit() {
+        return this._increaseNoteButtonLimit;
+    }
+
+    set increaseNoteButtonLimit(value) {
+        this._increaseNoteButtonLimit = value;
+    }
+
+    get decreaseNoteButtonLimit() {
+        return this._decreaseNoteButtonLimit;
+    }
+
+    set decreaseNoteButtonLimit(value) {
+        this._decreaseNoteButtonLimit = value;
+    }
+
+    get timeSignature() {
+        return this._timeSignature;
+    }
+
+    updateTimeSignature() {
+        this._timeSignature = this.countSize();
+        this.checkNotesLimit();
+        this.checkBeatsLimit();
     }
 
     get isSettingsPanelVisible() {
@@ -36,19 +82,12 @@ export class ElementsManager {
         this.isSettingsPanelVisible = !this.isSettingsPanelVisible;
     }
 
-    updateTimeSignature() {
-        const timeSignature = this.countSize();
-        elements.timeSignature.textContent = `${timeSignature.beatAmount}/${timeSignature.tactSize}`;
-        this.checkNotesLimit();
-        this.checkBeatsLimit();
-    }
-
     checkNotesLimit() {
         let minLimit = false;
         let maxLimit = false;
 
-        Elements.noteSizeDropdowns.forEach((dropdown) => {
-            const currentValue = parseInt(dropdown.value);
+        this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts.forEach((index) => {
+            const currentValue = noteAmounts[index];
 
             if (currentValue === 1) {
                 minLimit = true;
@@ -58,19 +97,23 @@ export class ElementsManager {
                 maxLimit = true;
             }
         });
-
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseNotesButton, buttons.decreaseNotesButton);
+ //TODO забиндить их на кнопки
+        this.decreaseNoteButtonLimit = minLimit;
+        this.increaseNoteButtonLimit = maxLimit;
     }
 
     checkBeatsLimit() {
-        const minLimit = Elements.beatRows.length <= 1;
-        const maxLimit = Elements.beatRows.length >= maxBeatsAmount;
+        const minLimit = this.metronomeManager.beatBarsManager.numberOfBeats <= minBeatsAmount;
+        const maxLimit = this.metronomeManager.beatBarsManager.numberOfBeats >= maxBeatsAmount;
 
-        toggleButtonsLimit(minLimit, maxLimit, buttons.increaseBeatsButton, buttons.decreaseBeatsButton);
+        //TODO: здесь тоже забиндить на кнопки
+        this.decreaseNoteButtonLimit = minLimit;
+        this.increaseNoteButtonLimit = maxLimit;
     }
 
+    //TODO: change this function towards react
     countSize() {
-        let beatAmount = 0;
+        let beatAmount = this.metronomeManager.beatBarsManager.numberOfBeats;
         let beatPattern = [];
 
         Elements.beatRows.forEach((beatRow) => {
@@ -170,7 +213,7 @@ export class ElementsManager {
     createBeatElement(index) {
         elements.soundSettingsContainer.appendChild(this.createSoundRow(index));
 
-        elements.beatContainer.appendChild(this.createBeatWrapper(index));
+     //   elements.beatContainer.appendChild(this.createBeatWrapper(index));
 
         this.metronomeManager.soundManager.addSoundSetting(defaultSoundSettings);
     }
@@ -202,14 +245,6 @@ export class ElementsManager {
         });
 
         return soundRow;
-    }
-
-    createBeatWrapper(index) {
-        const beatWrapper = document.createElement('div');
-        beatWrapper.classList.add('beat-row');
-        beatWrapper.innerHTML = beatHTML(index);
-        beatWrapper.querySelector('.beat').classList.toggle('hidden', !this.isBeatToggleChecked())
-        return beatWrapper;
     }
 
     createInputField(key, index) {

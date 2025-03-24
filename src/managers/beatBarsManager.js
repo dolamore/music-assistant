@@ -3,9 +3,15 @@ import {makeAutoObservable} from "mobx";
 
 export class BeatBarsManager {
     _numberOfBeats = initialNumberOfBeats;
+    _noteAttributes = {
+        noteSizes: [],
+        noteAmounts: [],
+        isTriplets: []
+    };
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
+        this.generateNoteAttributes();
         makeAutoObservable(this)
     }
 
@@ -16,6 +22,28 @@ export class BeatBarsManager {
 
     set numberOfBeats(value) {
         this._numberOfBeats = value;
+    }
+
+    get noteAttributes() {
+        return this._noteAttributes;
+    }
+
+    addNoteAttributes(noteSize, noteAmount, isTriplet) {
+        this._noteAttributes.noteSizes.push(noteSize);
+        this._noteAttributes.noteAmounts.push(noteAmount);
+        this._noteAttributes.isTriplets.push(isTriplet);
+    }
+
+    popNoteAttributes() {
+        this._noteAttributes.noteSizes.pop();
+        this._noteAttributes.noteAmounts.pop();
+        this._noteAttributes.isTriplets.pop();
+    }
+
+    generateNoteAttributes() {
+        for (let i = 0; i < this.numberOfBeats; i++) {
+            this.addNoteAttributes(4, 2, false);
+        }
     }
 
     decreaseBeats() {
@@ -37,7 +65,7 @@ export class BeatBarsManager {
     }
 
 
-    //TODO check commented code and realise it and for decrase beats also
+    //TODO check commented code and realise it and for decrease beats also
     increaseBeats() {
         this._numberOfBeats++;
         this.metronomeManager.soundManager.addNewSoundSettingRow();

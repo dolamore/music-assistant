@@ -5,14 +5,12 @@ import {
     bpmMinLimit,
     buttons,
     defaultInitialBPM,
-    Elements,
-    elements,
+    elements, noteAmounts, noteSizes,
     sounds
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
-import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
 
@@ -127,30 +125,30 @@ export class MetronomeManager {
     generateFixedMetronomeSequence() {
         let totalSteps = 0;
 
-        Elements.beatRows.forEach((beatRow) => {
-            const noteSize = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value).number;
-            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
+
+        for (let i = 0; i < this.beatBarsManager.numberOfBeats; i++) {
+            const noteSize = noteSizes[this.beatBarsManager.noteAttributes.noteSizes[i]];
+            const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[i]];
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
-        });
+        }
 
         const sequence = new Array(totalSteps).fill(null);
         let position = 0; // Current position pointer
 
-        Elements.beatRows.forEach((beatRow, index) => {
-            const parsedNote = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
-            const noteSize = parsedNote.number;
-            const isTriplet = parsedNote.isTriplet;
+        for (let beatIndex = 0; beatIndex < this.beatBarsManager.numberOfBeats; beatIndex++) {
+            const noteSize = noteSizes[this.beatBarsManager.noteAttributes.noteSizes[beatIndex]];
+            const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[beatIndex]];
+            const isTriplet = this.beatBarsManager.noteAttributes.isTriplets[beatIndex];
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = sounds[this.soundManager.selectedSounds()[index]];
-            const settings = this.soundManager.soundSettings()[index]; // Получаем актуальные настройки звука
+            const sound = sounds[this.soundManager.selectedSounds()[beatIndex]];
+            const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука
 
-            for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
-                sequence[position] = {sound, settings, beatIndex: index};
+            for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {
+                sequence[position] = {sound, settings, beatIndex: beatIndex};
                 position += stepSize;
             }
-        });
+        }
 
         return sequence;
     }

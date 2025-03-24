@@ -49,7 +49,9 @@ const TimeSignatureInfo = observer(({metronomeManager}) => {
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>
-            <div id="time-signature" className="signature-box">4/4</div>
+            <div id="time-signature" className="signature-box">
+                {`${metronomeManager.eleme`}
+                </div>
         </div>
     );
 });
