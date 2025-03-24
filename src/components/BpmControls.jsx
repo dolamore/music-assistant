@@ -66,7 +66,7 @@ const BpmInput = observer(({metronomeManager}) => {
     };
 
     const handleBlur = () => {
-        const newBpm = inputValue === '' ? defaultInitialBPM : parseInt(inputValue, 10);
+        const newBpm = inputValue === '' ? defaultInitialBPM : Number(inputValue);
         metronomeManager.handleBpmChange(newBpm);
         setInputValue(metronomeManager.bpm);
     };

@@ -6,8 +6,8 @@ export default inject("metronomeManager")(observer(function TimeSignatureControl
     return (
         <div className="time-signature-controls-container container">
             <BeatsControlGroup metronomeManager={metronomeManager}/>
-            <TimeSignatureInfo />
-            <NotesControlGroup/>
+            <TimeSignatureInfo timeSignature={metronomeManager.elementsManager.timeSignature}/>
+            <NotesControlGroup disabled={metronomeManager.elementsManager.increaseNoteButtonLimit}/>
         </div>
     );
 }));
@@ -33,24 +33,32 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
     );
 });
 
-const NotesControlGroup = observer(({metronomeManager}) => {
+const NotesControlGroup = observer(({disabled}) => {
     return (
         <div className="time-signature-control-group">
             <label>Notes</label>
             <div>
-                <button id="increase-notes-button">+</button>
-                <button id="decrease-notes-button">-</button>
+                <button
+                    id="increase-notes-button"
+                    disabled={disabled}
+                    className={disabled ? 'button-limit' : ''}
+                >+</button>
+                <button
+                    id="decrease-notes-button"
+
+                >-</button>
             </div>
         </div>
     );
 });
 
-const TimeSignatureInfo = observer(({metronomeManager}) => {
+const TimeSignatureInfo = observer(({timeSignature}) => {
+    const { beatAmount, tactSize } = timeSignature;
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>
             <div id="time-signature" className="signature-box">
-                {`${metronomeManager.eleme`}
+                {`${beatAmount}/${tactSize}`}
                 </div>
         </div>
     );

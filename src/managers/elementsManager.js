@@ -1,14 +1,13 @@
 import {
-    buttons,
     defaultInitialBPM,
     defaultSoundSettings,
     Elements,
     elements,
     initialNumberOfBeats,
     maxBeatsAmount, minBeatsAmount, noteAmounts,
-    noteMultipliers
+    noteMultipliers, noteSizes
 } from "../vars.js";
-import {handleInputBlur, lcmArray, parseNoteSize, toggleButtonsLimit} from "../utils.js";
+import {handleInputBlur, lcmArray} from "../utils.js";
 import {makeAutoObservable} from "mobx";
 import document from "react";
 import * as performance from "tone";
@@ -111,36 +110,33 @@ export class ElementsManager {
         this.increaseNoteButtonLimit = maxLimit;
     }
 
-    //TODO: change this function towards react
     countSize() {
         let beatAmount = this.metronomeManager.beatBarsManager.numberOfBeats;
         let beatPattern = [];
 
-        Elements.beatRows.forEach((beatRow) => {
-            const noteData = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
-            const isTriplet = noteData.isTriplet;
-            const noteSize = noteData.number;
+        for (let index = 0; index < beatAmount; index++) {
+            const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
+            const isTriplet = this.metronomeManager.beatBarsManager.noteAttributes.isTriplets[index];
+            const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
             }
-        });
+        }
 
         const denominator = lcmArray(beatPattern);
 
-        Elements.beatRows.forEach((beat) => {
-            const noteData = parseNoteSize(beat.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beat.querySelector('.note-amount-dropdown').value, 10);
-            const isTriplet = noteData.isTriplet;
-            const noteSize = isTriplet ? noteData.number * 3 / 2 : noteData.number;
+        for (let index = 0; index < beatAmount; index++) {
+            const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
+            const isTriplet = this.metronomeManager.beatBarsManager.noteAttributes.isTriplets[index];
+            const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
 
             if (isTriplet) {
                 beatAmount += noteAmount * 3 * (denominator / noteSize);
             } else {
                 beatAmount += noteAmount * (denominator / noteSize);
             }
-        });
+        }
 
         return {beatAmount: beatAmount, tactSize: denominator};
     }
@@ -256,10 +252,6 @@ export class ElementsManager {
         return input;
     }
 
-    isBeatToggleChecked() {
-        return buttons.toggleBeatBars.checked;
-    }
-
     toggleFlashingBar(e) {
         elements.flashingBar.classList.toggle('hidden', !e.target.checked);
     }
@@ -311,13 +303,6 @@ export class ElementsManager {
     handleBeatClick(e) {
         if (e.target.classList.contains('beat')) {
             this.metronomeManager.soundManager.changeBeatSound(e.target);
-        }
-    }
-
-    deleteLastSoundSettingsRow() {
-        const lastSoundRow = Elements.soundSettingsRows[Elements.soundSettingsRows.length - 1];
-        if (lastSoundRow) {
-            lastSoundRow.remove();
         }
     }
 
