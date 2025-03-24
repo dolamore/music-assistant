@@ -38,18 +38,9 @@ export class MetronomeManager {
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
     visualEffectsManager = new VisualEffectsManager();
-    _numberOfBeats = initialNumberOfBeats;
 
     constructor() {
         makeAutoObservable(this)
-    }
-
-    get numberOfBeats() {
-        return this._numberOfBeats;
-    }
-
-    set numberOfBeats(value) {
-        this._numberOfBeats = value;
     }
 
     get loopCount() {

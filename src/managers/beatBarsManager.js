@@ -1,9 +1,20 @@
-import {defaultSoundSettings, Elements, elements} from "../vars.js";
+import {Elements, elements, initialNumberOfBeats} from "../vars.js";
+import * as lastBeatRow from "mobx";
 
 export class BeatBarsManager {
+    _numberOfBeats = initialNumberOfBeats;
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
+    }
+
+
+    get numberOfBeats() {
+        return this._numberOfBeats;
+    }
+
+    set numberOfBeats(value) {
+        this._numberOfBeats = value;
     }
 
     decreaseBeat() {
@@ -40,17 +51,8 @@ export class BeatBarsManager {
     }
 
     increaseBeat() {
-        const newBeatIndex = Elements.beatRows.length;
-
-        // Создаём новый элемент и добавляем его на страницу
-        this.metronomeManager.elementsManager.createBeatElement(newBeatIndex);
-
-        // Обновляем массивы
-        this.metronomeManager.soundManager.addSelectedSound(1); // Звук по умолчанию
-        this.metronomeManager.soundManager.addSoundSetting(defaultSoundSettings);
-
-        // Обновляем количество битов
-        elements.beatsCounter.textContent = newBeatIndex + 1;
+        this._numberOfBeats++;
+        this.metronomeManager.soundManager.addNewSoundSettingRow();
 
         // Обновляем последовательность метронома без перезапуска
         if (this.metronomeManager.isPlaying) {

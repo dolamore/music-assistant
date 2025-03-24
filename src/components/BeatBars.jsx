@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
-    const indices = Array.from({length: metronomeManager.numberOfBeats},
+    const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
         (_, i) => i + 1);
     return (
         <div id="beat-container"

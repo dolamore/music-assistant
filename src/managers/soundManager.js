@@ -81,6 +81,11 @@ export class SoundManager {
         }));
     }
 
+    addNewSoundSettingRow() {
+        this._selectedSounds.push(1);
+        this._soundSettings.push(defaultSoundSettings);
+    }
+
     changeBeatSound(beatElement) {
         const beatIndex = parseInt(beatElement.dataset.beat, 10);
         const currentSound = parseInt(beatElement.dataset.sound, 10);

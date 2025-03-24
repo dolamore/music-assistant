@@ -14,11 +14,11 @@ export default inject("metronomeManager")(observer(function TimeSignatureControl
 
 const BeatsControlGroup = observer(({metronomeManager}) => {
     const increaseBeats = () => {
-        metronomeManager.numberOfBeats++;
+        metronomeManager.beatBarsManager.increaseBeat();
     }
 
     const decreaseBeats = () => {
-        metronomeManager.numberOfBeats--;
+        metronomeManager.beatBarsManager.numberOfBeats--;
     }
 
     return (
@@ -26,7 +26,7 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
             <label>Beats</label>
             <div>
                 <button id="increase-beats-button" onClick={increaseBeats}>+</button>
-                <span id="beats-counter">{metronomeManager.numberOfBeats}</span>
+                <span id="beats-counter">{metronomeManager.beatBarsManager.numberOfBeats}</span>
                 <button id="decrease-beats-button" onClick={decreaseBeats}>-</button>
             </div>
         </div>
