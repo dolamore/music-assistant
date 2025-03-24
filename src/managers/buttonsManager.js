@@ -71,9 +71,9 @@ export class ButtonsManager {
     }
 
     renderButtons() {
-        buttons.decreaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.decreaseBeat());
+        buttons.decreaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.decreaseBeats());
 
-        buttons.increaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.increaseBeat());
+        buttons.increaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.increaseBeats());
 
         buttons.increaseNotesButton.addEventListener('click', () => this.changeNoteSize(true));
 

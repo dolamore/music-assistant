@@ -7,7 +7,6 @@ import {
     defaultInitialBPM,
     Elements,
     elements,
-    initialNumberOfBeats,
     sounds
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
