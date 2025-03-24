@@ -1,48 +1,69 @@
 import {defaultSoundSettings, initialNumberOfBeats, sounds} from "../vars.js";
+import document from "react";
 
 export class SoundManager {
+    _selectedSounds = [];
+    _soundSettings = [];
+    _metronomeManager = null;
+
     constructor(metronomeManager) {
-        this.selectedSounds = [];
-        this.soundSettings = [];
-        this.metronomeManager = metronomeManager;
+        this._selectedSounds = [];
+        this._soundSettings = [];
+        this._metronomeManager = metronomeManager;
+    }
+
+    get metronomeManager() {
+        return this._metronomeManager;
+    }
+
+    set metronomeManager(value) {
+        this._metronomeManager = value;
+    }
+
+    get selectedSounds() {
+        return this._selectedSounds;
+    }
+
+    set selectedSounds(value) {
+        this._selectedSounds = value;
+    }
+
+    addSelectedSound(sound) {
+        this._selectedSounds.push(sound);
+    }
+
+    popSelectedSound() {
+        this._selectedSounds.pop();
     }
 
     generateSelectedSounds() {
         for (let i = 0; i < initialNumberOfBeats; i++) {
-            this.selectedSounds.push(1);
+            this._selectedSounds.push(1);
         }
     }
 
-    getSoundSettings() {
-        return this.soundSettings;
+    clearSelectedSounds() {
+        this._selectedSounds = [];
+    }
+
+    get soundSettings() {
+        return this._soundSettings;
+    }
+
+    set soundSettings(value) {
+        this._soundSettings = value;
+    }
+
+    addSoundSetting(setting) {
+        this._soundSettings.push(setting);
+    }
+
+    popSoundSetting() {
+        this._soundSettings.pop();
     }
 
     clearSoundSettings() {
         this.soundSettings = [];
-    }
-
-    addSoundSetting(setting) {
-        this.soundSettings.push(setting);
-    }
-
-    getSelectedSounds() {
-        return this.selectedSounds;
-    }
-
-    clearSelectedSounds() {
-        this.selectedSounds = [];
-    }
-
-    addSelectedSound(sound) {
-        this.selectedSounds.push(sound);
-    }
-
-    popSelectedSound() {
-        this.selectedSounds.pop();
-    }
-
-    popSoundSetting() {
-        this.soundSettings.pop();
     }
 
     getSoundSettingsData(row) {
@@ -61,7 +82,7 @@ export class SoundManager {
         beatElement.dataset.sound = nextSound;
 
         // Update selectedSounds array
-        this.getSelectedSounds()[beatIndex] = nextSound;
+        this.selectedSounds()[beatIndex] = nextSound;
 
         // Update select in sound settings
         const soundSelect = document.getElementById(`sound-${beatIndex}`);

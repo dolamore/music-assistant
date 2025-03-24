@@ -58,7 +58,7 @@ export class ButtonsManager {
 
         // Обновляем данные в DOM
         Elements.beats.forEach((beat, index) => {
-            beat.dataset.sound = soundManager.getSelectedSounds()[index];  // Обновляем звук для каждого бита
+            beat.dataset.sound = soundManager.selectedSounds()[index];  // Обновляем звук для каждого бита
         });
 
         // Обновляем метроном, не останавливая его

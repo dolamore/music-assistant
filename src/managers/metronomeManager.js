@@ -149,8 +149,8 @@ export class MetronomeManager {
             const noteSize = parsedNote.number;
             const isTriplet = parsedNote.isTriplet;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = sounds[this.soundManager.getSelectedSounds()[index]];
-            const settings = this.soundManager.getSoundSettings()[index]; // Получаем актуальные настройки звука
+            const sound = sounds[this.soundManager.selectedSounds()[index]];
+            const settings = this.soundManager.soundSettings()[index]; // Получаем актуальные настройки звука
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 sequence[position] = {sound, settings, beatIndex: index};
