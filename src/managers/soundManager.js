@@ -1,5 +1,6 @@
 import {defaultSoundSettings, initialNumberOfBeats, sounds} from "../vars.js";
 import document from "react";
+import {makeAutoObservable} from "mobx";
 
 export class SoundManager {
     _selectedSounds = [];
@@ -10,6 +11,7 @@ export class SoundManager {
         this._selectedSounds = [];
         this._soundSettings = [];
         this._metronomeManager = metronomeManager;
+        makeAutoObservable(this);
     }
 
     get metronomeManager() {

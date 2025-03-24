@@ -2,6 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {defaultSoundSettings} from "../vars.js";
+import {set} from "mobx";
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.numberOfBeats},
@@ -12,7 +13,7 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
              className={`${metronomeManager.elementsManager.isSettingsPanelVisible ? '' : 'hidden'}
                         container`}>
             <h2>Sound Settings</h2>
-            <div className="sound-settings-grid" style={{ gridTemplateColumns: `150px repeat(${numColumns}, 1fr)` }}>
+            <div className="sound-settings-grid" style={{gridTemplateColumns: `150px repeat(${numColumns}, 1fr)`}}>
                 <div className="labels">
                     <span>Beat</span>
                     <span>Oscillator</span>
@@ -33,10 +34,24 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 }));
 
 const SoundRow = observer(({metronomeManager, index}) => {
+    const handleSelectedSoundsChange = (e) => {
+        const newValue = Number(e.target.value);
+        set(metronomeManager.soundManager.selectedSounds, index - 1, newValue);
+    };
+
+    const handleSoundSettingsChange = (e, key) => {
+        const newValue = Number(e.target.value);
+        set(metronomeManager.soundManager.soundSettings[index - 1], key, newValue);
+    }
+
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index}:</label>
-            <select id={`sound-${index}`}>
+            <select
+                id={`sound-${index}`}
+                value={metronomeManager.selectedSounds[index - 1]}
+                onChange={handleSelectedSoundsChange}
+            >
                 <option value="0">No Sound</option>
                 <option value="1" selected>Sine</option>
                 <option value="2">Triangle</option>
@@ -49,7 +64,8 @@ const SoundRow = observer(({metronomeManager, index}) => {
                     id={`${key}-${index}`}
                     type="number"
                     placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                    defaultValue={defaultSoundSettings[key]}
+                    value={metronomeManager.soundManager.soundSettings[index - 1][key]}
+                    onChange={(e) => handleSoundSettingsChange(e, key)}
                 />
             ))}
         </div>
