@@ -42,7 +42,7 @@ export class BeatBarsManager {
 
     generateNoteAttributes() {
         for (let i = 0; i < this.numberOfBeats; i++) {
-            this.addNoteAttributes(4, 2, false);
+            this.addNoteAttributes(2, 0, false);
         }
     }
 

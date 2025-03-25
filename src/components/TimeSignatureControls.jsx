@@ -71,7 +71,7 @@ const NotesControlGroup = observer(({disabled}) => {
 });
 
 const TimeSignatureInfo = observer(({timeSignature}) => {
-    const {beatAmount, tactSize} = timeSignature;
+    const {numerator, tactSize} = timeSignature;
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>
@@ -79,7 +79,7 @@ const TimeSignatureInfo = observer(({timeSignature}) => {
                 id="time-signature"
                 className="signature-box"
             >
-                {`${beatAmount}/${tactSize}`}
+                {`${numerator}/${tactSize}`}
             </div>
         </div>
     );

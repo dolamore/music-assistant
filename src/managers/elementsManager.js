@@ -16,7 +16,7 @@ export class ElementsManager {
     _isSettingsPanelVisible = false;
     pendulumAnimationFrame;
     metronomeManager;
-    _timeSignature = this.countSize();
+    _timeSignature;
     _increaseNoteButtonLimit = false;
     _decreaseNoteButtonLimit = false;
     _increaseBeatsButtonLimit = false;
@@ -24,6 +24,7 @@ export class ElementsManager {
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
+        this._timeSignature = this.countSize();
         makeAutoObservable(this)
     }
 
@@ -103,13 +104,14 @@ export class ElementsManager {
     checkBeatsLimit() {
         const minLimit = this.metronomeManager.beatBarsManager.numberOfBeats <= minBeatsAmount;
         const maxLimit = this.metronomeManager.beatBarsManager.numberOfBeats >= maxBeatsAmount;
-        
+
         this._decreaseBeatsButtonLimit = minLimit;
         this._decreaseBeatsButtonLimit = maxLimit;
     }
 
     countSize() {
         let beatAmount = this.metronomeManager.beatBarsManager.numberOfBeats;
+
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
@@ -123,6 +125,7 @@ export class ElementsManager {
         }
 
         const denominator = lcmArray(beatPattern);
+        let numerator = 0;
 
         for (let index = 0; index < beatAmount; index++) {
             const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
@@ -130,13 +133,13 @@ export class ElementsManager {
             const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
 
             if (isTriplet) {
-                beatAmount += noteAmount * 3 * (denominator / noteSize);
+                numerator += noteAmount * 3 * (denominator / noteSize);
             } else {
-                beatAmount += noteAmount * (denominator / noteSize);
+                numerator += noteAmount * (denominator / noteSize);
             }
         }
 
-        return {beatAmount: beatAmount, tactSize: denominator};
+        return {numerator: numerator, tactSize: denominator};
     }
 
     changeDropdownSize(dropdown, direction) {
