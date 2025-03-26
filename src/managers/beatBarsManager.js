@@ -1,4 +1,4 @@
-import {initialNumberOfBeats} from "../vars.js";
+import {initialNumberOfBeats, maxBeatsAmount, minBeatsAmount} from "../vars.js";
 import {makeAutoObservable} from "mobx";
 
 export class BeatBarsManager {
@@ -57,6 +57,8 @@ export class BeatBarsManager {
         this._numberOfBeats--;
         this.metronomeManager.elementsManager.updateTimeSignature();
 
+        this.checkBeatLimits();
+
         // // Если метроном запущен, обновляем его
         // if (this.metronomeManager.isPlaying) {
         //     this.metronomeManager.updateMetronomeSequence();
@@ -78,6 +80,8 @@ export class BeatBarsManager {
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
+        this.checkBeatLimits();
+
         // // Обновляем последовательность метронома без перезапуска
         // if (this.metronomeManager.isPlaying) {
         //     this.metronomeManager.updateMetronomeSequence();
@@ -85,5 +89,10 @@ export class BeatBarsManager {
 
         // // Обновляем тактовую сетку (если нужно)
         // this.metronomeManager.elementsManager.updateTimeSignature();
+    }
+
+    checkBeatLimits() {
+        this.metronomeManager.elementsManager.increaseBeatsButtonLimit = this._numberOfBeats === maxBeatsAmount;
+        this.metronomeManager.elementsManager.decreaseBeatsButtonLimit = this._numberOfBeats === minBeatsAmount;
     }
 }

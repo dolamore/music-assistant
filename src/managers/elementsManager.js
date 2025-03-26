@@ -130,13 +130,12 @@ export class ElementsManager {
             const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
             const isTriplet = this.metronomeManager.beatBarsManager.noteAttributes.isTriplets[index];
             const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
-            console.log(noteAmount, noteSize, isTriplet);
+
             if (isTriplet) {
                 numerator += noteAmount * 3 * (denominator / noteSize);
             } else {
                 numerator += noteAmount * (denominator / noteSize);
             }
-            console.log(numerator);
         }
 
         return {numerator: numerator, tactSize: denominator};
@@ -308,8 +307,6 @@ export class ElementsManager {
     }
 
     renderElements() {
-        elements.beatsCounter.textContent = initialNumberOfBeats;
-
         this.renderSoundSettings();
         this.initialBeatRender();
 
