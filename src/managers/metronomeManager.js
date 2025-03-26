@@ -13,8 +13,8 @@ import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
 import {TrainingModeManager} from "./trainingModeManager.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
-
 import document from "react";
+import {ButtonsManager} from "./buttonsManager.js";
 
 
 export class MetronomeManager {
@@ -31,6 +31,7 @@ export class MetronomeManager {
     _soundManager = new SoundManager(this);
     _beatBarsManager = new BeatBarsManager(this);
     _elementsManager = new ElementsManager(this);
+    _buttonsManager = new ButtonsManager(this);
     trainingModeManager = new TrainingModeManager();
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
@@ -70,6 +71,10 @@ export class MetronomeManager {
 
     set bpm(value) {
         this._bpm = value;
+    }
+
+    get buttonsManager() {
+        return this._buttonsManager;
     }
 
     get beatBarsManager() {

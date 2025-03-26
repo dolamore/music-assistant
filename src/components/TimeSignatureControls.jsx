@@ -28,8 +28,8 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
                 <button
                     id="increase-beats-button"
                     onClick={increaseBeats}
-                    disabled={metronomeManager.elementsManager.increaseBeatsButtonLimit}
-                    className={metronomeManager.elementsManager.increaseBeatsButtonLimit ? 'button-limit' : ''}
+                    disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
+                    className={metronomeManager.buttonsManager.increaseBeatsButtonLimit ? 'button-limit' : ''}
                 >
                     +
                 </button>
@@ -37,8 +37,8 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
                 <button
                     id="decrease-beats-button"
                     onClick={decreaseBeats}
-                    disabled={metronomeManager.elementsManager.decreaseBeatsButtonLimit}
-                    className={metronomeManager.elementsManager.decreaseBeatsButtonLimit ? 'button-limit' : ''}
+                    disabled={metronomeManager.buttonsManager.decreaseBeatsButtonLimit}
+                    className={metronomeManager.buttonsManager.decreaseBeatsButtonLimit ? 'button-limit' : ''}
                 >
                     -
                 </button>

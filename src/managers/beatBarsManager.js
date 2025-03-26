@@ -50,6 +50,16 @@ export class BeatBarsManager {
         }
     }
 
+    //TODO обновить updateMetronomeSequence if playing
+    increaseBeats() {
+        this._numberOfBeats++;
+        this.addStandardNoteAttributes()
+        this.metronomeManager.soundManager.addNewSoundSettingRow();
+        this.metronomeManager.elementsManager.updateTimeSignature();
+
+        this.checkBeatLimits();
+    }
+
     decreaseBeats() {
         // Удаляем последний элемент из beat-container
         this.deleteLastBeatRow();
@@ -58,13 +68,6 @@ export class BeatBarsManager {
         this.metronomeManager.elementsManager.updateTimeSignature();
 
         this.checkBeatLimits();
-
-        // // Если метроном запущен, обновляем его
-        // if (this.metronomeManager.isPlaying) {
-        //     this.metronomeManager.updateMetronomeSequence();
-        // }
-        //
-        // this.metronomeManager.elementsManager.updateTimeSignature();
     }
 
     deleteLastBeatRow() {
@@ -72,27 +75,11 @@ export class BeatBarsManager {
         this.metronomeManager.soundManager.popSoundSetting();
     }
 
-
-    //TODO check commented code and realise it and for decrease beats also
-    increaseBeats() {
-        this._numberOfBeats++;
-        this.addStandardNoteAttributes()
-        this.metronomeManager.soundManager.addNewSoundSettingRow();
-        this.metronomeManager.elementsManager.updateTimeSignature();
-
-        this.checkBeatLimits();
-
-        // // Обновляем последовательность метронома без перезапуска
-        // if (this.metronomeManager.isPlaying) {
-        //     this.metronomeManager.updateMetronomeSequence();
-        // }
-
-        // // Обновляем тактовую сетку (если нужно)
-        // this.metronomeManager.elementsManager.updateTimeSignature();
-    }
-
     checkBeatLimits() {
-        this.metronomeManager.elementsManager.increaseBeatsButtonLimit = this._numberOfBeats === maxBeatsAmount;
-        this.metronomeManager.elementsManager.decreaseBeatsButtonLimit = this._numberOfBeats === minBeatsAmount;
+        const minLimit = this._numberOfBeats <= minBeatsAmount;
+        const maxLimit = this._numberOfBeats >= maxBeatsAmount;
+
+        this.metronomeManager.buttonsManager.decreaseBeatsButtonLimit = minLimit;
+        this.metronomeManager.buttonsManager.increaseBeatsButtonLimit = maxLimit;
     }
 }

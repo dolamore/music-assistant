@@ -1,94 +1,116 @@
-import {buttons, Elements, elements} from "../vars.js";
+import {buttons, Elements, elements, noteAmounts} from "../vars.js";
 import * as Tone from "tone";
 import {makeAutoObservable} from "mobx";
 
 export class ButtonsManager {
     _metronomeManager;
-    _beatsBarsManager;
-    _elementsManager;
+
+    _increaseNoteButtonLimit = false;
+    _decreaseNoteButtonLimit = false;
+    _increaseBeatsButtonLimit = false;
+    _decreaseBeatsButtonLimit = false;
 
     constructor(metronomeManager) {
         this._metronomeManager = metronomeManager;
-        this._beatsBarsManager = metronomeManager.beatBarsManager;
-        this._elementsManager = metronomeManager.elementsManager;
         makeAutoObservable(this)
+    }
+
+    get increaseBeatsButtonLimit() {
+        return this._increaseBeatsButtonLimit;
+    }
+
+    set increaseBeatsButtonLimit(value) {
+        this._increaseBeatsButtonLimit = value;
+    }
+
+    get decreaseBeatsButtonLimit() {
+        return this._decreaseBeatsButtonLimit;
+    }
+
+    set decreaseBeatsButtonLimit(value) {
+        this._decreaseBeatsButtonLimit = value;
+    }
+
+    get increaseNoteButtonLimit() {
+        return this._increaseNoteButtonLimit;
+    }
+
+    set increaseNoteButtonLimit(value) {
+        this._increaseNoteButtonLimit = value;
+    }
+
+    get decreaseNoteButtonLimit() {
+        return this._decreaseNoteButtonLimit;
+    }
+
+    set decreaseNoteButtonLimit(value) {
+        this._decreaseNoteButtonLimit = value;
     }
 
     get metronomeManager() {
         return this._metronomeManager;
     }
 
-    get beatsBarsManager() {
-        return this._beatsBarsManager;
-    }
+    checkNotesLimit() {
+        let minLimit = false;
+        let maxLimit = false;
 
-    get elementsManager() {
-        return this._elementsManager;
-    }
+        this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts.forEach((index) => {
+            const currentValue = noteAmounts[index];
 
-    changeNoteSize(increase) {
-        Elements.noteSizeDropdowns.forEach((dropdown) => {
-            this.elementsManager.changeDropdownSize(dropdown, increase);
+            if (currentValue === 1) {
+                minLimit = true;
+            }
+
+            if (currentValue === 64) {
+                maxLimit = true;
+            }
         });
-        this.elementsManager.updateTimeSignature();
-        if (this.metronomeManager.isPlaying) {
-            this.metronomeManager.restartMetronomeAndPendulum();
-        }
-
+        this._decreaseNoteButtonLimit = minLimit;
+        this._increaseNoteButtonLimit = maxLimit;
     }
 
-    async toggleStartStopButton() {
-        await Tone.start();
-        if (this.metronomeManager.isPlaying) {
-            this.metronomeManager.stopMetronome();
-        } else {
-            this.metronomeManager.startMetronome();
-        }
-    }
-
-    handleSaveSettings() {
-        const soundManager = this.metronomeManager.soundManager;
-        soundManager.clearSelectedSounds();
-        soundManager.clearSoundSettings();
-        // Извлекаем и обновляем настройки для каждого бита
-        Elements.soundSettingsRows.forEach((row) => {
-            soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
-            soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
-        });
-
-        // Обновляем данные в DOM
-        Elements.beats.forEach((beat, index) => {
-            beat.dataset.sound = soundManager.selectedSounds()[index];  // Обновляем звук для каждого бита
-        });
-
-        // Обновляем метроном, не останавливая его
-        if (this.metronomeManager.isPlaying) {
-            this.metronomeManager.updateMetronomeSequence();
-        }
-
-        // Скрываем панель настроек
-        elements.settingsPanel.classList.toggle('hidden');
-    }
-
-    renderButtons() {
-        buttons.decreaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.decreaseBeats());
-
-        buttons.increaseBeatsButton.addEventListener('click', () => this.beatsBarsManager.increaseBeats());
-
-        buttons.increaseNotesButton.addEventListener('click', () => this.changeNoteSize(true));
-
-        buttons.decreaseNotesButton.addEventListener('click', () => this.changeNoteSize(false));
-
-        buttons.startStopButton.addEventListener('click', this.toggleStartStopButton.bind(this));
-
-        buttons.togglePendulumBar.addEventListener('change', (e) => this.elementsManager.togglePendulumBar(e));
-
-        buttons.toggleFlashingBar.addEventListener('change', (e) => this.elementsManager.toggleFlashingBar(e));
-
-        buttons.toggleBeatBars.addEventListener('change', (e) => this.elementsManager.toggleBeatBars(e));
-
-        buttons.settingsButton.addEventListener('click', () => elements.settingsPanel.classList.toggle('hidden'));
-
-        buttons.saveSettingsButton.addEventListener('click', () => this.handleSaveSettings());
-    }
+    // changeNoteSize(increase) {
+    //     Elements.noteSizeDropdowns.forEach((dropdown) => {
+    //         this.elementsManager.changeDropdownSize(dropdown, increase);
+    //     });
+    //     this.elementsManager.updateTimeSignature();
+    //     if (this.metronomeManager.isPlaying) {
+    //         this.metronomeManager.restartMetronomeAndPendulum();
+    //     }
+    //
+    // }
+    //
+    // async toggleStartStopButton() {
+    //     await Tone.start();
+    //     if (this.metronomeManager.isPlaying) {
+    //         this.metronomeManager.stopMetronome();
+    //     } else {
+    //         this.metronomeManager.startMetronome();
+    //     }
+    // }
+    //
+    // handleSaveSettings() {
+    //     const soundManager = this.metronomeManager.soundManager;
+    //     soundManager.clearSelectedSounds();
+    //     soundManager.clearSoundSettings();
+    //     // Извлекаем и обновляем настройки для каждого бита
+    //     Elements.soundSettingsRows.forEach((row) => {
+    //         soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
+    //         soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
+    //     });
+    //
+    //     // Обновляем данные в DOM
+    //     Elements.beats.forEach((beat, index) => {
+    //         beat.dataset.sound = soundManager.selectedSounds()[index];  // Обновляем звук для каждого бита
+    //     });
+    //
+    //     // Обновляем метроном, не останавливая его
+    //     if (this.metronomeManager.isPlaying) {
+    //         this.metronomeManager.updateMetronomeSequence();
+    //     }
+    //
+    //     // Скрываем панель настроек
+    //     elements.settingsPanel.classList.toggle('hidden');
+    // }
 }
