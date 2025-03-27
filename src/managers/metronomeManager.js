@@ -5,7 +5,7 @@ import {
     bpmMinLimit,
     buttons,
     defaultInitialBPM,
-    elements, noteAmounts, noteSizes,
+    elements, noteAmounts, notes,
     sounds
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
@@ -132,7 +132,7 @@ export class MetronomeManager {
 
 
         for (let i = 0; i < this.beatBarsManager.numberOfBeats; i++) {
-            const noteSize = noteSizes[this.beatBarsManager.noteAttributes.noteSizes[i]];
+            const noteSize = notes[this.beatBarsManager.noteAttributes.noteSizes[i].value];
             const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[i]];
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
@@ -142,9 +142,8 @@ export class MetronomeManager {
         let position = 0; // Current position pointer
 
         for (let beatIndex = 0; beatIndex < this.beatBarsManager.numberOfBeats; beatIndex++) {
-            const noteSize = noteSizes[this.beatBarsManager.noteAttributes.noteSizes[beatIndex]];
+            const {isTriplet, value: noteSize} = notes[this.beatBarsManager.noteAttributes.noteSizes[beatIndex]];
             const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[beatIndex]];
-            const isTriplet = this.beatBarsManager.noteAttributes.isTriplets[beatIndex];
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
             const sound = sounds[this.soundManager.selectedSounds()[beatIndex]];
             const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука

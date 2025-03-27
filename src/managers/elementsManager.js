@@ -1,7 +1,7 @@
 import {
     elements,
     noteAmounts,
-    noteMultipliers, noteSizes
+    noteMultipliers, notes
 } from "../vars.js";
 import {lcmArray} from "../utils.js";
 import {makeAutoObservable} from "mobx";
@@ -44,9 +44,8 @@ export class ElementsManager {
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
+            const { isTriplet, value: noteSize } = notes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
             const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
-            const isTriplet = this.metronomeManager.beatBarsManager.noteAttributes.isTriplets[index];
-            const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
@@ -58,8 +57,7 @@ export class ElementsManager {
 
         for (let index = 0; index < beatAmount; index++) {
             const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
-            const isTriplet = this.metronomeManager.beatBarsManager.noteAttributes.isTriplets[index];
-            const noteSize = noteSizes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
+            const {isTriplet, value: noteSize} = notes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
 
             if (isTriplet) {
                 numerator += noteAmount * 3 * (denominator / noteSize);
@@ -115,18 +113,18 @@ export class ElementsManager {
     }
 
 
-    // changeDropdownSize(dropdown, direction) {
-    //     const options = Array.from(dropdown.options);
-    //     const currentIndex = options.findIndex(option => option.value === dropdown.value);
-    //     // Изменяем индекс с учетом пропуска триолей
-    //     let newIndex = currentIndex + (direction ? 2 : -2);
-    //
-    //     // Проверяем валидность нового значения
-    //     const newValue = parseInt(options[newIndex]?.value);
-    //     if (newValue >= 1 && newValue <= 64) {
-    //         dropdown.value = options[newIndex].value;
-    //     }
-    // }
+    changeDropdownSize(dropdown, direction) {
+        const options = Array.from(dropdown.options);
+        const currentIndex = options.findIndex(option => option.value === dropdown.value);
+        // Изменяем индекс с учетом пропуска триолей
+        let newIndex = currentIndex + (direction ? 2 : -2);
+
+        // Проверяем валидность нового значения
+        const newValue = parseInt(options[newIndex]?.value);
+        if (newValue >= 1 && newValue <= 64) {
+            dropdown.value = options[newIndex].value;
+        }
+    }
 
     // updateBeatDropdowns(e) {
     //     if (e.target.matches('.note-size-dropdown') || e.target.matches('.note-amount-dropdown')) {

@@ -25,7 +25,23 @@ export const sounds = [
     new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination()
 ];
 
-export const noteSizes = [1, 2, 4, 8, 16, 32, 64];
+export const notes = [
+    {value: 1, label: "1", isTriplet: false},
+    {value: 1, label: "1T", isTriplet: true},
+    {value: 2, label: "1/2", isTriplet: false},
+    {value: 2, label: "1/2T", isTriplet: true},
+    {value: 4, label: "1/4", isTriplet: false},
+    {value: 4, label: "1/4T", isTriplet: true},
+    {value: 8, label: "1/8", isTriplet: false},
+    {value: 8, label: "1/8T", isTriplet: true},
+    {value: 16, label: "1/16", isTriplet: false},
+    {value: 16, label: "1/16T", isTriplet: true},
+    {value: 32, label: "1/32", isTriplet: false},
+    {value: 32, label: "1/32T", isTriplet: true},
+    {value: 64, label: "1/64", isTriplet: false},
+    {value: 64, label: "1/64T", isTriplet: true}
+];
+
 export const noteAmounts = [1, 2, 3, 4];
 
 export const buttons = {
@@ -123,11 +139,11 @@ export class Elements {
 }
 
 export const elements = {
- //   bpmInput: document.getElementById('bpm-input'),
+    //   bpmInput: document.getElementById('bpm-input'),
     settingsPanel: document.getElementById('settings-panel'),
     //trainingSettings: document.getElementById('training-settings'),
- //   noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
-  //  loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
+    //   noteSkipProbabilityInput: document.getElementById('note-skip-probability-input'),
+    //  loopSkipProbabilityInput: document.getElementById('loop-skip-probability-input'),
     beatsCounter: document.getElementById('beats-counter'),
     timeSignature: document.getElementById('time-signature'),
 

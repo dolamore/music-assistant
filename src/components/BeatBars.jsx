@@ -29,8 +29,20 @@ const BeatRow = observer(({metronomeManager, index}) => {
 });
 
 const NoteSizeDropdown = observer(({metronomeManager, index}) => {
+    const handleChange = (e) => {
+        const value = e.target.value;
+        metronomeManager.beatBarsManager.noteAttributes.noteSizes[index] = parseInt(value, 10);
+        if (value.endsWith('T')) {
+            metronomeManager.beatBarsManager.noteAttributes.isTriplets[index] = true;
+        }
+    }
+
     return (
-        <select className="note-size-dropdown" data-beat={index}>
+        <select
+            className="note-size-dropdown"
+            data-beat={index}
+            onChange={handleChange}
+        >
             <option value="1">1</option>
             <option value="1T">1T</option>
             <option value="2">1/2</option>

@@ -4,6 +4,7 @@ import {makeAutoObservable} from "mobx";
 export class BeatBarsManager {
     _numberOfBeats = initialNumberOfBeats;
     _noteAttributes = {
+        sound: [],
         noteSizes: [],
         noteAmounts: [],
         isTriplets: []
@@ -28,17 +29,19 @@ export class BeatBarsManager {
         return this._noteAttributes;
     }
 
-    addNoteAttributes(noteSize, noteAmount, isTriplet) {
+    addNoteAttributes(sound, noteSize, noteAmount, isTriplet) {
+        this._noteAttributes.sound.push(sound);
         this._noteAttributes.noteSizes.push(noteSize);
         this._noteAttributes.noteAmounts.push(noteAmount);
         this._noteAttributes.isTriplets.push(isTriplet);
     }
 
     addStandardNoteAttributes() {
-        this.addNoteAttributes(2, 0, false);
+        this.addNoteAttributes(1, 4, 0, false);
     }
 
     popNoteAttributes() {
+        this._noteAttributes.sound.pop();
         this._noteAttributes.noteSizes.pop();
         this._noteAttributes.noteAmounts.pop();
         this._noteAttributes.isTriplets.pop();
