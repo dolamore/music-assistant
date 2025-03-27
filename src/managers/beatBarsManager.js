@@ -4,10 +4,9 @@ import {makeAutoObservable} from "mobx";
 export class BeatBarsManager {
     _numberOfBeats = initialNumberOfBeats;
     _noteAttributes = {
-        sound: [],
-        noteSizes: [],
+        sounds: [],
+        notes: [],
         noteAmounts: [],
-        isTriplets: []
     };
 
     constructor(metronomeManager) {
@@ -29,11 +28,10 @@ export class BeatBarsManager {
         return this._noteAttributes;
     }
 
-    addNoteAttributes(sound, noteSize, noteAmount, isTriplet) {
-        this._noteAttributes.sound.push(sound);
-        this._noteAttributes.noteSizes.push(noteSize);
+    addNoteAttributes(sound, note, noteAmount) {
+        this._noteAttributes.sounds.push(sound);
+        this._noteAttributes.notes.push(note);
         this._noteAttributes.noteAmounts.push(noteAmount);
-        this._noteAttributes.isTriplets.push(isTriplet);
     }
 
     addStandardNoteAttributes() {
@@ -41,10 +39,9 @@ export class BeatBarsManager {
     }
 
     popNoteAttributes() {
-        this._noteAttributes.sound.pop();
-        this._noteAttributes.noteSizes.pop();
+        this._noteAttributes.sounds.pop();
+        this._noteAttributes.notes.pop();
         this._noteAttributes.noteAmounts.pop();
-        this._noteAttributes.isTriplets.pop();
     }
 
     generateNoteAttributes() {

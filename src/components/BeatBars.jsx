@@ -1,6 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
+import {notes} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
@@ -30,11 +31,12 @@ const BeatRow = observer(({metronomeManager, index}) => {
 
 const NoteSizeDropdown = observer(({metronomeManager, index}) => {
     const handleChange = (e) => {
-        const value = e.target.value;
-        metronomeManager.beatBarsManager.noteAttributes.noteSizes[index] = parseInt(value, 10);
-        if (value.endsWith('T')) {
-            metronomeManager.beatBarsManager.noteAttributes.isTriplets[index] = true;
-        }
+        const isTriplet = e.target.value.endsWith('T');
+        const numericValue = parseInt(e.target.value, 10);
+
+        metronomeManager.beatBarsManager.noteAttributes.notes[index] =
+            notes.findIndex(note =>
+                note.value === numericValue && note.isTriplet === isTriplet);
     }
 
     return (
