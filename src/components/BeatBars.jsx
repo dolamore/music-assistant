@@ -35,7 +35,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
         const numericValue = parseInt(e.target.value, 10);
 
         metronomeManager.beatBarsManager.noteAttributes.notes[index] =
-            notes.findIndex(note =>
+            notes.find(note =>
                 note.value === numericValue && note.isTriplet === isTriplet);
     }
 

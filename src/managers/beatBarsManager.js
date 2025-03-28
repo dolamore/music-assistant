@@ -1,4 +1,4 @@
-import {initialNumberOfBeats, maxBeatsAmount, minBeatsAmount} from "../vars.js";
+import {initialNumberOfBeats, maxBeatsAmount, minBeatsAmount, notes} from "../vars.js";
 import {makeAutoObservable} from "mobx";
 
 export class BeatBarsManager {
@@ -34,8 +34,10 @@ export class BeatBarsManager {
         this._noteAttributes.noteAmounts.push(noteAmount);
     }
 
+    //TODO: Переделать так чтобы звуки тоже хранились прямыми ссылками на объекты
     addStandardNoteAttributes() {
-        this.addNoteAttributes(1, 4, 0, false);
+        const standardNote = notes.find(note => note.value === 4 && !note.isTriplet);
+        this.addNoteAttributes(1, standardNote, 0);
     }
 
     popNoteAttributes() {
