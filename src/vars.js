@@ -1,13 +1,13 @@
 import * as Tone from "tone";
 // Default to '4n' (quarter note)
-export const noteMultipliers = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
+export const NOTE_MULTIPLIERS = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
 
-export const initialNumberOfBeats = 4;
+export const INITIAL_NUMBER_OF_BEATS = 4;
 
-export const maxBeatsAmount = 16;
-export const minBeatsAmount = 1;
+export const MAX_BEATS_AMOUNT = 16;
+export const MIN_BEATS_AMOUNT = 1;
 
-export const defaultSoundSettings = {
+export const DEFAULT_SOUND_SETTINGS = {
     frequency: 440,
     detune: 0,
     phase: 0,
@@ -17,7 +17,7 @@ export const defaultSoundSettings = {
     sustain: 0,
     release: 0.1,
 };
-export const sounds = [
+export const SOUNDS = [
     null, // No sound
     new Tone.Synth({oscillator: {type: 'sine'}}).toDestination(),
     new Tone.Synth({oscillator: {type: 'triangle'}}).toDestination(),
@@ -25,24 +25,24 @@ export const sounds = [
     new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination()
 ];
 
-export const notes = [
-    {value: 1, label: "1", isTriplet: false},
-    {value: 1, label: "1T", isTriplet: true},
-    {value: 2, label: "1/2", isTriplet: false},
-    {value: 2, label: "1/2T", isTriplet: true},
-    {value: 4, label: "1/4", isTriplet: false},
-    {value: 4, label: "1/4T", isTriplet: true},
-    {value: 8, label: "1/8", isTriplet: false},
-    {value: 8, label: "1/8T", isTriplet: true},
-    {value: 16, label: "1/16", isTriplet: false},
-    {value: 16, label: "1/16T", isTriplet: true},
-    {value: 32, label: "1/32", isTriplet: false},
-    {value: 32, label: "1/32T", isTriplet: true},
-    {value: 64, label: "1/64", isTriplet: false},
-    {value: 64, label: "1/64T", isTriplet: true}
+export const NOTES = [
+    {noteSize: 1, label: "1", isTriplet: false},
+    {noteSize: 1, label: "1T", isTriplet: true},
+    {noteSize: 2, label: "1/2", isTriplet: false},
+    {noteSize: 2, label: "1/2T", isTriplet: true},
+    {noteSize: 4, label: "1/4", isTriplet: false},
+    {noteSize: 4, label: "1/4T", isTriplet: true},
+    {noteSize: 8, label: "1/8", isTriplet: false},
+    {noteSize: 8, label: "1/8T", isTriplet: true},
+    {noteSize: 16, label: "1/16", isTriplet: false},
+    {noteSize: 16, label: "1/16T", isTriplet: true},
+    {noteSize: 32, label: "1/32", isTriplet: false},
+    {noteSize: 32, label: "1/32T", isTriplet: true},
+    {noteSize: 64, label: "1/64", isTriplet: false},
+    {noteSize: 64, label: "1/64T", isTriplet: true}
 ];
 
-export const noteAmounts = [1, 2, 3, 4];
+export const NOTE_AMOUNTS = [1, 2, 3, 4];
 
 export const buttons = {
     startStopButton: document.getElementById('start-stop-button'),
@@ -163,6 +163,6 @@ export const elements = {
 
 //export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
 //export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
-export const defaultInitialBPM = 120;
-export const bpmMaxLimit = 500;
-export const bpmMinLimit = 1;
+export const DEFAULT_INITIAL_BPM = 120;
+export const BPM_MAX_LIMIT = 500;
+export const BPM_MIN_LIMIT = 1;

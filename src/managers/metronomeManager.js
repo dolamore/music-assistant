@@ -1,12 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import {SoundManager} from "./soundManager.js";
 import {
-    bpmMaxLimit,
-    bpmMinLimit,
+    BPM_MAX_LIMIT,
+    BPM_MIN_LIMIT,
     buttons,
-    defaultInitialBPM,
-    elements, noteAmounts, notes,
-    sounds
+    DEFAULT_INITIAL_BPM,
+    elements, NOTE_AMOUNTS, NOTES,
+    SOUNDS
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
@@ -18,7 +18,7 @@ import {ButtonsManager} from "./buttonsManager.js";
 
 
 export class MetronomeManager {
-    _bpm = defaultInitialBPM;
+    _bpm = DEFAULT_INITIAL_BPM;
     isPlaying = false;
     loop = null;
     count = 0;
@@ -132,8 +132,8 @@ export class MetronomeManager {
 
 
         for (let i = 0; i < this.beatBarsManager.numberOfBeats; i++) {
-            const noteSize = notes[this.beatBarsManager.noteAttributes.noteSizes[i].value];
-            const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[i]];
+            const noteSize = NOTES[this.beatBarsManager.noteAttributes.noteSettingsizes[i].value];
+            const noteAmount = NOTE_AMOUNTS[this.beatBarsManager.noteAttributes.noteAmounts[i]];
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
         }
@@ -142,10 +142,10 @@ export class MetronomeManager {
         let position = 0; // Current position pointer
 
         for (let beatIndex = 0; beatIndex < this.beatBarsManager.numberOfBeats; beatIndex++) {
-            const {isTriplet, value: noteSize} = notes[this.beatBarsManager.noteAttributes.noteSizes[beatIndex]];
-            const noteAmount = noteAmounts[this.beatBarsManager.noteAttributes.noteAmounts[beatIndex]];
+            const {isTriplet, noteSize: noteSize} = NOTES[this.beatBarsManager.noteAttributes.noteSettingsizes[beatIndex]];
+            const noteAmount = NOTE_AMOUNTS[this.beatBarsManager.noteAttributes.noteAmounts[beatIndex]];
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = sounds[this.soundManager.selectedSounds()[beatIndex]];
+            const sound = SOUNDS[this.soundManager.selectedSounds()[beatIndex]];
             const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука
 
             for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {
@@ -242,10 +242,10 @@ export class MetronomeManager {
         if (this.bpm === newBpm) {
             return;
         }
-        if (newBpm > bpmMaxLimit) {
-            this.bpm = bpmMaxLimit;
-        } else if (newBpm < bpmMinLimit) {
-            this.bpm = bpmMinLimit;
+        if (newBpm > BPM_MAX_LIMIT) {
+            this.bpm = BPM_MAX_LIMIT;
+        } else if (newBpm < BPM_MIN_LIMIT) {
+            this.bpm = BPM_MIN_LIMIT;
         } else {
             this.bpm = newBpm;
         }
@@ -257,8 +257,8 @@ export class MetronomeManager {
     }
 
     checkBPMLimit() {
-        this.bpmMinLimitReached = this.bpm <= bpmMinLimit;
-        this.bpmMaxLimitReached = this.bpm >= bpmMaxLimit;
+        this.bpmMinLimitReached = this.bpm <= BPM_MIN_LIMIT;
+        this.bpmMaxLimitReached = this.bpm >= BPM_MAX_LIMIT;
     }
 
     restartIfPlaying() {

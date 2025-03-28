@@ -1,11 +1,11 @@
-import {initialNumberOfBeats, maxBeatsAmount, minBeatsAmount, notes} from "../vars.js";
+import {INITIAL_NUMBER_OF_BEATS, MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT, NOTES} from "../vars.js";
 import {makeAutoObservable} from "mobx";
 
 export class BeatBarsManager {
-    _numberOfBeats = initialNumberOfBeats;
+    _numberOfBeats = INITIAL_NUMBER_OF_BEATS;
     _noteAttributes = {
-        sounds: [],
-        notes: [],
+        soundSettings: [],
+        noteSettings: [],
         noteAmounts: [],
     };
 
@@ -29,20 +29,20 @@ export class BeatBarsManager {
     }
 
     addNoteAttributes(sound, note, noteAmount) {
-        this._noteAttributes.sounds.push(sound);
-        this._noteAttributes.notes.push(note);
+        this._noteAttributes.soundSettings.push(sound);
+        this._noteAttributes.noteSettings.push(note);
         this._noteAttributes.noteAmounts.push(noteAmount);
     }
 
     //TODO: Переделать так чтобы звуки тоже хранились прямыми ссылками на объекты
     addStandardNoteAttributes() {
-        const standardNote = notes.find(note => note.value === 4 && !note.isTriplet);
+        const standardNote = NOTES.find(note => note.noteSize === 4 && !note.isTriplet);
         this.addNoteAttributes(1, standardNote, 0);
     }
 
     popNoteAttributes() {
-        this._noteAttributes.sounds.pop();
-        this._noteAttributes.notes.pop();
+        this._noteAttributes.soundSettings.pop();
+        this._noteAttributes.noteSettings.pop();
         this._noteAttributes.noteAmounts.pop();
     }
 
@@ -78,8 +78,8 @@ export class BeatBarsManager {
     }
 
     checkBeatLimits() {
-        const minLimit = this._numberOfBeats <= minBeatsAmount;
-        const maxLimit = this._numberOfBeats >= maxBeatsAmount;
+        const minLimit = this._numberOfBeats <= MIN_BEATS_AMOUNT;
+        const maxLimit = this._numberOfBeats >= MAX_BEATS_AMOUNT;
 
         this.metronomeManager.buttonsManager.decreaseBeatsButtonLimit = minLimit;
         this.metronomeManager.buttonsManager.increaseBeatsButtonLimit = maxLimit;

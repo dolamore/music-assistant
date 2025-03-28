@@ -1,7 +1,7 @@
 import {
     elements,
-    noteAmounts,
-    noteMultipliers, notes
+    NOTE_AMOUNTS,
+    NOTE_MULTIPLIERS, NOTES
 } from "../vars.js";
 import {lcmArray} from "../utils.js";
 import {makeAutoObservable} from "mobx";
@@ -44,8 +44,8 @@ export class ElementsManager {
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
-            const { isTriplet, value: noteSize } = notes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
-            const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
+            const { isTriplet, noteSize } = NOTES[this.metronomeManager.beatBarsManager.noteAttributes.noteSettings[index]];
+            const noteAmount = NOTE_AMOUNTS[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
@@ -56,8 +56,8 @@ export class ElementsManager {
         let numerator = 0;
 
         for (let index = 0; index < beatAmount; index++) {
-            const noteAmount = noteAmounts[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
-            const {isTriplet, value: noteSize} = notes[this.metronomeManager.beatBarsManager.noteAttributes.noteSizes[index]];
+            const noteAmount = NOTE_AMOUNTS[this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index]];
+            const {isTriplet, noteSize: noteSize} = NOTES[this.metronomeManager.beatBarsManager.noteAttributes.noteSettings[index]];
 
             if (isTriplet) {
                 numerator += noteAmount * 3 * (denominator / noteSize);
@@ -74,7 +74,7 @@ export class ElementsManager {
         const barWidth = elements.pendulumBarElement.clientWidth;
         const pendulumWidth = elements.pendulumElement.clientWidth;
         const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-        const beatDuration = (60 / this.metronomeManager.bpm) * 1000 * noteMultipliers[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
+        const beatDuration = (60 / this.metronomeManager.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
         const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
 
         let startTime = performance.now();

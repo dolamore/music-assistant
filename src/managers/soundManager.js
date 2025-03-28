@@ -1,4 +1,4 @@
-import {defaultSoundSettings, initialNumberOfBeats, sounds} from "../vars.js";
+import {DEFAULT_SOUND_SETTINGS, INITIAL_NUMBER_OF_BEATS, SOUNDS} from "../vars.js";
 import document from "react";
 import {makeAutoObservable} from "mobx";
 
@@ -39,7 +39,7 @@ export class SoundManager {
     }
 
     generateSelectedSounds() {
-        for (let i = 0; i < initialNumberOfBeats; i++) {
+        for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
             this._selectedSounds.push(1);
         }
     }
@@ -65,8 +65,8 @@ export class SoundManager {
     }
 
     generateSoundSettings() {
-        for (let i = 0; i < initialNumberOfBeats; i++) {
-            this._soundSettings.push(defaultSoundSettings);
+        for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
+            this._soundSettings.push(DEFAULT_SOUND_SETTINGS);
         }
     }
 
@@ -75,15 +75,15 @@ export class SoundManager {
     }
 
     getSoundSettingsData(row) {
-        return Object.fromEntries(Object.keys(defaultSoundSettings).map(key => {
+        return Object.fromEntries(Object.keys(DEFAULT_SOUND_SETTINGS).map(key => {
             const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
-            return [key, input ? parseFloat(input.value) : defaultSoundSettings[key]];
+            return [key, input ? parseFloat(input.value) : DEFAULT_SOUND_SETTINGS[key]];
         }));
     }
 
     addNewSoundSettingRow() {
         this._selectedSounds.push(1);
-        this._soundSettings.push(defaultSoundSettings);
+        this._soundSettings.push(DEFAULT_SOUND_SETTINGS);
     }
 
     changeBeatSound(beatElement) {
@@ -91,7 +91,7 @@ export class SoundManager {
         const currentSound = parseInt(beatElement.dataset.sound, 10);
 
         // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
-        const nextSound = (currentSound % sounds.length) + 1;
+        const nextSound = (currentSound % SOUNDS.length) + 1;
         beatElement.dataset.sound = nextSound;
 
         // Update selectedSounds array

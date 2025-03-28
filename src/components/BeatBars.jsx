@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {notes} from "../vars.js";
+import {NOTES} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
@@ -31,12 +31,13 @@ const BeatRow = observer(({metronomeManager, index}) => {
 
 const NoteSizeDropdown = observer(({metronomeManager, index}) => {
     const handleChange = (e) => {
-        const isTriplet = e.target.value.endsWith('T');
-        const numericValue = parseInt(e.target.value, 10);
+        const selection = e.target.selectedOptions[0];
+        const noteSize = Number(selection.getAttribute('data-note-size'));
+        const isTriplet = selection.getAttribute('data-is-triplet') === 'true';
 
-        metronomeManager.beatBarsManager.noteAttributes.notes[index] =
-            notes.find(note =>
-                note.value === numericValue && note.isTriplet === isTriplet);
+        metronomeManager.beatBarsManager.noteAttributes.noteSettings[index] =
+            NOTES.find(note =>
+                note.noteSize === noteSize && note.isTriplet === isTriplet);
     }
 
     return (
@@ -45,20 +46,15 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
             data-beat={index}
             onChange={handleChange}
         >
-            <option value="1">1</option>
-            <option value="1T">1T</option>
-            <option value="2">1/2</option>
-            <option value="2T">1/2T</option>
-            <option value="4" selected>1/4</option>
-            <option value="4T">1/4T</option>
-            <option value="8">1/8</option>
-            <option value="8T">1/8T</option>
-            <option value="16">1/16</option>
-            <option value="16T">1/16T</option>
-            <option value="32">1/32</option>
-            <option value="32T">1/32T</option>
-            <option value="64">1/64</option>
-            <option value="64T">1/64T</option>
+            {NOTES.map((note, noteIndex) => (
+                <option
+                    key={`note-${noteIndex}`}
+                    data-note-size={note.noteSize}
+                    data-is-triplet={note.isTriplet.toString()}
+                >
+                    {note.label}
+                </option>
+            ))}
         </select>
     )
 });

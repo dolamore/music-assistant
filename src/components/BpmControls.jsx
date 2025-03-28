@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {bpmMaxLimit, bpmMinLimit, defaultInitialBPM} from "../vars.js";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars.js";
 import {inject} from "mobx-react";
 
 export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
@@ -56,17 +56,17 @@ const BpmInput = observer(({metronomeManager}) => {
         }
         // Limit the value to the allowable BPM range
         const intValue = parseInt(value, 10);
-        if (intValue > bpmMaxLimit) {
-            value = bpmMaxLimit;
-        } else if (intValue < bpmMinLimit) {
-            value = bpmMinLimit;
+        if (intValue > BPM_MAX_LIMIT) {
+            value = BPM_MAX_LIMIT;
+        } else if (intValue < BPM_MIN_LIMIT) {
+            value = BPM_MIN_LIMIT;
         }
         setInputValue(value);
         metronomeManager.handleBpmChange(value);
     };
 
     const handleBlur = () => {
-        const newBpm = inputValue === '' ? defaultInitialBPM : Number(inputValue);
+        const newBpm = inputValue === '' ? DEFAULT_INITIAL_BPM : Number(inputValue);
         metronomeManager.handleBpmChange(newBpm);
         setInputValue(metronomeManager.bpm);
     };

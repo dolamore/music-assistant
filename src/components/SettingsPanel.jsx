@@ -1,13 +1,13 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {defaultSoundSettings} from "../vars.js";
+import {DEFAULT_SOUND_SETTINGS} from "../vars.js";
 import {set} from "mobx";
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
         (_, i) => i + 1);
-    const numColumns = Object.keys(defaultSoundSettings).length + 1; // +1 for oscillator
+    const numColumns = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
     return (
         <div id="settings-panel"
              className={`${metronomeManager.elementsManager.isSettingsPanelVisible ? '' : 'hidden'}
@@ -17,7 +17,7 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
                 <div className="labels">
                     <span>Beat</span>
                     <span>Oscillator</span>
-                    {Object.keys(defaultSoundSettings).map(key => (
+                    {Object.keys(DEFAULT_SOUND_SETTINGS).map(key => (
                         <span key={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
                     ))}
                 </div>
@@ -58,7 +58,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
                 <option value="3">Square</option>
                 <option value="4">Sawtooth</option>
             </select>
-            {Object.keys(defaultSoundSettings).map(key => (
+            {Object.keys(DEFAULT_SOUND_SETTINGS).map(key => (
                 <input
                     key={key}
                     id={`${key}-${index}`}

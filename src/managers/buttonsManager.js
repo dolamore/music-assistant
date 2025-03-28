@@ -1,4 +1,4 @@
-import {buttons, Elements, elements, noteAmounts} from "../vars.js";
+import {buttons, Elements, elements, NOTE_AMOUNTS} from "../vars.js";
 import * as Tone from "tone";
 import {makeAutoObservable} from "mobx";
 
@@ -56,7 +56,7 @@ export class ButtonsManager {
         let maxLimit = false;
 
         this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts.forEach((index) => {
-            const currentValue = noteAmounts[index];
+            const currentValue = NOTE_AMOUNTS[index];
 
             if (currentValue === 1) {
                 minLimit = true;
