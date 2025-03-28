@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {NOTES} from "../vars.js";
+import {DEFAULT_IS_TRIPLET, DEFAULT_NOTE_AMOUNT, DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
@@ -53,7 +53,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
                     key={`note-${noteIndex}`}
                     data-note-size={note.noteSize}
                     data-is-triplet={note.isTriplet.toString()}
-                    selected={note.noteSize === 4 && !note.isTriplet}
+                    selected={note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET}
                 >
                     {note.label}
                 </option>
@@ -62,14 +62,28 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
     )
 });
 
-const NoteAmountDropdown = observer(({metronomeManager, index}) => {
+const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
+    const handleChange = (e) => {
+        metronomeManager.beatBarsManager.noteAttributes.noteAmounts[index] = Number(e.target.value);
+        metronomeManager.elementsManager.updateTimeSignature();
+    }
+
     return (
         <label>
-            <select className="note-amount-dropdown" data-beat={index}>
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+            <select
+                className="note-amount-dropdown"
+                data-beat={index}
+                onChange={handleChange}
+            >
+                {NOTE_AMOUNTS.map((amount, amountIndex) => (
+                    <option
+                        key={`amount-${amountIndex}`}
+                        value={amount}
+                        selected={amount === DEFAULT_NOTE_AMOUNT}
+                    >
+                        {amount}
+                    </option>
+                ))}
             </select>
         </label>
     )

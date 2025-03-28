@@ -132,8 +132,8 @@ export class MetronomeManager {
 
 
         for (let i = 0; i < this.beatBarsManager.numberOfBeats; i++) {
-            const noteSize = NOTES[this.beatBarsManager.noteAttributes.noteSettingsizes[i].value];
-            const noteAmount = NOTE_AMOUNTS[this.beatBarsManager.noteAttributes.noteAmounts[i]];
+            const noteSize = this.beatBarsManager.noteAttributes.noteSettings[i].noteSize;
+            const noteAmount = this.beatBarsManager.noteAttributes.noteAmounts[i];
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
         }
@@ -142,10 +142,10 @@ export class MetronomeManager {
         let position = 0; // Current position pointer
 
         for (let beatIndex = 0; beatIndex < this.beatBarsManager.numberOfBeats; beatIndex++) {
-            const {isTriplet, noteSize: noteSize} = NOTES[this.beatBarsManager.noteAttributes.noteSettingsizes[beatIndex]];
-            const noteAmount = NOTE_AMOUNTS[this.beatBarsManager.noteAttributes.noteAmounts[beatIndex]];
+            const {isTriplet, noteSize} = this.beatBarsManager.noteAttributes.noteSettings[beatIndex];
+            const noteAmount = this.beatBarsManager.noteAttributes.noteAmounts[beatIndex];
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = SOUNDS[this.soundManager.selectedSounds()[beatIndex]];
+            const sound = this.soundManager.selectedSounds()[beatIndex];
             const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука
 
             for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {

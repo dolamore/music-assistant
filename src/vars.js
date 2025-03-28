@@ -18,11 +18,11 @@ export const DEFAULT_SOUND_SETTINGS = {
     release: 0.1,
 };
 export const SOUNDS = [
-    null, // No sound
-    new Tone.Synth({oscillator: {type: 'sine'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'triangle'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'square'}}).toDestination(),
-    new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination()
+    {sound: null, label: 'No sound'},
+    {sound: new Tone.Synth({oscillator: {type: 'sine'}}).toDestination(), label: 'Sine'},
+    {sound: new Tone.Synth({oscillator: {type: 'triangle'}}).toDestination(), label: 'Triangle'},
+    {sound: new Tone.Synth({oscillator: {type: 'square'}}).toDestination(), label: 'Square'},
+    {sound: new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination(), label: 'Sawtooth'}
 ];
 
 export const NOTES = [
@@ -166,3 +166,7 @@ export const elements = {
 export const DEFAULT_INITIAL_BPM = 120;
 export const BPM_MAX_LIMIT = 500;
 export const BPM_MIN_LIMIT = 1;
+export const DEFAULT_NOTE_SIZE = 4;
+export const DEFAULT_IS_TRIPLET = false;
+export const DEFAULT_NOTE_AMOUNT = 1;
+export const DEFAULT_SOUND_INDEX = 1;
