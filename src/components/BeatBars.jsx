@@ -5,7 +5,7 @@ import {NOTES} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
     const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
-        (_, i) => i + 1);
+        (_, i) => i);
     return (
         <div id="beat-container"
              className={`beat-container
@@ -38,6 +38,8 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
         metronomeManager.beatBarsManager.noteAttributes.noteSettings[index] =
             NOTES.find(note =>
                 note.noteSize === noteSize && note.isTriplet === isTriplet);
+
+        metronomeManager.elementsManager.updateTimeSignature();
     }
 
     return (
@@ -51,6 +53,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
                     key={`note-${noteIndex}`}
                     data-note-size={note.noteSize}
                     data-is-triplet={note.isTriplet.toString()}
+                    selected={note.noteSize === 4 && !note.isTriplet}
                 >
                     {note.label}
                 </option>
