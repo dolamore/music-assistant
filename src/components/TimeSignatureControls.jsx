@@ -7,7 +7,7 @@ export default inject("metronomeManager")(observer(function TimeSignatureControl
         <div className="time-signature-controls-container container">
             <BeatsControlGroup metronomeManager={metronomeManager}/>
             <TimeSignatureInfo timeSignature={metronomeManager.elementsManager.timeSignature}/>
-            <NotesControlGroup disabled={metronomeManager.elementsManager.increaseNoteButtonLimit}/>
+            <NotesControlGroup metronomeManager={metronomeManager}/>
         </div>
     );
 }));
@@ -47,21 +47,31 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
     );
 });
 
-const NotesControlGroup = observer(({disabled}) => {
+const NotesControlGroup = observer(({metronomeManager}) => {
+    const decreaseNotes = () => {
+        metronomeManager.beatBarsManager.decreaseNotes();
+    }
+
+    const increaseNotes = () => {
+        metronomeManager.beatBarsManager.increaseNotes();
+    }
     return (
         <div className="time-signature-control-group">
             <label>Notes</label>
             <div>
                 <button
                     id="increase-notes-button"
-                    disabled={disabled}
-                    className={disabled ? 'button-limit' : ''}
+                    onClick={increaseNotes}
+                    disabled={metronomeManager.buttonsManager.increaseNoteButtonLimit}
+                    className={metronomeManager.buttonsManager.increaseNoteButtonLimit ? 'button-limit' : ''}
                 >
                     +
                 </button>
                 <button
                     id="decrease-notes-button"
-
+                    onClick={decreaseNotes}
+                    disabled={metronomeManager.buttonsManager.decreaseNoteButtonLimit}
+                    className={metronomeManager.buttonsManager.decreaseNoteButtonLimit ? 'button-limit' : ''}
                 >
                     -
                 </button>

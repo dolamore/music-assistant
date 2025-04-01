@@ -5,8 +5,7 @@ import {
     BPM_MIN_LIMIT,
     buttons,
     DEFAULT_INITIAL_BPM,
-    elements, NOTE_AMOUNTS, NOTES,
-    SOUNDS
+    elements,
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";

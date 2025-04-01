@@ -69,7 +69,6 @@ const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
     }
 
     return (
-        <label>
             <select
                 className="note-amount-dropdown"
                 data-beat={index}
@@ -85,6 +84,5 @@ const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
                     </option>
                 ))}
             </select>
-        </label>
     )
 });

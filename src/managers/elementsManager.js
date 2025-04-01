@@ -1,7 +1,6 @@
 import {
     elements,
-    NOTE_AMOUNTS,
-    NOTE_MULTIPLIERS, NOTES
+    NOTE_MULTIPLIERS
 } from "../vars.js";
 import {lcmArray} from "../utils.js";
 import {makeAutoObservable} from "mobx";
@@ -125,16 +124,6 @@ export class ElementsManager {
             dropdown.value = options[newIndex].value;
         }
     }
-
-    // updateBeatDropdowns(e) {
-    //     if (e.target.matches('.note-size-dropdown') || e.target.matches('.note-amount-dropdown')) {
-    //         this.updateTimeSignature();
-    //
-    //         if (this.metronomeManager.isPlaying) {
-    //             this.metronomeManager.updateMetronomeSequence();
-    //         }
-    //     }
-    // }
 
     //TODO: реализовать это в элементе!!
 
