@@ -86,6 +86,11 @@ export class SoundManager {
         this._soundSettings.push(DEFAULT_SOUND_SETTINGS);
     }
 
+    deleteLastBeatRow() {
+        this.popSelectedSound();
+        this.popSoundSetting();
+    }
+
     changeBeatSound(beatElement) {
         const beatIndex = parseInt(beatElement.dataset.beat, 10);
         const currentSound = parseInt(beatElement.dataset.sound, 10);

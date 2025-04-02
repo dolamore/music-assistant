@@ -55,8 +55,8 @@ export class ButtonsManager {
         let minLimit = false;
         let maxLimit = false;
 
-        this.metronomeManager.beatBarsManager.noteAttributes.noteAmounts.forEach((index) => {
-            const currentValue = NOTE_AMOUNTS[index];
+        this.metronomeManager.beatBarsManager.noteAttributes.forEach((beat, index) => {
+            const currentValue = NOTE_AMOUNTS[beat.noteAmounts[index]];
 
             if (currentValue === 1) {
                 minLimit = true;

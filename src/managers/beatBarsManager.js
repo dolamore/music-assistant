@@ -9,13 +9,17 @@ import {
 } from "../vars.js";
 import {makeAutoObservable} from "mobx";
 
+class Beat {
+    constructor(sound, note, noteAmount) {
+        this.soundSettings = sound;
+        this.noteSettings = note;
+        this.noteAmounts = noteAmount;
+    }
+}
+
 export class BeatBarsManager {
     _numberOfBeats = INITIAL_NUMBER_OF_BEATS;
-    _noteAttributes = {
-        soundSettings: [],
-        noteSettings: [],
-        noteAmounts: [],
-    };
+    _noteAttributes = [];
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
@@ -37,12 +41,9 @@ export class BeatBarsManager {
     }
 
     addNoteAttributes(sound, note, noteAmount) {
-        this._noteAttributes.soundSettings.push(sound);
-        this._noteAttributes.noteSettings.push(note);
-        this._noteAttributes.noteAmounts.push(noteAmount);
+        this._noteAttributes.push(new Beat(sound, note, noteAmount));
     }
 
-    //TODO: Переделать так чтобы звуки тоже хранились прямыми ссылками на объекты
     addStandardNoteAttributes() {
         const standardNote = NOTES.find(note => note.noteSize === 4 && !note.isTriplet);
         const standardSound = SOUNDS[DEFAULT_SOUND_INDEX];
@@ -52,9 +53,7 @@ export class BeatBarsManager {
     }
 
     popNoteAttributes() {
-        this._noteAttributes.soundSettings.pop();
-        this._noteAttributes.noteSettings.pop();
-        this._noteAttributes.noteAmounts.pop();
+        this._noteAttributes.pop();
     }
 
     generateNoteAttributes() {
@@ -75,17 +74,12 @@ export class BeatBarsManager {
 
     decreaseBeats() {
         // Удаляем последний элемент из beat-container
-        this.deleteLastBeatRow();
+        this.metronomeManager.soundManager.deleteLastBeatRow();
         this.popNoteAttributes();
         this._numberOfBeats--;
         this.metronomeManager.elementsManager.updateTimeSignature();
 
         this.checkBeatLimits();
-    }
-
-    deleteLastBeatRow() {
-        this.metronomeManager.soundManager.popSelectedSound();
-        this.metronomeManager.soundManager.popSoundSetting();
     }
 
     checkBeatLimits() {
