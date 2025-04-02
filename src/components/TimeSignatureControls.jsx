@@ -1,6 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
+import {ChangingButton} from "./UtilityComponents.jsx";
 
 export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}) {
     return (
@@ -25,23 +26,19 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
         <div className="time-signature-control-group">
             <label>Beats</label>
             <div>
-                <button
+                <ChangingButton
                     id="increase-beats-button"
                     onClick={increaseBeats}
                     disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
-                    className={metronomeManager.buttonsManager.increaseBeatsButtonLimit ? 'button-limit' : ''}
-                >
-                    +
-                </button>
+                    label="+"
+                />
                 <span id="beats-counter">{metronomeManager.beatBarsManager.numberOfBeats}</span>
-                <button
+                <ChangingButton
                     id="decrease-beats-button"
                     onClick={decreaseBeats}
                     disabled={metronomeManager.buttonsManager.decreaseBeatsButtonLimit}
-                    className={metronomeManager.buttonsManager.decreaseBeatsButtonLimit ? 'button-limit' : ''}
-                >
-                    -
-                </button>
+                    label="-"
+                />
             </div>
         </div>
     );
@@ -59,22 +56,18 @@ const NotesControlGroup = observer(({metronomeManager}) => {
         <div className="time-signature-control-group">
             <label>Notes</label>
             <div>
-                <button
+                <ChangingButton
                     id="increase-notes-button"
                     onClick={increaseNotes}
                     disabled={metronomeManager.buttonsManager.increaseNoteButtonLimit}
-                    className={metronomeManager.buttonsManager.increaseNoteButtonLimit ? 'button-limit' : ''}
-                >
-                    +
-                </button>
-                <button
+                    label="+"
+                />
+                <ChangingButton
                     id="decrease-notes-button"
                     onClick={decreaseNotes}
                     disabled={metronomeManager.buttonsManager.decreaseNoteButtonLimit}
-                    className={metronomeManager.buttonsManager.decreaseNoteButtonLimit ? 'button-limit' : ''}
-                >
-                    -
-                </button>
+                    label="-"
+                />
             </div>
         </div>
     );

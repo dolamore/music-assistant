@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars.js";
 import {inject} from "mobx-react";
+import {ChangingButton} from "./UtilityComponents.jsx";
 
 export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
     const handleBpmChange = (change) => {
@@ -12,12 +13,14 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
         <div className="bpm-controls-container container">
             <label htmlFor="bpm-input">BPM:</label>
             <div className="bpm-controls">
-                <BpmChangeButton
+                <ChangingButton
+                    id="bpm-decrease-5"
                     label="-5"
                     onClick={() => handleBpmChange(-5)}
                     disabled={metronomeManager.bpmMinLimitReached}
                 />
-                <BpmChangeButton
+                <ChangingButton
+                    id="bpm-decrease-1"
                     label="-1"
                     onClick={() => handleBpmChange(-1)}
                     disabled={metronomeManager.bpmMinLimitReached}
@@ -25,12 +28,14 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                 <BpmInput
                     metronomeManager={metronomeManager}
                 />
-                <BpmChangeButton
+                <ChangingButton
+                    id="bpm-increase-1"
                     label="+1"
                     onClick={() => handleBpmChange(1)}
                     disabled={metronomeManager.bpmMaxLimitReached}
                 />
-                <BpmChangeButton
+                <ChangingButton
+                    id="bpm-increase-5"
                     label="+5"
                     onClick={() => handleBpmChange(5)}
                     disabled={metronomeManager.bpmMaxLimitReached}
@@ -82,13 +87,3 @@ const BpmInput = observer(({metronomeManager}) => {
         />
     );
 });
-
-function BpmChangeButton({label, onClick, disabled}) {
-    return <button
-        onClick={onClick}
-        disabled={disabled}
-        className={disabled ? 'button-limit' : ''}
-    >
-        {label}
-    </button>;
-}
