@@ -35,7 +35,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
         const noteSize = Number(selection.getAttribute('data-note-size'));
         const isTriplet = selection.getAttribute('data-is-triplet') === 'true';
 
-        metronomeManager.beatBarsManager.noteAttributes[index].noteSettings =
+        metronomeManager.beatBarsManager.beats[index].noteSettings =
             NOTES.find(note =>
                 note.noteSize === noteSize && note.isTriplet === isTriplet);
 
@@ -64,7 +64,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
 
 const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
     const handleChange = (e) => {
-        metronomeManager.beatBarsManager.noteAttributes[index].noteAmounts = Number(e.target.value);
+        metronomeManager.beatBarsManager.beats[index].noteAmounts = Number(e.target.value);
         metronomeManager.elementsManager.updateTimeSignature();
     }
 

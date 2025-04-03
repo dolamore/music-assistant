@@ -19,11 +19,11 @@ class Beat {
 
 export class BeatBarsManager {
     _numberOfBeats = INITIAL_NUMBER_OF_BEATS;
-    _noteAttributes = [];
+    _beats = [];
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
-        this.generateNoteAttributes();
+        this.generateBeats();
         makeAutoObservable(this)
     }
 
@@ -36,36 +36,36 @@ export class BeatBarsManager {
         this._numberOfBeats = value;
     }
 
-    get noteAttributes() {
-        return this._noteAttributes;
+    get beats() {
+        return this._beats;
     }
 
-    addNoteAttributes(sound, note, noteAmount) {
-        this._noteAttributes.push(new Beat(sound, note, noteAmount));
+    addBeats(sound, note, noteAmount) {
+        this._beats.push(new Beat(sound, note, noteAmount));
     }
 
-    addStandardNoteAttributes() {
+    addStandardBeats() {
         const standardNote = NOTES.find(note => note.noteSize === 4 && !note.isTriplet);
         const standardSound = SOUNDS[DEFAULT_SOUND_INDEX];
         const standardNoteAmount = NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT);
 
-        this.addNoteAttributes(standardSound, standardNote, standardNoteAmount);
+        this.addBeats(standardSound, standardNote, standardNoteAmount);
     }
 
-    popNoteAttributes() {
-        this._noteAttributes.pop();
+    popBeats() {
+        this._beats.pop();
     }
 
-    generateNoteAttributes() {
+    generateBeats() {
         for (let i = 0; i < this.numberOfBeats; i++) {
-            this.addStandardNoteAttributes();
+            this.addStandardBeats();
         }
     }
 
     //TODO обновить updateMetronomeSequence if playing
     increaseBeats() {
         this._numberOfBeats++;
-        this.addStandardNoteAttributes()
+        this.addStandardBeats()
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
@@ -75,7 +75,7 @@ export class BeatBarsManager {
     decreaseBeats() {
         // Удаляем последний элемент из beat-container
         this.metronomeManager.soundManager.deleteLastBeatRow();
-        this.popNoteAttributes();
+        this.popBeats();
         this._numberOfBeats--;
         this.metronomeManager.elementsManager.updateTimeSignature();
 
