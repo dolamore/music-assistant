@@ -27,17 +27,19 @@ export class MetronomeManager {
     skipper = 0;
     currentStep = 0;
     isStartOfLoop = false;
-    _soundManager = new SoundManager(this);
-    _beatBarsManager = new BeatBarsManager(this);
-    _elementsManager = new ElementsManager(this);
-    _buttonsManager = new ButtonsManager(this);
-    trainingModeManager = new TrainingModeManager();
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
-    visualEffectsManager = new VisualEffectsManager();
 
     constructor() {
+        this._soundManager = new SoundManager(this);
+        this._beatBarsManager = new BeatBarsManager(this);
+        this._buttonsManager = new ButtonsManager(this);
+        this._beatBarsManager.generateBeats();
+        this._elementsManager = new ElementsManager(this);
+        this.trainingModeManager = new TrainingModeManager();
+        this.visualEffectsManager = new VisualEffectsManager();
         makeAutoObservable(this)
+
     }
 
     get loopCount() {

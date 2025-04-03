@@ -43,6 +43,7 @@ export class ElementsManager {
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
+            console.log(this.metronomeManager.beatBarsManager.beats[index].noteSettings);
             const { isTriplet, noteSize } = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
             const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmounts;
 
@@ -101,27 +102,11 @@ export class ElementsManager {
         elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
     }
 
-    //TODO: проверить что метроном будет перезапускаться в нужный момент при изменении бпм
-
     preventNonDigitInput(e) {
         const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
 
         if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
             e.preventDefault();
-        }
-    }
-
-
-    changeDropdownSize(dropdown, direction) {
-        const options = Array.from(dropdown.options);
-        const currentIndex = options.findIndex(option => option.value === dropdown.value);
-        // Изменяем индекс с учетом пропуска триолей
-        let newIndex = currentIndex + (direction ? 2 : -2);
-
-        // Проверяем валидность нового значения
-        const newValue = parseInt(options[newIndex]?.value);
-        if (newValue >= 1 && newValue <= 64) {
-            dropdown.value = options[newIndex].value;
         }
     }
 
@@ -135,7 +120,6 @@ export class ElementsManager {
 }
 
 //     renderElements() {
-//         this.renderSoundSettings();
 //
 //         window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
 //

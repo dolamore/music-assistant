@@ -1,9 +1,9 @@
 import {
-    DEFAULT_NOTE_AMOUNT,
+    DEFAULT_IS_TRIPLET,
+    DEFAULT_NOTE_AMOUNT, DEFAULT_NOTE_SIZE,
     DEFAULT_SOUND_INDEX,
     INITIAL_NUMBER_OF_BEATS,
-    MAX_BEATS_AMOUNT,
-    MIN_BEATS_AMOUNT, NOTE_AMOUNTS,
+    NOTE_AMOUNTS,
     NOTES,
     SOUNDS
 } from "../vars.js";
@@ -14,7 +14,7 @@ class Beat {
         this.soundSettings = sound;
         this.noteSettings = note;
         this.noteAmounts = noteAmount;
-        this.label = note.label;
+        makeAutoObservable(this);
     }
 }
 
@@ -23,7 +23,6 @@ export class BeatBarsManager {
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
-        this.generateBeats();
         makeAutoObservable(this)
     }
 
@@ -36,7 +35,7 @@ export class BeatBarsManager {
     }
 
     addStandardBeat() {
-        const standardNote = NOTES.find(note => note.noteSize === 4 && !note.isTriplet);
+        const standardNote = NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET);
         const standardSound = SOUNDS[DEFAULT_SOUND_INDEX];
         const standardNoteAmount = NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT);
 
@@ -51,31 +50,44 @@ export class BeatBarsManager {
         for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
             this.addStandardBeat();
         }
+        this.metronomeManager.buttonsManager.checkBeatsLimits();
+        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
-    //TODO обновить updateMetronomeSequence if playing
     increaseBeats() {
         this.addStandardBeat()
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.checkBeatsLimits();
+        this.metronomeManager.buttonsManager.checkBeatsLimits();
+        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
     decreaseBeats() {
-        // Удаляем последний элемент из beat-container
         this.metronomeManager.soundManager.deleteLastBeatRow();
         this.popBeat();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.checkBeatsLimits();
+        this.metronomeManager.buttonsManager.checkBeatsLimits();
+        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
-    checkBeatsLimits() {
-        const minLimit = this._beats.length <= MIN_BEATS_AMOUNT;
-        const maxLimit = this._beats.length >= MAX_BEATS_AMOUNT;
 
-        this.metronomeManager.buttonsManager.decreaseBeatsButtonLimit = minLimit;
-        this.metronomeManager.buttonsManager.increaseBeatsButtonLimit = maxLimit;
+    increaseNotes() {
+        this.changeDropdownSize(true);
+    }
+
+    decreaseNotes() {
+        this.changeDropdownSize(false);
+    }
+
+    changeDropdownSize(direction) {
+        this._beats.forEach((beat) => {
+            const currentIndex = NOTES.findIndex(note => note.label === beat.noteSettings.label);
+            const newIndex = currentIndex + (direction ? 2 : -2);
+            beat.noteSettings = NOTES[newIndex];
+        });
+        this.metronomeManager.elementsManager.updateTimeSignature();
+        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 }

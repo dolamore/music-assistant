@@ -1,4 +1,4 @@
-import {buttons, Elements, elements, NOTE_AMOUNTS} from "../vars.js";
+import {buttons, Elements, elements, MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT, NOTE_AMOUNTS} from "../vars.js";
 import * as Tone from "tone";
 import {makeAutoObservable} from "mobx";
 
@@ -12,7 +12,7 @@ export class ButtonsManager {
 
     constructor(metronomeManager) {
         this._metronomeManager = metronomeManager;
-        makeAutoObservable(this)
+        makeAutoObservable(this);
     }
 
     get increaseBeatsButtonLimit() {
@@ -51,35 +51,17 @@ export class ButtonsManager {
         return this._metronomeManager;
     }
 
-    checkNotesLimit() {
-        let minLimit = false;
-        let maxLimit = false;
-
-        this.metronomeManager.beatBarsManager.beats.forEach((beat, index) => {
-            const currentValue = NOTE_AMOUNTS[beat.noteAmounts[index]];
-
-            if (currentValue === 1) {
-                minLimit = true;
-            }
-
-            if (currentValue === 64) {
-                maxLimit = true;
-            }
-        });
-        this._decreaseNoteButtonLimit = minLimit;
-        this._increaseNoteButtonLimit = maxLimit;
+    checkBeatsLimits() {
+        this._decreaseBeatsButtonLimit = this.metronomeManager.beatBarsManager.beats.length <= MIN_BEATS_AMOUNT;
+        this._increaseBeatsButtonLimit = this.metronomeManager.beatBarsManager.beats.length >= MAX_BEATS_AMOUNT;
     }
 
-    // changeNoteSize(increase) {
-    //     Elements.noteSizeDropdowns.forEach((dropdown) => {
-    //         this.elementsManager.changeDropdownSize(dropdown, increase);
-    //     });
-    //     this.elementsManager.updateTimeSignature();
-    //     if (this.metronomeManager.isPlaying) {
-    //         this.metronomeManager.restartMetronomeAndPendulum();
-    //     }
-    //
-    // }
+    checkNotesLimit() {
+        this._decreaseNoteButtonLimit =
+            this.metronomeManager.beatBarsManager.beats.some(beat => beat.noteSettings.noteSize === 1);
+        this._increaseNoteButtonLimit =
+            this.metronomeManager.beatBarsManager.beats.some(beat => beat.noteSettings.noteSize === 64);
+    }
     //
     // async toggleStartStopButton() {
     //     await Tone.start();
@@ -88,29 +70,5 @@ export class ButtonsManager {
     //     } else {
     //         this.metronomeManager.startMetronome();
     //     }
-    // }
-    //
-    // handleSaveSettings() {
-    //     const soundManager = this.metronomeManager.soundManager;
-    //     soundManager.clearSelectedSounds();
-    //     soundManager.clearSoundSettings();
-    //     // Извлекаем и обновляем настройки для каждого бита
-    //     Elements.soundSettingsRows.forEach((row) => {
-    //         soundManager.addSelectedSound(parseInt(row.querySelector('select').value, 10));
-    //         soundManager.addSoundSetting(soundManager.getSoundSettingsData(row));
-    //     });
-    //
-    //     // Обновляем данные в DOM
-    //     Elements.beats.forEach((beat, index) => {
-    //         beat.dataset.sound = soundManager.selectedSounds()[index];  // Обновляем звук для каждого бита
-    //     });
-    //
-    //     // Обновляем метроном, не останавливая его
-    //     if (this.metronomeManager.isPlaying) {
-    //         this.metronomeManager.updateMetronomeSequence();
-    //     }
-    //
-    //     // Скрываем панель настроек
-    //     elements.settingsPanel.classList.toggle('hidden');
     // }
 }
