@@ -52,7 +52,7 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
                     key={`note-${noteIndex}`}
                     data-note-size={note.noteSize}
                     data-is-triplet={note.isTriplet.toString()}
-                    selected={note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET}
+                    selected={note.noteSize === metronomeManager.beatBarsManager.beats[index].noteSettings.noteSize && note.isTriplet === metronomeManager.beatBarsManager.beats[index].noteSettings.isTriplet}
                 >
                     {note.label}
                 </option>
@@ -77,7 +77,7 @@ const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
                     <option
                         key={`amount-${amountIndex}`}
                         value={amount}
-                        selected={amount === DEFAULT_NOTE_AMOUNT}
+                        selected={amount === metronomeManager.beatBarsManager.beats[index].noteAmounts}
                     >
                         {amount}
                     </option>

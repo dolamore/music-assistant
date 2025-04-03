@@ -14,6 +14,7 @@ class Beat {
         this.soundSettings = sound;
         this.noteSettings = note;
         this.noteAmounts = noteAmount;
+        this.label = note.label;
     }
 }
 
