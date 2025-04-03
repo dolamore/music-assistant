@@ -130,7 +130,7 @@ export class MetronomeManager {
         let totalSteps = 0;
 
 
-        for (let i = 0; i < this.beatBarsManager.numberOfBeats; i++) {
+        for (let i = 0; i < this.beatBarsManager.beats.length; i++) {
             const noteSize = this.beatBarsManager.beats[i].noteSettings.noteSize;
             const noteAmount = this.beatBarsManager.beats[i].noteAmounts;
 
@@ -140,7 +140,7 @@ export class MetronomeManager {
         const sequence = new Array(totalSteps).fill(null);
         let position = 0; // Current position pointer
 
-        for (let beatIndex = 0; beatIndex < this.beatBarsManager.numberOfBeats; beatIndex++) {
+        for (let beatIndex = 0; beatIndex < this.beatBarsManager.beats.length; beatIndex++) {
             const {isTriplet, noteSize} = this.beatBarsManager.beats[beatIndex].noteSettings;
             const noteAmount = this.beatBarsManager.beats[beatIndex].noteAmounts;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);

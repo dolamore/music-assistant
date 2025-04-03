@@ -5,8 +5,7 @@ import {DEFAULT_SOUND_SETTINGS} from "../vars.js";
 import {set} from "mobx";
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
-    const indices = Array.from({length: metronomeManager.beatBarsManager.numberOfBeats},
-        (_, i) => i + 1);
+    const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i + 1);
     const numColumns = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
     return (
         <div id="settings-panel"

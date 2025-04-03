@@ -39,7 +39,7 @@ export class ElementsManager {
     }
 
     countSize() {
-        let beatAmount = this.metronomeManager.beatBarsManager.numberOfBeats;
+        let beatAmount = this.metronomeManager.beatBarsManager.beats.length;
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {

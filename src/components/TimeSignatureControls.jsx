@@ -32,7 +32,7 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
                     disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
                     label="+"
                 />
-                <span id="beats-counter">{metronomeManager.beatBarsManager.numberOfBeats}</span>
+                <span id="beats-counter">{metronomeManager.beatBarsManager.beats.length}</span>
                 <ChangingButton
                     id="decrease-beats-button"
                     onClick={decreaseBeats}

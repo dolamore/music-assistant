@@ -18,22 +18,12 @@ class Beat {
 }
 
 export class BeatBarsManager {
-    _numberOfBeats = INITIAL_NUMBER_OF_BEATS;
     _beats = [];
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
         this.generateBeats();
         makeAutoObservable(this)
-    }
-
-
-    get numberOfBeats() {
-        return this._numberOfBeats;
-    }
-
-    set numberOfBeats(value) {
-        this._numberOfBeats = value;
     }
 
     get beats() {
@@ -57,14 +47,13 @@ export class BeatBarsManager {
     }
 
     generateBeats() {
-        for (let i = 0; i < this.numberOfBeats; i++) {
+        for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
             this.addStandardBeats();
         }
     }
 
     //TODO обновить updateMetronomeSequence if playing
     increaseBeats() {
-        this._numberOfBeats++;
         this.addStandardBeats()
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
@@ -76,15 +65,14 @@ export class BeatBarsManager {
         // Удаляем последний элемент из beat-container
         this.metronomeManager.soundManager.deleteLastBeatRow();
         this.popBeats();
-        this._numberOfBeats--;
         this.metronomeManager.elementsManager.updateTimeSignature();
 
         this.checkBeatLimits();
     }
 
     checkBeatLimits() {
-        const minLimit = this._numberOfBeats <= MIN_BEATS_AMOUNT;
-        const maxLimit = this._numberOfBeats >= MAX_BEATS_AMOUNT;
+        const minLimit = this._beats.length <= MIN_BEATS_AMOUNT;
+        const maxLimit = this._beats.length >= MAX_BEATS_AMOUNT;
 
         this.metronomeManager.buttonsManager.decreaseBeatsButtonLimit = minLimit;
         this.metronomeManager.buttonsManager.increaseBeatsButtonLimit = maxLimit;
