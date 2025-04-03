@@ -31,47 +31,47 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeats(sound, note, noteAmount) {
+    addBeat(sound, note, noteAmount) {
         this._beats.push(new Beat(sound, note, noteAmount));
     }
 
-    addStandardBeats() {
+    addStandardBeat() {
         const standardNote = NOTES.find(note => note.noteSize === 4 && !note.isTriplet);
         const standardSound = SOUNDS[DEFAULT_SOUND_INDEX];
         const standardNoteAmount = NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT);
 
-        this.addBeats(standardSound, standardNote, standardNoteAmount);
+        this.addBeat(standardSound, standardNote, standardNoteAmount);
     }
 
-    popBeats() {
+    popBeat() {
         this._beats.pop();
     }
 
     generateBeats() {
         for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
-            this.addStandardBeats();
+            this.addStandardBeat();
         }
     }
 
     //TODO обновить updateMetronomeSequence if playing
     increaseBeats() {
-        this.addStandardBeats()
+        this.addStandardBeat()
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.checkBeatLimits();
+        this.checkBeatsLimits();
     }
 
     decreaseBeats() {
         // Удаляем последний элемент из beat-container
         this.metronomeManager.soundManager.deleteLastBeatRow();
-        this.popBeats();
+        this.popBeat();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.checkBeatLimits();
+        this.checkBeatsLimits();
     }
 
-    checkBeatLimits() {
+    checkBeatsLimits() {
         const minLimit = this._beats.length <= MIN_BEATS_AMOUNT;
         const maxLimit = this._beats.length >= MAX_BEATS_AMOUNT;
 
