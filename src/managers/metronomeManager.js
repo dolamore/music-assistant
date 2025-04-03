@@ -34,7 +34,6 @@ export class MetronomeManager {
         this._soundManager = new SoundManager(this);
         this._beatBarsManager = new BeatBarsManager(this);
         this._buttonsManager = new ButtonsManager(this);
-        this._beatBarsManager.generateBeats();
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();

@@ -7,36 +7,20 @@ export class ButtonsManager {
 
     _increaseNoteButtonLimit = false;
     _decreaseNoteButtonLimit = false;
-    _increaseBeatsButtonLimit = false;
-    _decreaseBeatsButtonLimit = false;
 
     constructor(metronomeManager) {
         this._metronomeManager = metronomeManager;
+        this.initialize();
         makeAutoObservable(this);
     }
 
-    get increaseBeatsButtonLimit() {
-        return this._increaseBeatsButtonLimit;
+    initialize() {
+        this.metronomeManager.beatBarsManager.generateBeats();
+        this.checkLimits();
     }
 
-    set increaseBeatsButtonLimit(value) {
-        this._increaseBeatsButtonLimit = value;
-    }
-
-    get decreaseBeatsButtonLimit() {
-        return this._decreaseBeatsButtonLimit;
-    }
-
-    set decreaseBeatsButtonLimit(value) {
-        this._decreaseBeatsButtonLimit = value;
-    }
-
-    get increaseNoteButtonLimit() {
-        return this._increaseNoteButtonLimit;
-    }
-
-    set increaseNoteButtonLimit(value) {
-        this._increaseNoteButtonLimit = value;
+    async checkLimits() {
+        this.checkNotesLimit();
     }
 
     get decreaseNoteButtonLimit() {
@@ -49,11 +33,6 @@ export class ButtonsManager {
 
     get metronomeManager() {
         return this._metronomeManager;
-    }
-
-    checkBeatsLimits() {
-        this._decreaseBeatsButtonLimit = this.metronomeManager.beatBarsManager.beats.length <= MIN_BEATS_AMOUNT;
-        this._increaseBeatsButtonLimit = this.metronomeManager.beatBarsManager.beats.length >= MAX_BEATS_AMOUNT;
     }
 
     checkNotesLimit() {

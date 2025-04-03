@@ -2,6 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {ChangingButton} from "./UtilityComponents.jsx";
+import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars.js";
 
 export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}) {
     return (
@@ -29,7 +30,7 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
                 <ChangingButton
                     id="increase-beats-button"
                     onClick={increaseBeats}
-                    disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
+                 //   disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
                     label="+"
                 />
                 <span id="beats-counter">{metronomeManager.beatBarsManager.beats.length}</span>
@@ -59,13 +60,13 @@ const NotesControlGroup = observer(({metronomeManager}) => {
                 <ChangingButton
                     id="increase-notes-button"
                     onClick={increaseNotes}
-                    disabled={metronomeManager.buttonsManager.increaseNoteButtonLimit}
+                    disabled={metronomeManager.beatBarsManager.beats.length >= MAX_BEATS_AMOUNT}
                     label="+"
                 />
                 <ChangingButton
                     id="decrease-notes-button"
                     onClick={decreaseNotes}
-                    disabled={metronomeManager.buttonsManager.decreaseNoteButtonLimit}
+                    disabled={metronomeManager.beatBarsManager.beats.length <= MIN_BEATS_AMOUNT}
                     label="-"
                 />
             </div>

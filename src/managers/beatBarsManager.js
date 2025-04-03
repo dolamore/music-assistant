@@ -50,8 +50,6 @@ export class BeatBarsManager {
         for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
             this.addStandardBeat();
         }
-        this.metronomeManager.buttonsManager.checkBeatsLimits();
-        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
     increaseBeats() {
@@ -59,7 +57,7 @@ export class BeatBarsManager {
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.metronomeManager.buttonsManager.checkBeatsLimits();
+     //   this.metronomeManager.buttonsManager.checkBeatsLimits();
         this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
@@ -68,7 +66,7 @@ export class BeatBarsManager {
         this.popBeat();
         this.metronomeManager.elementsManager.updateTimeSignature();
 
-        this.metronomeManager.buttonsManager.checkBeatsLimits();
+      //  this.metronomeManager.buttonsManager.checkBeatsLimits();
         this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 

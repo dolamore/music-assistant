@@ -19,6 +19,7 @@ export default defineConfig({
         commonjs(),
     ],
     build: {
+        sourcemap: true,
         outDir: 'dist',
         rollupOptions: {
             input: 'src/index.jsx',
@@ -32,6 +33,7 @@ export default defineConfig({
         port: 3001,
     },
     esbuild: {
+        sourcemap: true,
         loader: {
             '.js': 'jsx',
             '.jsx': 'jsx',// Treat .js files as JSX
