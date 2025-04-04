@@ -62,7 +62,6 @@ export class BeatBarsManager {
     }
 
     decreaseBeats() {
-        this.metronomeManager.soundManager.deleteLastBeatRow();
         this.popBeat();
         this.metronomeManager.elementsManager.updateTimeSignature();
     }
