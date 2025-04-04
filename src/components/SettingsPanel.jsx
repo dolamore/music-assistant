@@ -13,11 +13,11 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
                         container`}>
             <h2>Sound Settings</h2>
             <div className="sound-settings-grid" style={{gridTemplateColumns: `150px repeat(${numColumns}, 1fr)`}}>
-                <div className="labels">
+                <div className="sounds-settings-labels">
                     <span>Beat</span>
                     <span>Oscillator</span>
                     {DEFAULT_SOUND_SETTINGS.map(setting => (
-                        <span key={setting.label}>{setting.label}</span>
+                        <span key={`${setting.key}-label`}>{setting.label}</span>
                     ))}
                 </div>
                 {indices.map(index => (
@@ -34,17 +34,15 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 
 const SoundRow = observer(({metronomeManager, index}) => {
     const handleSelectedSoundsChange = (e) => {
-        // const newValue = Number(e.target.value);
-        // console.log(newValue);
-        // set(metronomeManager.soundManager.selectedSounds, index, newValue);
-        // console.log(metronomeManager.soundManager.selectedSounds);
-         const newValue = Number(e.target.value);
-         set(metronomeManager.beatBarsManager.beats[index], 'sound', SOUNDS[newValue]);
+        const newValue = Number(e.target.value);
+        set(metronomeManager.beatBarsManager.beats[index], 'sound', SOUNDS[newValue]);
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
-        set(metronomeManager.soundManager.soundSettings[index], key, newValue);
+        console.log(key, newValue);
+        console.log(metronomeManager.beatBarsManager.beats[index].soundSettings.find(beatSoundSettings => beatSoundSettings.key = key));
+        set(metronomeManager.beatBarsManager.beats[index].soundSettings.find(beatSoundSettings => beatSoundSettings.key = key), 'value', newValue);
     };
 
     return (
@@ -57,9 +55,9 @@ const SoundRow = observer(({metronomeManager, index}) => {
             >
                 {SOUNDS.map((sound, soundIndex) => (
                     <option
-                        key={`sound-${soundIndex}`}
-                        value={soundIndex}
-                        selected={metronomeManager.beatBarsManager.beats[index].sound === sound}
+                        key={`${sound.key}`}
+                        value={sound.sound}
+                        selected={metronomeManager.beatBarsManager.beats[index].sound.key === sound.key}
                     >
                         {sound.label}
                     </option>
@@ -68,11 +66,13 @@ const SoundRow = observer(({metronomeManager, index}) => {
             {DEFAULT_SOUND_SETTINGS.map(setting => (
                 <input
                     key={setting.key}
-                    id={`${key}-${index}`}
+                    id={`${setting.key}-${index}`}
                     type="number"
-                    placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                    value={metronomeManager.soundManager.soundSettings[index][key]}
-                    onChange={(e) => handleSoundSettingsChange(e, key)}
+                    placeholder={setting.label}
+                    value={metronomeManager.beatBarsManager.beats[index].soundSettings.find(
+                        beatSoundSetting => setting.key === beatSoundSetting.key).value
+                    }
+                    onChange={(e) => handleSoundSettingsChange(e, setting.key)}
                 />
             ))}
         </div>

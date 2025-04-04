@@ -1,5 +1,4 @@
 import {
-    elements,
     NOTE_MULTIPLIERS
 } from "../vars.js";
 import {lcmArray} from "../utils.js";
@@ -68,38 +67,38 @@ export class ElementsManager {
         return {numerator: numerator, tactSize: denominator};
     }
 
-    movePendulum() {
+    // movePendulum() {
+    //
+    //     const barWidth = elements.pendulumBarElement.clientWidth;
+    //     const pendulumWidth = elements.pendulumElement.clientWidth;
+    //     const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
+    //     const beatDuration = (60 / this.metronomeManager.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
+    //     const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
+    //
+    //     let startTime = performance.now();
+    //
+    //     const updatePendulumPosition = (currentTime) => {
+    //         if (!this.metronomeManager.isPlaying) return; // Stop animation if metronome is stopped
+    //
+    //         const elapsed = (currentTime - startTime) % pendulumPeriod;
+    //         const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
+    //
+    //         const position = normalizedTime <= 0.5 ? normalizedTime * 2 * maxPosition // Move right
+    //             : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
+    //
+    //         elements.pendulumElement.style.left = `${position}px`;
+    //
+    //         this.pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
+    //     }
+    //
+    //     startTime = performance.now();
+    //     requestAnimationFrame(updatePendulumPosition);
+    // }
 
-        const barWidth = elements.pendulumBarElement.clientWidth;
-        const pendulumWidth = elements.pendulumElement.clientWidth;
-        const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-        const beatDuration = (60 / this.metronomeManager.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
-        const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
-
-        let startTime = performance.now();
-
-        const updatePendulumPosition = (currentTime) => {
-            if (!this.metronomeManager.isPlaying) return; // Stop animation if metronome is stopped
-
-            const elapsed = (currentTime - startTime) % pendulumPeriod;
-            const normalizedTime = elapsed / pendulumPeriod; // From 0 to 1
-
-            const position = normalizedTime <= 0.5 ? normalizedTime * 2 * maxPosition // Move right
-                : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition; // Move left
-
-            elements.pendulumElement.style.left = `${position}px`;
-
-            this.pendulumAnimationFrame = requestAnimationFrame(updatePendulumPosition);
-        }
-
-        startTime = performance.now();
-        requestAnimationFrame(updatePendulumPosition);
-    }
-
-    resetPendulumAnimation() {
-        cancelAnimationFrame(this.pendulumAnimationFrame); // Stop the current animation
-        elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
-    }
+    // resetPendulumAnimation() {
+    //     cancelAnimationFrame(this.pendulumAnimationFrame); // Stop the current animation
+    //     elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
+    // }
 
     preventNonDigitInput(e) {
         const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow

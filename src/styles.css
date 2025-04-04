@@ -159,12 +159,12 @@ button:hover {
     width: max-content;
 }
 
-.labels {
+.sounds-settings-labels {
     display: contents;
     font-weight: bold;
 }
 
-.labels span {
+.sounds-settings-labels span {
     text-align: center;
 }
 

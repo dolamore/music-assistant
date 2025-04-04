@@ -3,9 +3,7 @@ import {SoundManager} from "./soundManager.js";
 import {
     BPM_MAX_LIMIT,
     BPM_MIN_LIMIT,
-    buttons,
     DEFAULT_INITIAL_BPM,
-    elements,
 } from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
@@ -83,38 +81,38 @@ export class MetronomeManager {
         return this._soundManager;
     }
 
-    startMetronome() {
-        this.isPlaying = true;
+    // startMetronome() {
+    //     this.isPlaying = true;
+    //
+    //     Tone.getTransport().bpm.value = this.bpm * 3;
+    //
+    //     this.sequence = this.generateFixedMetronomeSequence();
+    //     this.skipper = 0;
+    //
+    //     // Создаем новый луп с нужными параметрами
+    //     this.loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
+    //
+    //     this.loop.start(0);
+    //
+    //     Tone.getTransport().start(); //used to be trasnport
+    //     //  buttons.startStopButton.textContent = 'Stop';
+    //
+    //     //TODO: move pendulum!
+    //     //    this.elementsManager.movePendulum();
+    // }
 
-        Tone.getTransport().bpm.value = this.bpm * 3;
-
-        this.sequence = this.generateFixedMetronomeSequence();
-        this.skipper = 0;
-
-        // Создаем новый луп с нужными параметрами
-        this.loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
-
-        this.loop.start(0);
-
-        Tone.getTransport().start(); //used to be trasnport
-        //  buttons.startStopButton.textContent = 'Stop';
-
-        //TODO: move pendulum!
-        //    this.elementsManager.movePendulum();
-    }
-
-    stopMetronome() {
-        this.isPlaying = false;
-        if (this.loop) this.loop.stop();
-        Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
-        buttons.startStopButton.textContent = 'Start';
-
-        this.elementsManager.resetPendulumAnimation();
-
-        this.count = 0;
-        this.loopCount = 0;
-        //elements.loopCounter.textContent = this.loopCount;
-    }
+    // stopMetronome() {
+    //     this.isPlaying = false;
+    //     if (this.loop) this.loop.stop();
+    //     Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
+    //     buttons.startStopButton.textContent = 'Start';
+    //
+    //     this.elementsManager.resetPendulumAnimation();
+    //
+    //     this.count = 0;
+    //     this.loopCount = 0;
+    //     //elements.loopCounter.textContent = this.loopCount;
+    // }
 
     restartMetronomeAndPendulum() {
         this.stopMetronome();

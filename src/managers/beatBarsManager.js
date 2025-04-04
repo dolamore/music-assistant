@@ -9,14 +9,14 @@ import {
     NOTES,
     SOUNDS
 } from "../vars.js";
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, observable} from "mobx";
 
 class Beat {
     constructor(sound, note, noteAmount, soundSettings) {
-        this.sound = sound;
-        this.noteSettings = note;
+        this.sound = observable(sound);
+        this.noteSettings = observable(note);
         this.noteAmounts = noteAmount;
-        this.soundSettings = soundSettings;
+        this.soundSettings = observable(soundSettings);
         makeAutoObservable(this);
     }
 }
