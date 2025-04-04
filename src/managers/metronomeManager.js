@@ -71,10 +71,6 @@ export class MetronomeManager {
         this._bpm = value;
     }
 
-    get buttonsManager() {
-        return this._buttonsManager;
-    }
-
     get beatBarsManager() {
         return this._beatBarsManager;
     }
@@ -143,7 +139,7 @@ export class MetronomeManager {
             const {isTriplet, noteSize} = this.beatBarsManager.beats[beatIndex].noteSettings;
             const noteAmount = this.beatBarsManager.beats[beatIndex].noteAmounts;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = this.soundManager.selectedSounds()[beatIndex];
+            const sound = this.soundManager.selectedSounds[beatIndex];
             const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука
 
             for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {

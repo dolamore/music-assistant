@@ -10,10 +10,12 @@ import {
 import {makeAutoObservable} from "mobx";
 
 class Beat {
-    constructor(sound, note, noteAmount) {
-        this.soundSettings = sound;
+    constructor(sound, note, noteAmount, selectedSounds, soundSettings) {
+        this.sound = sound;
         this.noteSettings = note;
         this.noteAmounts = noteAmount;
+        this.selectedSounds = selectedSounds;
+         this.soundSettings = soundSettings;
         makeAutoObservable(this);
     }
 }
@@ -31,8 +33,8 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeat(sound, note, noteAmount) {
-        this._beats.push(new Beat(sound, note, noteAmount));
+    addBeat(sound, note, noteAmount, selectedSounds, soundSettings) {
+        this._beats.push(new Beat(sound, note, noteAmount, selectedSounds, soundSettings));
     }
 
     addStandardBeat() {
