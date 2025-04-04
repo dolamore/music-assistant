@@ -30,14 +30,14 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
                 <ChangingButton
                     id="increase-beats-button"
                     onClick={increaseBeats}
-                 //   disabled={metronomeManager.buttonsManager.increaseBeatsButtonLimit}
+                    disabled={metronomeManager.beatBarsManager.beats.length >= MAX_BEATS_AMOUNT}
                     label="+"
                 />
                 <span id="beats-counter">{metronomeManager.beatBarsManager.beats.length}</span>
                 <ChangingButton
                     id="decrease-beats-button"
                     onClick={decreaseBeats}
-                    disabled={metronomeManager.buttonsManager.decreaseBeatsButtonLimit}
+                    disabled={metronomeManager.beatBarsManager.beats.length <= MIN_BEATS_AMOUNT}
                     label="-"
                 />
             </div>
@@ -60,13 +60,13 @@ const NotesControlGroup = observer(({metronomeManager}) => {
                 <ChangingButton
                     id="increase-notes-button"
                     onClick={increaseNotes}
-                    disabled={metronomeManager.beatBarsManager.beats.length >= MAX_BEATS_AMOUNT}
+                    disabled={metronomeManager.beatBarsManager.beats.some(beat => beat.noteSettings.noteSize === 64)}
                     label="+"
                 />
                 <ChangingButton
                     id="decrease-notes-button"
                     onClick={decreaseNotes}
-                    disabled={metronomeManager.beatBarsManager.beats.length <= MIN_BEATS_AMOUNT}
+                    disabled={metronomeManager.beatBarsManager.beats.some(beat => beat.noteSettings.noteSize === 1)}
                     label="-"
                 />
             </div>

@@ -13,7 +13,6 @@ import * as Tone from "tone";
 import {TrainingModeManager} from "./trainingModeManager.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
 import document from "react";
-import {ButtonsManager} from "./buttonsManager.js";
 
 
 export class MetronomeManager {
@@ -33,7 +32,6 @@ export class MetronomeManager {
     constructor() {
         this._soundManager = new SoundManager(this);
         this._beatBarsManager = new BeatBarsManager(this);
-        this._buttonsManager = new ButtonsManager(this);
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();

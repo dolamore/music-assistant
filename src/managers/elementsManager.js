@@ -43,7 +43,6 @@ export class ElementsManager {
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
-            console.log(this.metronomeManager.beatBarsManager.beats[index].noteSettings);
             const { isTriplet, noteSize } = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
             const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmounts;
 

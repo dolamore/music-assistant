@@ -23,6 +23,7 @@ export class BeatBarsManager {
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
+        this.generateBeats();
         makeAutoObservable(this)
     }
 
@@ -56,18 +57,12 @@ export class BeatBarsManager {
         this.addStandardBeat()
         this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
-
-     //   this.metronomeManager.buttonsManager.checkBeatsLimits();
-        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
     decreaseBeats() {
         this.metronomeManager.soundManager.deleteLastBeatRow();
         this.popBeat();
         this.metronomeManager.elementsManager.updateTimeSignature();
-
-      //  this.metronomeManager.buttonsManager.checkBeatsLimits();
-        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 
 
@@ -86,6 +81,5 @@ export class BeatBarsManager {
             beat.noteSettings = NOTES[newIndex];
         });
         this.metronomeManager.elementsManager.updateTimeSignature();
-        this.metronomeManager.buttonsManager.checkNotesLimit();
     }
 }
