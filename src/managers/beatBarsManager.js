@@ -1,7 +1,9 @@
 import {
     DEFAULT_IS_TRIPLET,
-    DEFAULT_NOTE_AMOUNT, DEFAULT_NOTE_SIZE,
+    DEFAULT_NOTE_AMOUNT,
+    DEFAULT_NOTE_SIZE,
     DEFAULT_SOUND_INDEX,
+    DEFAULT_SOUND_SETTINGS,
     INITIAL_NUMBER_OF_BEATS,
     NOTE_AMOUNTS,
     NOTES,
@@ -10,20 +12,18 @@ import {
 import {makeAutoObservable} from "mobx";
 
 class Beat {
-    constructor(sound, note, noteAmount, selectedSounds, soundSettings) {
+    constructor(sound, note, noteAmount, soundSettings) {
         this.sound = sound;
         this.noteSettings = note;
         this.noteAmounts = noteAmount;
-        this.selectedSounds = selectedSounds;
-         this.soundSettings = soundSettings;
+        this.soundSettings = soundSettings;
         makeAutoObservable(this);
     }
 }
 
 export class BeatBarsManager {
-    _beats = [];
-
     constructor(metronomeManager) {
+        this._beats = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
         makeAutoObservable(this)
@@ -33,16 +33,17 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeat(sound, note, noteAmount, selectedSounds, soundSettings) {
-        this._beats.push(new Beat(sound, note, noteAmount, selectedSounds, soundSettings));
+    addBeat(sound, note, noteAmount, soundSettings) {
+        this._beats.push(new Beat(sound, note, noteAmount, soundSettings));
     }
 
     addStandardBeat() {
-        const standardNote = NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET);
-        const standardSound = SOUNDS[DEFAULT_SOUND_INDEX];
-        const standardNoteAmount = NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT);
-
-        this.addBeat(standardSound, standardNote, standardNoteAmount);
+        this.addBeat(
+            SOUNDS[DEFAULT_SOUND_INDEX],
+            NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
+            NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
+            DEFAULT_SOUND_SETTINGS
+        );
     }
 
     popBeat() {
@@ -57,7 +58,6 @@ export class BeatBarsManager {
 
     increaseBeats() {
         this.addStandardBeat()
-        this.metronomeManager.soundManager.addNewSoundSettingRow();
         this.metronomeManager.elementsManager.updateTimeSignature();
     }
 
