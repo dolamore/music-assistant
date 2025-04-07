@@ -1,16 +1,20 @@
 import {makeAutoObservable} from "mobx";
 import {SoundManager} from "./soundManager.js";
-import {bpmMaxLimit, bpmMinLimit, buttons, defaultInitialBPM, Elements, elements, sounds} from "../vars.js";
+import {
+    BPM_MAX_LIMIT,
+    BPM_MIN_LIMIT,
+    DEFAULT_INITIAL_BPM,
+} from "../vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";
-import {parseNoteSize} from "../utils.js";
 import {TrainingModeManager} from "./trainingModeManager.js";
-import loopCounter from "../components/loopCounter.js";
 import {VisualEffectsManager} from "./visualEffectsManager.js";
+import document from "react";
+
 
 export class MetronomeManager {
-    _bpm = defaultInitialBPM;
+    _bpm = DEFAULT_INITIAL_BPM;
     isPlaying = false;
     loop = null;
     count = 0;
@@ -20,16 +24,17 @@ export class MetronomeManager {
     skipper = 0;
     currentStep = 0;
     isStartOfLoop = false;
-    soundManager = new SoundManager(this);
-    beatBarsManager = new BeatBarsManager(this);
-    elementsManager = new ElementsManager(this);
-    trainingModeManager = new TrainingModeManager();
     _bpmMaxLimitReached = false;
     _bpmMinLimitReached = false;
-    visualEffectsManager = new VisualEffectsManager();
 
     constructor() {
+        this._soundManager = new SoundManager(this);
+        this._beatBarsManager = new BeatBarsManager(this);
+        this._elementsManager = new ElementsManager(this);
+        this.trainingModeManager = new TrainingModeManager();
+        this.visualEffectsManager = new VisualEffectsManager();
         makeAutoObservable(this)
+
     }
 
     get loopCount() {
@@ -64,44 +69,50 @@ export class MetronomeManager {
         this._bpm = value;
     }
 
-    getBeatBarsManager() {
-        return this.beatBarsManager;
+    get beatBarsManager() {
+        return this._beatBarsManager;
     }
 
-    getElementsManager() {
-        return this.elementsManager;
+    get elementsManager() {
+        return this._elementsManager;
     }
 
-    startMetronome() {
-        this.isPlaying = true;
-
-        Tone.Transport.bpm.value = this.bpm * 3;
-
-        this.sequence = this.generateFixedMetronomeSequence();
-        this.skipper = 0;
-
-        // Создаем новый луп с нужными параметрами
-        this.loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
-
-        this.loop.start(0);
-
-        Tone.getTransport().start(); //used to be trasnport
-        buttons.startStopButton.textContent = 'Stop';
-        this.elementsManager.movePendulum();
+    get soundManager() {
+        return this._soundManager;
     }
 
-    stopMetronome() {
-        this.isPlaying = false;
-        if (this.loop) this.loop.stop();
-        Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
-        buttons.startStopButton.textContent = 'Start';
+    // startMetronome() {
+    //     this.isPlaying = true;
+    //
+    //     Tone.getTransport().bpm.value = this.bpm * 3;
+    //
+    //     this.sequence = this.generateFixedMetronomeSequence();
+    //     this.skipper = 0;
+    //
+    //     // Создаем новый луп с нужными параметрами
+    //     this.loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
+    //
+    //     this.loop.start(0);
+    //
+    //     Tone.getTransport().start(); //used to be trasnport
+    //     //  buttons.startStopButton.textContent = 'Stop';
+    //
+    //     //TODO: move pendulum!
+    //     //    this.elementsManager.movePendulum();
+    // }
 
-        this.elementsManager.resetPendulumAnimation();
-
-        this.count = 0;
-        this.loopCount = 0;
-        //elements.loopCounter.textContent = this.loopCount;
-    }
+    // stopMetronome() {
+    //     this.isPlaying = false;
+    //     if (this.loop) this.loop.stop();
+    //     Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
+    //     buttons.startStopButton.textContent = 'Start';
+    //
+    //     this.elementsManager.resetPendulumAnimation();
+    //
+    //     this.count = 0;
+    //     this.loopCount = 0;
+    //     //elements.loopCounter.textContent = this.loopCount;
+    // }
 
     restartMetronomeAndPendulum() {
         this.stopMetronome();
@@ -111,30 +122,29 @@ export class MetronomeManager {
     generateFixedMetronomeSequence() {
         let totalSteps = 0;
 
-        Elements.beatRows.forEach((beatRow) => {
-            const noteSize = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value).number;
-            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
+
+        for (let i = 0; i < this.beatBarsManager.beats.length; i++) {
+            const noteSize = this.beatBarsManager.beats[i].noteSettings.noteSize;
+            const noteAmount = this.beatBarsManager.beats[i].noteAmounts;
 
             totalSteps += 64 / noteSize * 3 * noteAmount;
-        });
+        }
 
         const sequence = new Array(totalSteps).fill(null);
         let position = 0; // Current position pointer
 
-        Elements.beatRows.forEach((beatRow, index) => {
-            const parsedNote = parseNoteSize(beatRow.querySelector('.note-size-dropdown').value);
-            const noteAmount = parseInt(beatRow.querySelector('.note-amount-dropdown').value, 10);
-            const noteSize = parsedNote.number;
-            const isTriplet = parsedNote.isTriplet;
+        for (let beatIndex = 0; beatIndex < this.beatBarsManager.beats.length; beatIndex++) {
+            const {isTriplet, noteSize} = this.beatBarsManager.beats[beatIndex].noteSettings;
+            const noteAmount = this.beatBarsManager.beats[beatIndex].noteAmounts;
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
-            const sound = sounds[this.soundManager.getSelectedSounds()[index]];
-            const settings = this.soundManager.getSoundSettings()[index]; // Получаем актуальные настройки звука
+            const sound = this.soundManager.selectedSounds[beatIndex];
+            const settings = this.soundManager.soundSettings()[beatIndex]; // Получаем актуальные настройки звука
 
-            for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
-                sequence[position] = {sound, settings, beatIndex: index};
+            for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {
+                sequence[position] = {sound, settings, beatIndex: beatIndex};
                 position += stepSize;
             }
-        });
+        }
 
         return sequence;
     }
@@ -224,10 +234,10 @@ export class MetronomeManager {
         if (this.bpm === newBpm) {
             return;
         }
-        if (newBpm > bpmMaxLimit) {
-            this.bpm = bpmMaxLimit;
-        } else if (newBpm < bpmMinLimit) {
-            this.bpm = bpmMinLimit;
+        if (newBpm > BPM_MAX_LIMIT) {
+            this.bpm = BPM_MAX_LIMIT;
+        } else if (newBpm < BPM_MIN_LIMIT) {
+            this.bpm = BPM_MIN_LIMIT;
         } else {
             this.bpm = newBpm;
         }
@@ -239,8 +249,8 @@ export class MetronomeManager {
     }
 
     checkBPMLimit() {
-        this.bpmMinLimitReached = this.bpm <= bpmMinLimit;
-        this.bpmMaxLimitReached = this.bpm >= bpmMaxLimit;
+        this.bpmMinLimitReached = this.bpm <= BPM_MIN_LIMIT;
+        this.bpmMaxLimitReached = this.bpm >= BPM_MAX_LIMIT;
     }
 
     restartIfPlaying() {

@@ -1,63 +1,86 @@
-import {defaultSoundSettings, Elements, elements} from "../vars.js";
+import {
+    DEFAULT_IS_TRIPLET,
+    DEFAULT_NOTE_AMOUNT,
+    DEFAULT_NOTE_SIZE,
+    DEFAULT_SOUND_INDEX,
+    DEFAULT_SOUND_SETTINGS,
+    INITIAL_NUMBER_OF_BEATS,
+    NOTE_AMOUNTS,
+    NOTES,
+    SOUNDS
+} from "../vars.js";
+import {makeAutoObservable, observable} from "mobx";
+
+class Beat {
+    constructor(sound, note, noteAmount, soundSettings) {
+        this.sound = observable(sound);
+        this.noteSettings = observable(note);
+        this.noteAmounts = noteAmount;
+        this.soundSettings = observable(soundSettings);
+        makeAutoObservable(this);
+    }
+}
 
 export class BeatBarsManager {
-
     constructor(metronomeManager) {
+        this._beats = [];
         this.metronomeManager = metronomeManager;
+        this.generateBeats();
+        makeAutoObservable(this)
     }
 
-    decreaseBeat() {
-        // Удаляем последний элемент из beat-container
-        this.deleteLastBeatRow();
+    get beats() {
+        return this._beats;
+    }
 
-        this.metronomeManager.elementsManager.deleteLastSoundSettingsRow();
+    addBeat(sound, note, noteAmount, soundSettings) {
+        this._beats.push(new Beat(sound, note, noteAmount, soundSettings));
+    }
 
-        // Обновляем массивы
-        this.metronomeManager.soundManager.popSelectedSound();
-        this.metronomeManager.soundManager.popSoundSetting();
+    addStandardBeat() {
+        this.addBeat(
+            SOUNDS[DEFAULT_SOUND_INDEX],
+            NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
+            NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
+            DEFAULT_SOUND_SETTINGS
+        );
+    }
 
-        // Пересчитываем количество битов
-        elements.beatsCounter.textContent = Elements.beatRows.length;
+    popBeat() {
+        this._beats.pop();
+    }
 
-        // Используем setTimeout, чтобы подождать завершения обновления DOM
-        setTimeout(() => {
-            this.metronomeManager.elementsManager.updateTimeSignature();
-        }, 0);
-
-        // Если метроном запущен, обновляем его
-        if (this.metronomeManager.isPlaying) {
-            this.metronomeManager.updateMetronomeSequence();
+    generateBeats() {
+        for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
+            this.addStandardBeat();
         }
+    }
 
+    increaseBeats() {
+        this.addStandardBeat()
         this.metronomeManager.elementsManager.updateTimeSignature();
     }
 
-    deleteLastBeatRow() {
-        const lastBeatRow = elements.beatContainer.lastElementChild;
-        if (lastBeatRow) {
-            lastBeatRow.remove();
-        }
+    decreaseBeats() {
+        this.popBeat();
+        this.metronomeManager.elementsManager.updateTimeSignature();
     }
 
-    increaseBeat() {
-        const newBeatIndex = Elements.beatRows.length;
 
-        // Создаём новый элемент и добавляем его на страницу
-        this.metronomeManager.elementsManager.createBeatElement(newBeatIndex);
+    increaseNotes() {
+        this.changeDropdownSize(true);
+    }
 
-        // Обновляем массивы
-        this.metronomeManager.soundManager.addSelectedSound(1); // Звук по умолчанию
-        this.metronomeManager.soundManager.addSoundSetting(defaultSoundSettings);
+    decreaseNotes() {
+        this.changeDropdownSize(false);
+    }
 
-        // Обновляем количество битов
-        elements.beatsCounter.textContent = newBeatIndex + 1;
-
-        // Обновляем последовательность метронома без перезапуска
-        if (this.metronomeManager.isPlaying) {
-            this.metronomeManager.updateMetronomeSequence();
-        }
-
-        // Обновляем тактовую сетку (если нужно)
+    changeDropdownSize(direction) {
+        this._beats.forEach((beat) => {
+            const currentIndex = NOTES.findIndex(note => note.label === beat.noteSettings.label);
+            const newIndex = currentIndex + (direction ? 2 : -2);
+            beat.noteSettings = NOTES[newIndex];
+        });
         this.metronomeManager.elementsManager.updateTimeSignature();
     }
 }

@@ -82,6 +82,8 @@ button:hover {
 .beat-container {
     display: flex;
     gap: 10px;
+    justify-content: center;
+    align-items: center;
 }
 
 .beat-row {
@@ -137,6 +139,7 @@ button:hover {
 }
 
 #settings-panel {
+    display: inline-block;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -146,18 +149,23 @@ button:hover {
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    width: auto;
 }
 
-.sound-settings {
+.sound-settings-grid {
     display: grid;
-    grid-template-columns: 150px repeat(5, 1fr);
     gap: 10px;
     margin-bottom: 10px;
+    width: max-content;
 }
 
-.labels {
+.sounds-settings-labels {
     display: contents;
     font-weight: bold;
+}
+
+.sounds-settings-labels span {
+    text-align: center;
 }
 
 .sound-row {
@@ -166,11 +174,14 @@ button:hover {
 
 .sound-row label {
     grid-column: 1;
+    text-align: center;
 }
 
 .sound-row select,
 .sound-row input {
     width: 100%;
+    max-width: 70px;
+    text-align: center;
 }
 
 .checkbox-controls-container {
@@ -226,14 +237,14 @@ button:hover {
     margin-bottom: 20px;
 }
 
-.control-group {
+.time-signature-control-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 20px; /* Add margin to increase spacing */
 }
 
-.time-signature {
+.time-signature-info {
     display: flex;
     flex-direction: column;
     align-items: center;
