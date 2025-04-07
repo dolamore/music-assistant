@@ -4,6 +4,7 @@ import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS, SOUNDS} from "../vars.js";
 import {set} from "mobx";
 
+
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
     const numColumns = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
@@ -34,15 +35,21 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 
 const SoundRow = observer(({metronomeManager, index}) => {
     const handleSelectedSoundsChange = (e) => {
-        metronomeManager.beatBarsManager.beats[index].sound = SOUNDS.find(sound => sound.label === e.target.value)
+        metronomeManager.beatBarsManager.beats[index].sound = SOUNDS.find(
+            sound => sound.label === e.target.value
+        );
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
         console.log(key, newValue);
-        console.log(metronomeManager.beatBarsManager.beats[index].soundSettings.find(beatSoundSettings => beatSoundSettings.key = key));
+        console.log(metronomeManager.beatBarsManager.beats[index].soundSettings.find(
+            beatSoundSettings => beatSoundSettings.key = key)
+        );
         console.log(metronomeManager.beatBarsManager.beats[index].soundSettings);
-        set(metronomeManager.beatBarsManager.beats[index].soundSettings.find(beatSoundSettings => beatSoundSettings.key = key), 'value', newValue);
+        set(metronomeManager.beatBarsManager.beats[index].soundSettings.find(
+            beatSoundSettings => beatSoundSettings.key = key), 'value', newValue
+        );
     };
 
     return (

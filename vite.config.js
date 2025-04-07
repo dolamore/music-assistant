@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import babel from 'vite-plugin-babel';
 import commonjs from 'vite-plugin-commonjs';
+import babel from 'vite-plugin-babel';
 
 export default defineConfig({
     plugins: [
@@ -9,13 +9,7 @@ export default defineConfig({
             jsxRuntime: 'automatic',  // Automatic JSX runtime
             include: [/\.jsx?$/, /\.js?$/],  // Support .js and .jsx files
         }),
-        babel({
-            babelConfig: {
-                presets: ['@babel/preset-react'],
-                compact: false,
-            },
-            include: [/\.jsx?$/, /\.js?$/],  // Support .js and .jsx files
-        }),
+        babel(),
         commonjs(),
     ],
     build: {
@@ -31,13 +25,5 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 3001,
-    },
-    esbuild: {
-        sourcemap: true,
-        loader: {
-            '.js': 'jsx',
-            '.jsx': 'jsx',// Treat .js files as JSX
-        },
-        include: /src\/.*\.js$/,  // Only include .js files in the src directory
     },
 });
