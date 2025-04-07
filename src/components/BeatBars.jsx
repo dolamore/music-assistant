@@ -46,13 +46,14 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
             className="note-size-dropdown"
             data-beat={index}
             onChange={handleChange}
+            value={`${metronomeManager.beatBarsManager.beats[index].noteSettings.noteSize}-${metronomeManager.beatBarsManager.beats[index].noteSettings.isTriplet}`}
         >
             {NOTES.map((note, noteIndex) => (
                 <option
                     key={`note-${noteIndex}`}
+                    value={`${note.noteSize}-${note.isTriplet}`}
                     data-note-size={note.noteSize}
                     data-is-triplet={note.isTriplet.toString()}
-                    selected={note.noteSize === metronomeManager.beatBarsManager.beats[index].noteSettings.noteSize && note.isTriplet === metronomeManager.beatBarsManager.beats[index].noteSettings.isTriplet}
                 >
                     {note.label}
                 </option>
@@ -72,12 +73,12 @@ const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
                 className="note-amount-dropdown"
                 data-beat={index}
                 onChange={handleChange}
+                value={metronomeManager.beatBarsManager.beats[index].noteAmounts}
             >
                 {NOTE_AMOUNTS.map((amount, amountIndex) => (
                     <option
                         key={`amount-${amountIndex}`}
                         value={amount}
-                        selected={amount === metronomeManager.beatBarsManager.beats[index].noteAmounts}
                     >
                         {amount}
                     </option>
