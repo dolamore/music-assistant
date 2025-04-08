@@ -43,7 +43,7 @@ export class ElementsManager {
 
         for (let index = 0; index < beatAmount; index++) {
             const { isTriplet, noteSize } = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
-            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmounts;
+            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmount;
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
@@ -54,7 +54,7 @@ export class ElementsManager {
         let numerator = 0;
 
         for (let index = 0; index < beatAmount; index++) {
-            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmounts;
+            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmount;
             const {isTriplet, noteSize} = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
 
             if (isTriplet) {

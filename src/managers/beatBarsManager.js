@@ -15,7 +15,7 @@ class Beat {
     constructor(sound, note, noteAmount, soundSettings) {
         this.sound = observable(sound);
         this.noteSettings = observable(note);
-        this.noteAmounts = noteAmount;
+        this.noteAmount = noteAmount;
         this.soundSettings = observable(soundSettings);
         makeAutoObservable(this);
     }
