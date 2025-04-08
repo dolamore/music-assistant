@@ -101,7 +101,7 @@ export class MetronomeManager {
 
         this._loop.start(0);
 
-        Tone.getTransport().start(); //used to be trasnport
+     //   Tone.getTransport().start(); //used to be trasnport
 
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
@@ -142,6 +142,7 @@ export class MetronomeManager {
         const currentNote = sequence[currentStep];
         if (!currentNote || !currentNote.sound) return;
         if (!(this.trainingModeManager.getIsTrainingMode() && Math.random() < this.trainingModeManager.getNoteSkipProbability() && !this.trainingModeManager.getIsFirstLoop())) {
+            console.log("stepped here");
             const {sound, settings} = currentNote;
 
             // Динамически применяем все параметры из settings к sound
@@ -227,6 +228,16 @@ export class MetronomeManager {
     //     //elements.loopCounter.textContent = this.loopCount;
     // }
 
+    // restartMetronomeAndPendulum() {
+    //     this.stopMetronome();
+    //     this.startMetronome();
+    // }
+
+    // restartIfPlaying() {
+    //     if (this.isPlaying) {
+    //         this.restartMetronomeAndPendulum();
+    //     }
+    // }
 
     //TODO: вернуться к оптимизации этого
     handleBpmChange(newBpm) {
@@ -255,18 +266,7 @@ export class MetronomeManager {
     }
 
     checkBPMLimit() {
-        this.bpmMinLimitReached = this.bpm <= BPM_MIN_LIMIT;
-        this.bpmMaxLimitReached = this.bpm >= BPM_MAX_LIMIT;
+        this.bpmMinLimitReached = this._bpm <= BPM_MIN_LIMIT;
+        this.bpmMaxLimitReached = this._bpm >= BPM_MAX_LIMIT;
     }
-
-    // restartMetronomeAndPendulum() {
-    //     this.stopMetronome();
-    //     this.startMetronome();
-    // }
-
-    // restartIfPlaying() {
-    //     if (this.isPlaying) {
-    //         this.restartMetronomeAndPendulum();
-    //     }
-    // }
 }

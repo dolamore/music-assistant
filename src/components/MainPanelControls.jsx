@@ -2,6 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys.js";
+import * as Tone from "tone";
 
 export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
     return (
@@ -23,7 +24,7 @@ const StartStopButton = observer(({metronomeManager}) => {
     }
 
     useHotkeys({
-        Space: onClick,
+        " ": onClick,
     });
 
     return (
