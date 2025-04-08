@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 
@@ -13,12 +13,20 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
 }));
 
 const StartStopButton = observer(({metronomeManager}) => {
+    const onClick = () => {
+        if (metronomeManager.isPlaying) {
+            metronomeManager.stopMetronome();
+        } else {
+            metronomeManager.startMetronome();
+        }
+    }
+
     return (
         <button
             id="start-stop-button"
-            onClick={() => metronomeManager.startMetronome()}
+            onClick={onClick}
         >
-            Start
+            {metronomeManager.isPlaying ? "Stop" : "Start"}
         </button>
     );
 });
