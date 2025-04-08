@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys.js";

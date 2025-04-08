@@ -1,26 +1,28 @@
 import { useEffect } from "react";
 
-export function useHotkeys(hotkeyMap) {
+export const  useHotkeys = (keyBindings) => {
     useEffect(() => {
-        const handler = (event) => {
-            const keys = [];
+        const handleKeyDown = (event) => {
+            const { key, shiftKey, altKey, ctrlKey, metaKey } = event;
 
-            if (event.ctrlKey) keys.push("Ctrl");
-            if (event.shiftKey) keys.push("Shift");
-            if (event.altKey) keys.push("Alt");
+            const modifierKey = [
+                shiftKey && "Shift",
+                altKey && "Alt",
+                ctrlKey && "Ctrl",
+                metaKey && "Meta",
+                key
+            ].filter(Boolean).join("+")
 
-            const key = event.key === " " ? "Space" : event.key;
-            keys.push(key);
-
-            const combo = keys.join("+");
-
-            if (hotkeyMap[combo]) {
-                event.preventDefault(); // чтобы не скроллила страница
-                hotkeyMap[combo]();
+            if (keyBindings[modifierKey]) {
+                event.preventDefault();
+                keyBindings[modifierKey]();
             }
         };
 
-        window.addEventListener("keydown", handler);
-        return () => window.removeEventListener("keydown", handler);
-    }, [hotkeyMap]);
-}
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [keyBindings]);
+};
