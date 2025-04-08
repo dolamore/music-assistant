@@ -19,41 +19,42 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
 }));
 
 const BeatRow = observer(({metronomeManager, index}) => {
+    const beat = metronomeManager.beatBarsManager.beats[index];
+
     return (
         <div className="beat-row">
             <div className="beat" data-beat={index} data-sound="1"></div>
-            <NoteSizeDropdown metronomeManager={metronomeManager} index={index}/>
-            <NoteAmountDropdown metronomeManager={metronomeManager} index={index}/>
+            <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat}/>
+            <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat}/>
         </div>
     )
 });
 
-const NoteSizeDropdown = observer(({metronomeManager, index}) => {
+const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
     const handleChange = (e) => {
-        const selection = e.target.selectedOptions[0];
-        const noteSize = Number(selection.getAttribute('data-note-size'));
-        const isTriplet = selection.getAttribute('data-is-triplet') === 'true';
+        const [noteSizeStr, isTripletStr] = e.target.value.split("-");
+        const noteSize = Number(noteSizeStr);
+        const isTriplet = isTripletStr === "true";
 
-        metronomeManager.beatBarsManager.beats[index].noteSettings =
+        beat.noteSettings =
             NOTES.find(note =>
                 note.noteSize === noteSize && note.isTriplet === isTriplet);
 
         metronomeManager.elementsManager.updateTimeSignature();
     }
 
+    const currentValue = `${beat.noteSettings.noteSize}-${beat.noteSettings.isTriplet}`;
+
     return (
         <select
             className="note-size-dropdown"
-            data-beat={index}
             onChange={handleChange}
-            value={`${metronomeManager.beatBarsManager.beats[index].noteSettings.noteSize}-${metronomeManager.beatBarsManager.beats[index].noteSettings.isTriplet}`}
+            value={currentValue}
         >
             {NOTES.map((note, noteIndex) => (
                 <option
                     key={`note-${noteIndex}`}
                     value={`${note.noteSize}-${note.isTriplet}`}
-                    data-note-size={note.noteSize}
-                    data-is-triplet={note.isTriplet.toString()}
                 >
                     {note.label}
                 </option>
@@ -62,18 +63,17 @@ const NoteSizeDropdown = observer(({metronomeManager, index}) => {
     )
 });
 
-const NoteAmountDropdown = observer(({ metronomeManager, index}) => {
+const NoteAmountDropdown = observer(({ metronomeManager, beat}) => {
     const handleChange = (e) => {
-        metronomeManager.beatBarsManager.beats[index].noteAmounts = Number(e.target.value);
+        beat.noteAmounts = Number(e.target.value);
         metronomeManager.elementsManager.updateTimeSignature();
     }
 
     return (
             <select
                 className="note-amount-dropdown"
-                data-beat={index}
                 onChange={handleChange}
-                value={metronomeManager.beatBarsManager.beats[index].noteAmounts}
+                value={beat.noteAmounts}
             >
                 {NOTE_AMOUNTS.map((amount, amountIndex) => (
                     <option
