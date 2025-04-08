@@ -100,6 +100,7 @@ export class MetronomeManager {
         this._loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
 
         this._loop.start(0);
+        Tone.getTransport().start();
 
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();

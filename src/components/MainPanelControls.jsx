@@ -15,12 +15,12 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
 }));
 
 const StartStopButton = observer(({metronomeManager}) => {
-    const onClick = () => {
+    const onClick = async () => {
         if (metronomeManager.isPlaying) {
          //   metronomeManager.stopMetronome();
         } else {
+            await Tone.start();
             metronomeManager.startMetronome();
-            Tone.getTransport().start();
         }
     }
 
