@@ -19,6 +19,15 @@ class Beat {
         this.soundSettings = observable(soundSettings);
         makeAutoObservable(this);
     }
+
+    setSound(newSound) {
+        this.sound = newSound;
+    }
+
+    updateSoundSetting(key, value) {
+        const setting = this.soundSettings.find(s => s.key === key);
+        if (setting) setting.value = value;
+    }
 }
 
 export class BeatBarsManager {

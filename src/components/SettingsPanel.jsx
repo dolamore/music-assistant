@@ -35,21 +35,13 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 
 const SoundRow = observer(({metronomeManager, index}) => {
     const handleSelectedSoundsChange = (e) => {
-        metronomeManager.beatBarsManager.beats[index].sound = SOUNDS.find(
-            sound => sound.label === e.target.value
-        );
+        const selected = SOUNDS.find(sound => sound.label === e.target.value);
+        metronomeManager.beatBarsManager.beats[index].setSound(selected);
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
-        console.log(key, newValue);
-        console.log(metronomeManager.beatBarsManager.beats[index].soundSettings.find(
-            beatSoundSettings => beatSoundSettings.key = key)
-        );
-        console.log(metronomeManager.beatBarsManager.beats[index].soundSettings);
-        set(metronomeManager.beatBarsManager.beats[index].soundSettings.find(
-            beatSoundSettings => beatSoundSettings.key = key), 'value', newValue
-        );
+        metronomeManager.beatBarsManager.beats[index].updateSoundSetting(key, newValue);
     };
 
     return (
@@ -63,9 +55,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
                 {SOUNDS.map((sound) => (
                     <option
                         key={`${sound.key}`}
-                        value={metronomeManager.beatBarsManager.beats[index].sound.value
-                        }
-                        selected={metronomeManager.beatBarsManager.beats[index].sound.key === sound.key}
+                        value={sound.label}
                         onChange={handleSelectedSoundsChange}
                     >
                         {sound.label}

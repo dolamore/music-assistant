@@ -101,8 +101,6 @@ export class MetronomeManager {
 
         this._loop.start(0);
 
-     //   Tone.getTransport().start(); //used to be trasnport
-
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
     }

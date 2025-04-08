@@ -17,9 +17,10 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
 const StartStopButton = observer(({metronomeManager}) => {
     const onClick = () => {
         if (metronomeManager.isPlaying) {
-            metronomeManager.stopMetronome();
+         //   metronomeManager.stopMetronome();
         } else {
             metronomeManager.startMetronome();
+            Tone.getTransport().start();
         }
     }
 
@@ -51,7 +52,12 @@ const SettingsButton = observer(({metronomeManager}) => {
 const ToggleTrainingMode = observer(({metronomeManager}) => {
     return (
         <label>
-            <input type="checkbox" id="toggle-training-mode"/> Training Mode
+            <input type="checkbox"
+                   id="toggle-training-mode"
+                   onChange={() => metronomeManager.toggleTrainingMode()}
+                   checked={metronomeManager.elementsManager.isTrainingMode}
+            />
+            Training Mode
         </label>
     );
 });

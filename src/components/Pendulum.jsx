@@ -5,12 +5,17 @@ import {inject} from "mobx-react";
 export default inject("metronomeManager")(observer(function Pendulum({metronomeManager}) {
     return (
         <div
+            id="pendulum-container"
             className={`pendulum-container
                         container
                         ${!metronomeManager.visualEffectsManager.isPendulumVisible ? 'hidden' : ''}`}
         >
-            <div className="horizontal-bar">
-                <div className="pendulum"></div>
+            <div
+                id="pendulum-horizontal-bar"
+                className="horizontal-bar">
+                <div
+                    id="pendulum"
+                    className="pendulum"></div>
             </div>
         </div>
     );

@@ -1,12 +1,9 @@
-import {
-    NOTE_MULTIPLIERS
-} from "../vars.js";
 import {lcmArray} from "../utils.js";
 import {makeAutoObservable} from "mobx";
-import * as performance from "tone";
 
 export class ElementsManager {
     _isSettingsPanelVisible = false;
+    _isTrainingMode = false;
     pendulumAnimationFrame;
     metronomeManager;
     _timeSignature;
@@ -15,6 +12,10 @@ export class ElementsManager {
         this.metronomeManager = metronomeManager;
         this._timeSignature = this.countSize();
         makeAutoObservable(this)
+    }
+
+    get isTrainingMode() {
+        return this._isTrainingMode;
     }
 
     get timeSignature() {
@@ -31,6 +32,10 @@ export class ElementsManager {
 
     toggleSettingsPanel() {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
+    }
+
+    toggleTrainingMode() {
+        this._isTrainingMode = !this._isTrainingMode;
     }
 
     updateTimeSignature() {
