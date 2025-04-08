@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {NOTE_AMOUNTS, NOTES} from "../vars.js";
@@ -31,17 +31,17 @@ const BeatRow = observer(({metronomeManager, index}) => {
 });
 
 const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const [noteSizeStr, isTripletStr] = e.target.value.split("-");
         const noteSize = Number(noteSizeStr);
         const isTriplet = isTripletStr === "true";
 
         beat.noteSettings =
-            NOTES.find(note =>
-                note.noteSize === noteSize && note.isTriplet === isTriplet);
+            NOTES.find(
+                note => note.noteSize === noteSize && note.isTriplet === isTriplet);
 
         metronomeManager.elementsManager.updateTimeSignature();
-    }
+    }, [beat, metronomeManager]);
 
     const currentValue = `${beat.noteSettings.noteSize}-${beat.noteSettings.isTriplet}`;
 
@@ -63,26 +63,26 @@ const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
     )
 });
 
-const NoteAmountDropdown = observer(({ metronomeManager, beat}) => {
-    const handleChange = (e) => {
+const NoteAmountDropdown = observer(({metronomeManager, beat}) => {
+    const handleChange = useCallback((e) => {
         beat.noteAmounts = Number(e.target.value);
         metronomeManager.elementsManager.updateTimeSignature();
-    }
+    }, [beat, metronomeManager]);
 
     return (
-            <select
-                className="note-amount-dropdown"
-                onChange={handleChange}
-                value={beat.noteAmounts}
-            >
-                {NOTE_AMOUNTS.map((amount, amountIndex) => (
-                    <option
-                        key={`amount-${amountIndex}`}
-                        value={amount}
-                    >
-                        {amount}
-                    </option>
-                ))}
-            </select>
+        <select
+            className="note-amount-dropdown"
+            onChange={handleChange}
+            value={beat.noteAmounts}
+        >
+            {NOTE_AMOUNTS.map((amount, amountIndex) => (
+                <option
+                    key={`amount-${amountIndex}`}
+                    value={amount}
+                >
+                    {amount}
+                </option>
+            ))}
+        </select>
     )
 });
