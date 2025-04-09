@@ -25,7 +25,7 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
 
     return (
         <div className="time-signature-control-group">
-            <label>Beats</label>
+            <span>Beats</span>
             <div>
                 <ChangingButton
                     id="increase-beats-button"
@@ -55,7 +55,7 @@ const NotesControlGroup = observer(({metronomeManager}) => {
     }
     return (
         <div className="time-signature-control-group">
-            <label>Notes</label>
+            <span>Notes</span>
             <div>
                 <ChangingButton
                     id="increase-notes-button"

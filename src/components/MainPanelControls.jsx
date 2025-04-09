@@ -14,15 +14,34 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
     );
 }));
 
+let audioUnlocked = false; // Флаг для первого разблокирования контекста
+
 const StartStopButton = observer(({metronomeManager}) => {
     const onClick = async () => {
+        if (!audioUnlocked) {
+            try {
+                // Разблокируем контекст
+                await Tone.start();
+                await Tone.getContext().rawContext.resume();
+
+                // Играть пустой звук – Safari "разблокирует" звук
+                const silentSynth = new Tone.Synth().toDestination();
+                silentSynth.triggerAttackRelease("C0", "1ms", Tone.now() + 0.05);
+
+                audioUnlocked = true;
+                console.log("🔓 Audio context unlocked");
+            } catch (e) {
+                console.error("⚠️ Error unlocking audio context", e);
+                return;
+            }
+        }
+
         if (metronomeManager.isPlaying) {
-         //   metronomeManager.stopMetronome();
+            // metronomeManager.stopMetronome();
         } else {
-            await Tone.start();
             metronomeManager.startMetronome();
         }
-    }
+    };
 
     useHotkeys({
         " ": onClick,

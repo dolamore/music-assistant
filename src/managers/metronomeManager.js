@@ -90,23 +90,30 @@ export class MetronomeManager {
     }
 
     startMetronome() {
+        console.log("start metronome");
+
+        // Обновляем состояние только если контекст аудио уже разблокирован
+        if (Tone.getContext().state !== "running") {
+            console.log("Audio context is not running. Attempting to resume...");
+            Tone.getContext().rawContext.resume();
+        }
+
         this._isPlaying = true;
 
         Tone.getTransport().bpm.value = this.bpm * 3;
-
         this._sequence = this.generateFixedMetronomeSequence();
         this._skipper = 0;
-        // Создаем новый луп с нужными параметрами
-        this._loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
 
+        this._loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
         this._loop.start(0);
-        Tone.getTransport().start();
+        console.log("state 5 " + Tone.getContext().state)
 
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
     }
 
     getMetronomeLoopCallback(time) {
+        console.log("loop callback has started");
         this._currentStep = this._count % this._sequence.length;
         this._isStartOfLoop = this._currentStep === 0;
 
