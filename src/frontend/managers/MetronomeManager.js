@@ -1,15 +1,15 @@
 import {makeAutoObservable} from "mobx";
-import {SoundManager} from "./soundManager.js";
+import {SoundManager} from "./SoundManager.js";
 import {
     BPM_MAX_LIMIT,
     BPM_MIN_LIMIT,
     DEFAULT_INITIAL_BPM,
 } from "../vars/vars.js";
-import {BeatBarsManager} from "./beatBarsManager.js";
-import {ElementsManager} from "./elementsManager.js";
+import {BeatBarsManager} from "./BeatBarsManager.js";
+import {ElementsManager} from "./ElementsManager.js";
 import * as Tone from "tone";
-import {TrainingModeManager} from "./trainingModeManager.js";
-import {VisualEffectsManager} from "./visualEffectsManager.js";
+import {TrainingModeManager} from "./TrainingModeManager.js";
+import {VisualEffectsManager} from "./VisualEffectsManager.js";
 import document from "react";
 
 

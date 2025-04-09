@@ -1,4 +1,4 @@
-import { AudioEngine } from './interfaces/audio-engine.interface';
+import { AudioEngine } from './interfaces/audioEngineInterface';
 import * as Tone from 'tone';
 
 export class TonejsEngineService implements AudioEngine {
