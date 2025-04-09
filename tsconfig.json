@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "target": "esnext",  // Компиляция в последний доступный стандарт ECMAScript
-    "module": "esnext",  // Использование ES-модулей
+    "target": "ES2017",  // Для совместимости с NestJS, ES2017 или выше
+    "module": "commonjs",  // NestJS использует CommonJS модули
     "moduleResolution": "node",  // Разрешение модулей как в Node.js
-    "jsx": "react-jsx",  // Использование автоматического JSX-режима для React 17+
+    "jsx": "react-jsx",  // Если проект использует React
     "esModuleInterop": true,  // Для импорта CommonJS модулей в стиле ES6
+    "experimentalDecorators": true,  // Включение поддержки декораторов
+    "emitDecoratorMetadata": true,  // Включение метаданных для декораторов
     "strict": true,  // Включение строгой проверки типов
     "skipLibCheck": true,  // Пропуск проверки типов в библиотеках
     "forceConsistentCasingInFileNames": true,  // Обеспечение согласованности регистров в путях
