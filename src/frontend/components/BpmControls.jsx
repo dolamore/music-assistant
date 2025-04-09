@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars.js";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../../shared/vars.js";
 import {inject} from "mobx-react";
 import {ChangingButton} from "./UtilityComponents.jsx";
 

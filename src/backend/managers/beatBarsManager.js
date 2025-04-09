@@ -8,7 +8,7 @@ import {
     NOTE_AMOUNTS,
     NOTES,
     SOUNDS
-} from "../vars.js";
+} from "../../shared/vars.js";
 import {makeAutoObservable, observable} from "mobx";
 
 class Beat {

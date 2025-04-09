@@ -1,4 +1,4 @@
-import {SOUNDS} from "../vars.js";
+import {SOUNDS} from "../../shared/vars.js";
 import document from "react";
 import {makeAutoObservable} from "mobx";
 

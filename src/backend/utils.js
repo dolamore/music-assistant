@@ -11,13 +11,6 @@ export function handleInputBlur(inputValue, defaultElementValue, metronomeManage
     }
 }
 
-export function parseNoteSize(value) {
-    const isTriplet = value.endsWith('T'); // Проверяем, есть ли 'T' в конце
-    const number = parseInt(value, 10); // Извлекаем числовое значение
-
-    return {number, isTriplet};
-}
-
 function gcd(a, b) {
     return b === 0 ? a : gcd(b, a % b);
 }

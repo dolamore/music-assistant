@@ -1,10 +1,10 @@
 import React, {useEffect} from "react";
 import {Provider} from "mobx-react";
 import ReactDOM from "react-dom/client";
-import Metronome from "./Metronome.jsx";
+import Metronome from "./components/Metronome.jsx";
 import LoopCounter from "./components/LoopCounter.jsx";
 import BpmControls from "./components/BpmControls.jsx";
-import {MetronomeManager} from "./managers/metronomeManager.js";
+import {MetronomeManager} from "../backend/managers/metronomeManager.js";
 import VisualCheckBoxControls from "./components/VisualsCheckBoxControls.jsx";
 import MainPanelControls from "./components/MainPanelControls.jsx";
 import TrainingSettings from "./components/TrainingSettings.jsx";
@@ -13,7 +13,7 @@ import BeatBars from "./components/BeatBars.jsx";
 import FlashingBar from "./components/FlashingBar.jsx";
 import Pendulum from "./components/Pendulum.jsx";
 import SettingsPanel from "./components/SettingsPanel.jsx";
-import './styles.css';
+import './styles/styles.css';
 import * as Tone from "tone";
 
 const rootElement = document.getElementById("root");

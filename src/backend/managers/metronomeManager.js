@@ -4,7 +4,7 @@ import {
     BPM_MAX_LIMIT,
     BPM_MIN_LIMIT,
     DEFAULT_INITIAL_BPM,
-} from "../vars.js";
+} from "../../shared/vars.js";
 import {BeatBarsManager} from "./beatBarsManager.js";
 import {ElementsManager} from "./elementsManager.js";
 import * as Tone from "tone";

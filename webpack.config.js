@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 import path from 'path';
 
 export default {
-    entry: './src/index.jsx',
+    entry: './src/frontend/index.jsx',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
