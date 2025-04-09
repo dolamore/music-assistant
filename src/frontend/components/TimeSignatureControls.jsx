@@ -2,7 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {ChangingButton} from "./UtilityComponents.jsx";
-import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../../shared/vars.js";
+import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars/vars.js";
 
 export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}) {
     return (

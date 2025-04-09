@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {DEFAULT_SOUND_SETTINGS, SOUNDS} from "../../shared/vars.js";
+import {DEFAULT_SOUND_SETTINGS, SOUNDS} from "../vars/vars.js";
 import {set} from "mobx";
 
 
