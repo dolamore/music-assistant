@@ -1,4 +1,4 @@
-import {handleInputBlur, toggleButtonsLimit} from "../utils.js";
+import {handleInputBlur, toggleButtonsLimit} from "../utils/utils.js";
 
 export class TrainingModeManager {
     constructor() {

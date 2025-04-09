@@ -1,4 +1,4 @@
-import {lcmArray} from "../utils.js";
+import {lcmArray} from "../utils/utils.js";
 import {makeAutoObservable} from "mobx";
 
 export class ElementsManager {
