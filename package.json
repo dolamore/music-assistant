@@ -2,7 +2,7 @@
   "name": "metronome",
   "version": "1.0.0",
   "type": "module",
-  "main": "main.js",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
     "dev:webpack": "webpack serve --mode development",
