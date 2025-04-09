@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {NOTE_AMOUNTS, NOTES} from "../vars.js";
@@ -24,13 +24,13 @@ const BeatRow = observer(({metronomeManager, index}) => {
     return (
         <div className="beat-row">
             <div className="beat" data-beat={index} data-sound="1"></div>
-            <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat}/>
-            <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat}/>
+            <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
+            <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
         </div>
     )
 });
 
-const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
+const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
         const [noteSizeStr, isTripletStr] = e.target.value.split("-");
         const noteSize = Number(noteSizeStr);
@@ -47,6 +47,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
 
     return (
         <select
+            id={`note-size-dropdown-${index}`}
             className="note-size-dropdown"
             onChange={handleChange}
             value={currentValue}
@@ -63,7 +64,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat}) => {
     )
 });
 
-const NoteAmountDropdown = observer(({metronomeManager, beat}) => {
+const NoteAmountDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
         beat.noteAmounts = Number(e.target.value);
         metronomeManager.elementsManager.updateTimeSignature();
@@ -71,6 +72,7 @@ const NoteAmountDropdown = observer(({metronomeManager, beat}) => {
 
     return (
         <select
+            id={`note-amount-dropdown-${index}`}
             className="note-amount-dropdown"
             onChange={handleChange}
             value={beat.noteAmounts}
