@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Provider} from "mobx-react";
 import ReactDOM from "react-dom/client";
 import Metronome from "./components/Metronome.jsx";
@@ -14,24 +14,12 @@ import FlashingBar from "./components/FlashingBar.jsx";
 import Pendulum from "./components/Pendulum.jsx";
 import SettingsPanel from "./components/SettingsPanel.jsx";
 import './styles/styles.css';
-import * as Tone from "tone";
 
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
 const metronomeManager = new MetronomeManager();
 
 function App() {
-
-    useEffect(() => {
-        const unlock = async () => {
-            await Tone.start();
-            await Tone.getContext().rawContext.resume();
-            console.log("AudioContext unlocked!");
-            window.removeEventListener("click", unlock);
-        };
-
-        window.addEventListener("click", unlock, { once: true });
-    }, []);
 
     return (
         <Provider metronomeManager={metronomeManager}>

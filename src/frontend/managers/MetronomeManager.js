@@ -90,26 +90,22 @@ export class MetronomeManager {
     }
 
     startMetronome() {
-        console.log("start metronome");
-
-        // Обновляем состояние только если контекст аудио уже разблокирован
-        if (Tone.getContext().state !== "running") {
-            console.log("Audio context is not running. Attempting to resume...");
-            Tone.getContext().rawContext.resume();
-        }
-
         this._isPlaying = true;
 
         Tone.getTransport().bpm.value = this.bpm * 3;
         this._sequence = this.generateFixedMetronomeSequence();
         this._skipper = 0;
 
-        this._loop = new Tone.Loop((time) => this.getMetronomeLoopCallback(time), '64n');
+        this._loop = new Tone.Loop(() => {
+            this.getMetronomeLoopCallback();
+        }, "64n");
+        Tone.getTransport().start(0);
         this._loop.start(0);
-        console.log("state 5 " + Tone.getContext().state)
 
+        console.log("context state: " + Tone.getContext().state);
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
+        setTimeout(() => console.log("AudioContext state timer:", Tone.getContext().state), 10000);
     }
 
     getMetronomeLoopCallback(time) {
@@ -125,17 +121,17 @@ export class MetronomeManager {
         //     }
         // }
 
-        if (this._skipper > 0) {
-            this._skipper--;
-            if (this.trainingModeManager.getIsFirstLoop()) {
-                this.playMetronomeStep(this._sequence, this._currentStep, time);
-            }
-            if (this._skipper === 0) {
-                this.trainingModeManager.setIsFirstLoop(false);
-            }
-        } else {
-            this.playMetronomeStep(this._sequence, this._currentStep, time);
-        }
+        // if (this._skipper > 0) {
+        //     this._skipper--;
+        //     if (this.trainingModeManager.getIsFirstLoop()) {
+        //         this.playMetronomeStep(this._sequence, this._currentStep, time);
+        //     }
+        //     if (this._skipper === 0) {
+        //         this.trainingModeManager.setIsFirstLoop(false);
+        //     }
+        // } else {
+        //     this.playMetronomeStep(this._sequence, this._currentStep, time);
+        // }
 
         if (this._isStartOfLoop) {
              this._loopCount += 1;
