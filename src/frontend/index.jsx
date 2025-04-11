@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Provider} from "mobx-react";
 import ReactDOM from "react-dom/client";
 import Metronome from "./components/Metronome.jsx";

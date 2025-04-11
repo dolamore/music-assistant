@@ -17,13 +17,13 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                     id="bpm-decrease-5"
                     label="-5"
                     onClick={() => handleBpmChange(-5)}
-                    disabled={metronomeManager.bpmMinLimitReached}
+                    disabled={metronomeManager.bpm <= BPM_MIN_LIMIT}
                 />
                 <ChangingButton
                     id="bpm-decrease-1"
                     label="-1"
                     onClick={() => handleBpmChange(-1)}
-                    disabled={metronomeManager.bpmMinLimitReached}
+                    disabled={metronomeManager.bpm <= BPM_MIN_LIMIT}
                 />
                 <BpmInput
                     metronomeManager={metronomeManager}
@@ -32,13 +32,13 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                     id="bpm-increase-1"
                     label="+1"
                     onClick={() => handleBpmChange(1)}
-                    disabled={metronomeManager.bpmMaxLimitReached}
+                    disabled={metronomeManager.bpm >= BPM_MAX_LIMIT}
                 />
                 <ChangingButton
                     id="bpm-increase-5"
                     label="+5"
                     onClick={() => handleBpmChange(5)}
-                    disabled={metronomeManager.bpmMaxLimitReached}
+                    disabled={metronomeManager.bpm >= BPM_MAX_LIMIT}
                 />
             </div>
         </div>

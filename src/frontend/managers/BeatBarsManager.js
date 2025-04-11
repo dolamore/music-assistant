@@ -9,32 +9,17 @@ import {
     NOTES,
     SOUNDS
 } from "../vars/vars.js";
-import {makeAutoObservable, observable} from "mobx";
-
-class Beat {
-    constructor(sound, note, noteAmount, soundSettings) {
-        this.sound = observable(sound);
-        this.noteSettings = observable(note);
-        this.noteAmount = noteAmount;
-        this.soundSettings = observable(soundSettings);
-        makeAutoObservable(this);
-    }
-
-    setSound(newSound) {
-        this.sound = newSound;
-    }
-
-    updateSoundSetting(key, value) {
-        const setting = this.soundSettings.find(s => s.key === key);
-        if (setting) setting.value = value;
-    }
-}
+import {makeAutoObservable} from "mobx";
+import Beat from "../models/Beat.js";
 
 export class BeatBarsManager {
+
     constructor(metronomeManager) {
         this._beats = [];
+        this._beatSequence = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
+        this.generateBeatSequence();
         makeAutoObservable(this)
     }
 
@@ -57,6 +42,19 @@ export class BeatBarsManager {
 
     popBeat() {
         this._beats.pop();
+    }
+
+    generateBeatSequence() {
+        for (const beat of this._beats) {
+            for (let i = 0; i < beat.noteAmount; i++) {
+                if (beat.noteSettings.isTriplet) {
+                    this._beatSequence.push(Array(beat.noteAmount * 3).fill(beat));
+                } else {
+                    this._beatSequence.push(beat);
+                }
+            }
+        }
+        console.log(this._beatSequence);
     }
 
     generateBeats() {

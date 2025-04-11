@@ -26,20 +26,20 @@ export const SOUNDS = [
 ];
 
 export const NOTES = [
-    {noteSize: 1, label: "1", isTriplet: false},
-    {noteSize: 1, label: "1T", isTriplet: true},
-    {noteSize: 2, label: "1/2", isTriplet: false},
-    {noteSize: 2, label: "1/2T", isTriplet: true},
-    {noteSize: 4, label: "1/4", isTriplet: false},
-    {noteSize: 4, label: "1/4T", isTriplet: true},
-    {noteSize: 8, label: "1/8", isTriplet: false},
-    {noteSize: 8, label: "1/8T", isTriplet: true},
-    {noteSize: 16, label: "1/16", isTriplet: false},
-    {noteSize: 16, label: "1/16T", isTriplet: true},
-    {noteSize: 32, label: "1/32", isTriplet: false},
-    {noteSize: 32, label: "1/32T", isTriplet: true},
-    {noteSize: 64, label: "1/64", isTriplet: false},
-    {noteSize: 64, label: "1/64T", isTriplet: true}
+    {noteSize: 1, label: "1", isTriplet: false, note: "1n"},
+    {noteSize: 1, label: "1T", isTriplet: true, note: "1t"},
+    {noteSize: 2, label: "1/2", isTriplet: false, note: "2n"},
+    {noteSize: 2, label: "1/2T", isTriplet: true, note: "2t"},
+    {noteSize: 4, label: "1/4", isTriplet: false, note: "4n"},
+    {noteSize: 4, label: "1/4T", isTriplet: true, note: "4t"},
+    {noteSize: 8, label: "1/8", isTriplet: false, note: "8n"},
+    {noteSize: 8, label: "1/8T", isTriplet: true, note: "8t"},
+    {noteSize: 16, label: "1/16", isTriplet: false, note: "16n"},
+    {noteSize: 16, label: "1/16T", isTriplet: true, note: "16t"},
+    {noteSize: 32, label: "1/32", isTriplet: false, note: "32n"},
+    {noteSize: 32, label: "1/32T", isTriplet: true, note: "32t"},
+    {noteSize: 64, label: "1/64", isTriplet: false, note: "64n"},
+    {noteSize: 64, label: "1/64T", isTriplet: true, note: "64t"}
 ];
 
 export const NOTE_AMOUNTS = [1, 2, 3, 4];

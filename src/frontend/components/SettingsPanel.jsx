@@ -2,7 +2,6 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS, SOUNDS} from "../vars/vars.js";
-import {set} from "mobx";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
@@ -35,8 +34,8 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 
 const SoundRow = observer(({metronomeManager, index}) => {
     const handleSelectedSoundsChange = (e) => {
-        const selected = SOUNDS.find(sound => sound.label === e.target.value);
-        metronomeManager.beatBarsManager.beats[index].setSound(selected);
+        metronomeManager.beatBarsManager.beats[index].beatSound =
+            SOUNDS.find(sound => sound.label === e.target.value);
     };
 
     const handleSoundSettingsChange = (e, key) => {
@@ -49,7 +48,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
             <select
                 id={`sound-${index}`}
-                value={metronomeManager.beatBarsManager.beats[index].sound.label}
+                value={metronomeManager.beatBarsManager.beats[index].beatSound.label}
                 onChange={handleSelectedSoundsChange}
             >
                 {SOUNDS.map((sound) => (

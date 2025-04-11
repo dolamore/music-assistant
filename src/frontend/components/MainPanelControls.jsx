@@ -14,36 +14,16 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
     );
 }));
 
-let noiseSource = null;
-
 const StartStopButton = observer(({metronomeManager}) => {
-    const onClick = async () => {
+    const onClick = () => {
+        // await Tone.start()
+        // await Tone.getContext().resume()
 
-        if (Tone.getContext().state !== "running") {
-            await Tone.start();
-         //   await Tone.getContext().resume()
-            console.log("Audio context" + Tone.getContext().state);
-            if (!noiseSource) {
-                // Создаем источник белого шума
-                noiseSource = new Tone.Noise("white").start();
-                // Устанавливаем минимальную громкость
-                const gain = new Tone.Gain(0.0001).toDestination();
-                noiseSource.connect(gain);
-                console.log("Silent noise started");
-            }
-
-            metronomeManager._loop = new Tone.Loop(() => {
-                console.log("Loop started");
-            }, "64n");
-
-            Tone.getTransport().start(0);
-            metronomeManager._loop.start(0);
-        }
 
         if (metronomeManager.isPlaying) {
             // metronomeManager.stopMetronome();
         } else {
-         //   metronomeManager.startMetronome();
+            metronomeManager.startMetronome();
         }
     };
 

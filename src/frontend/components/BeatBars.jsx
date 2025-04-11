@@ -29,7 +29,7 @@ const BeatRow = observer(({metronomeManager, index}) => {
         </div>
     )
 });
-
+//TODO: переписать с учётом наличия поля note
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
         const [noteSizeStr, isTripletStr] = e.target.value.split("-");

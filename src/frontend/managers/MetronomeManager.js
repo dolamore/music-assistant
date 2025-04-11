@@ -24,8 +24,6 @@ export class MetronomeManager {
     _skipper = 0;
     _currentStep = 0;
     _isStartOfLoop = false;
-    _bpmMaxLimitReached = false;
-    _bpmMinLimitReached = false;
 
     constructor() {
         this._soundManager = new SoundManager(this);
@@ -53,22 +51,6 @@ export class MetronomeManager {
         this._loopCount = value;
     }
 
-    get bpmMaxLimitReached() {
-        return this._bpmMaxLimitReached;
-    }
-
-    set bpmMaxLimitReached(value) {
-        this._bpmMaxLimitReached = value;
-    }
-
-    get bpmMinLimitReached() {
-        return this._bpmMinLimitReached;
-    }
-
-    set bpmMinLimitReached(value) {
-        this._bpmMinLimitReached = value
-    }
-
     get bpm() {
         return this._bpm;
     }
@@ -92,6 +74,10 @@ export class MetronomeManager {
     startMetronome() {
         this._isPlaying = true;
 
+        const toneSequence = new Tone.Sequence((time, beat, beatIndex) => {
+            this.playStep(time, beat, beatIndex);
+        }, this._sequence, "64n");
+
         Tone.getTransport().bpm.value = this.bpm * 3;
         this._sequence = this.generateFixedMetronomeSequence();
         this._skipper = 0;
@@ -102,13 +88,11 @@ export class MetronomeManager {
         Tone.getTransport().start(0);
         this._loop.start(0);
 
-        console.log("context state: " + Tone.getContext().state);
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
-        setTimeout(() => console.log("AudioContext state timer:", Tone.getContext().state), 10000);
     }
 
-    getMetronomeLoopCallback(time) {
+    getMetronomeLoopCallback() {
         console.log("loop callback has started");
         this._currentStep = this._count % this._sequence.length;
         this._isStartOfLoop = this._currentStep === 0;
@@ -140,12 +124,38 @@ export class MetronomeManager {
         this._count++;
     }
 
+    playStep(time, beat, beatIndex) {
+        const {sound, settings} = beat;
+
+        for (const key in settings) {
+            if (settings.hasOwnProperty(key)) {
+                if (key in sound) {
+                    // Если параметр есть в объекте sound (например, volume)
+                    sound[key].value = settings[key];
+                } else if (key in sound.oscillator) {
+                    // Если параметр относится к осциллятору (например, frequency, detune, phase)
+                    sound.oscillator[key] = settings[key];
+                } else if (key in sound.envelope) {
+                    // Если параметр относится к огибающей (например, attack, decay, sustain, release)
+                    sound.envelope[key] = settings[key];
+                } else if (key in sound.filter) {
+                    // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
+                    sound.filter[key] = settings[key];
+                }
+            }
+        }
+
+        sound.triggerAttackRelease('C4', '64n', time);
+    }
+
+
     playMetronomeStep(sequence, currentStep, time) {
         const currentNote = sequence[currentStep];
         if (!currentNote || !currentNote.sound) return;
         if (!(this.trainingModeManager.getIsTrainingMode() && Math.random() < this.trainingModeManager.getNoteSkipProbability() && !this.trainingModeManager.getIsFirstLoop())) {
             console.log("stepped here");
             const {sound, settings} = currentNote;
+
 
             // Динамически применяем все параметры из settings к sound
             for (const key in settings) {
@@ -196,19 +206,23 @@ export class MetronomeManager {
         const sequence = new Array(totalSteps).fill(null);
 
         for (let beatIndex = 0; beatIndex < beatAmount; beatIndex++) {
-            const {noteSettings, noteAmount, sound, soundSettings} = this.beatBarsManager.beats[beatIndex];
+            const {noteSettings, noteAmount, beatSound, soundSettings} = this.beatBarsManager.beats[beatIndex];
             const {isTriplet, noteSize} = noteSettings;
 
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
 
 
             for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {
-                sequence[position] = {sound, soundSettings, beatIndex: beatIndex};
+                sequence[position] = {beatSound, soundSettings, beatIndex};
                 position += stepSize;
             }
         }
 
         return sequence;
+    }
+
+    generateMetronomeSequence() {
+
     }
 
     updateMetronomeSequence() {
@@ -260,15 +274,10 @@ export class MetronomeManager {
         } else {
             this.bpm = newBpm;
         }
-        this.checkBPMLimit();
+
         if (this._loop) this._loop.stop();  // Останавливаем текущий цикл метронома
         if (this.isPlaying) {
             this.restartMetronomeAndPendulum();
         }
-    }
-
-    checkBPMLimit() {
-        this.bpmMinLimitReached = this._bpm <= BPM_MIN_LIMIT;
-        this.bpmMaxLimitReached = this._bpm >= BPM_MAX_LIMIT;
     }
 }
