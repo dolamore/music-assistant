@@ -16,7 +16,9 @@ import document from "react";
 export class MetronomeManager {
     _bpm = DEFAULT_INITIAL_BPM;
     _isPlaying = false;
-    _loop = null;
+    _loop = new Tone.Loop(() => {
+        this.getMetronomeLoopCallback();
+    }, "64n");
     _count = 0;
     _loopCount = 0;
     currentNoteSizeIndex = 2;
@@ -31,6 +33,10 @@ export class MetronomeManager {
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();
+
+        Tone.getTransport().bpm.value = this.bpm * 3;
+        this._sequence = this.generateFixedMetronomeSequence();
+
         makeAutoObservable(this)
 
     }
@@ -71,35 +77,32 @@ export class MetronomeManager {
         return this._soundManager;
     }
 
-    startMetronome() {
-        this._isPlaying = true;
+    playStep(time, beat) {
+        const {beatSound, settings} = beat;
+        const { sound } = beatSound;
 
-        const toneSequence = new Tone.Sequence((time, beat) => {
-            this.playStep(time, beat);
-        }, this._beatBarsManager.beatSequence, "64n");
+      //  console.log(settings);
+        const soundParams = {
+            sound: sound,
+            oscillator: sound.oscillator,
+            envelope: sound.envelope,
+            filter: sound.filter
+        };
 
-        Tone.getTransport().bpm.value = this.bpm;
+        // for (const [param, target] of Object.entries(soundParams)) {
+        //     if (param in settings) {
+        //         target[param] = settings[param];
+        //     }
+        // }
 
-        toneSequence.start(0);
-
-        // Tone.getTransport().bpm.value = this.bpm * 3;
-        // this._sequence = this.generateFixedMetronomeSequence();
-        // this._skipper = 0;
-
-        // this._loop = new Tone.Loop(() => {
-        //     this.getMetronomeLoopCallback();
-        // }, "64n");
-        // Tone.getTransport().start(0);
-        // this._loop.start(0);
-
-        //TODO: move pendulum!
-        //    this.elementsManager.movePendulum();
+        sound.triggerAttackRelease('C4', '64n', time);
     }
+
 
     getMetronomeLoopCallback() {
         console.log("loop callback has started");
-        this._currentStep = this._count % this._sequence.length;
-        this._isStartOfLoop = this._currentStep === 0;
+        // this._currentStep = this._count % this._sequence.length;
+        // this._isStartOfLoop = this._currentStep === 0;
 
         //TODO: add training mode back
         // if (this.trainingModeManager.getIsTrainingMode()) {
@@ -122,32 +125,29 @@ export class MetronomeManager {
         // }
 
         if (this._isStartOfLoop) {
-             this._loopCount += 1;
+            this._loopCount += 1;
         }
 
         this._count++;
     }
 
-    playStep(time, beat) {
-        const {beatSound, settings} = beat;
-        const { sound } = beatSound;
 
-        const soundParams = {
-            sound: sound,
-            oscillator: sound.oscillator,
-            envelope: sound.envelope,
-            filter: sound.filter
-        };
+    startMetronome() {
+        this._isPlaying = true;
+        this._skipper = 0;
+        this._loop= new Tone.Loop(() => {
+            this.getMetronomeLoopCallback();
+        }, "64n");
+        console.log(Tone.getTransport().bpm.value);
+        console.log(this._sequence);
+        this._loop.start(0);
+        Tone.getTransport().start(0);
+        console.log(this._loop.state);
+        console.log(this._loop.progress);
 
-        for (const [param, target] of Object.entries(soundParams)) {
-            if (param in settings) {
-                target[param] = settings[param];
-            }
-        }
-
-        sound.triggerAttackRelease('C4', '64n', time);
+        //TODO: move pendulum!
+        //    this.elementsManager.movePendulum();
     }
-
 
     playMetronomeStep(sequence, currentStep, time) {
         const currentNote = sequence[currentStep];
@@ -231,17 +231,16 @@ export class MetronomeManager {
     }
 
 
-    // stopMetronome() {
-    //     this.isPlaying = false;
-    //     if (this.loop) this.loop.stop();
-    //     Tone.getTransport().stop(); //Tone.Transport.stop(); used to be here!!!!
-    //     buttons.startStopButton.textContent = 'Start';
-    //
+     stopMetronome() {
+         this.isPlaying = false;
+         this._loop.stop();
+         Tone.getTransport().stop();
+
     //     this.elementsManager.resetPendulumAnimation();
-    //
-    //     this.count = 0;
-    //     this.loopCount = 0;
-    //     //elements.loopCounter.textContent = this.loopCount;
+
+        // TODO: обнулять лупы после старта
+         this._count = 0;
+         this._loopCount = 0;
     // }
 
     // restartMetronomeAndPendulum() {
@@ -253,7 +252,7 @@ export class MetronomeManager {
     //     if (this.isPlaying) {
     //         this.restartMetronomeAndPendulum();
     //     }
-    // }
+     }
 
     //TODO: вернуться к оптимизации этого
     handleBpmChange(newBpm) {
@@ -277,7 +276,7 @@ export class MetronomeManager {
 
         if (this._loop) this._loop.stop();  // Останавливаем текущий цикл метронома
         if (this.isPlaying) {
-            this.restartMetronomeAndPendulum();
+           // this.restartMetronomeAndPendulum();
         }
     }
 }
