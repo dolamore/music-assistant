@@ -22,7 +22,7 @@ const StartStopButton = observer(({metronomeManager}) => {
         } else {
               await Tone.start();
               await Tone.getContext().resume();
-            metronomeManager.startMetronome();
+            metronomeManager.tempStart();
         }
     };
 

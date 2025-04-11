@@ -16,9 +16,7 @@ import document from "react";
 export class MetronomeManager {
     _bpm = DEFAULT_INITIAL_BPM;
     _isPlaying = false;
-    _loop = new Tone.Loop(() => {
-        this.getMetronomeLoopCallback();
-    }, "64n");
+    _loop = null;
     _count = 0;
     _loopCount = 0;
     currentNoteSizeIndex = 2;
@@ -33,6 +31,10 @@ export class MetronomeManager {
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();
+
+        this._tempSequence = new Tone.Sequence((time, beat) => {
+            this.playStep(time, beat);
+        }, this._beatBarsManager.beatSequence, "4n");
 
         Tone.getTransport().bpm.value = this.bpm * 3;
         this._sequence = this.generateFixedMetronomeSequence();
@@ -77,11 +79,16 @@ export class MetronomeManager {
         return this._soundManager;
     }
 
+    tempStart() {
+        this._isPlaying = true;
+        Tone.getTransport().start();
+        this._tempSequence.start(0);
+    }
+
     playStep(time, beat) {
-        const {beatSound, settings} = beat;
+        const {beatSound, soundSettings} = beat;
         const { sound } = beatSound;
 
-      //  console.log(settings);
         const soundParams = {
             sound: sound,
             oscillator: sound.oscillator,
