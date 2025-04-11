@@ -74,19 +74,23 @@ export class MetronomeManager {
     startMetronome() {
         this._isPlaying = true;
 
-        const toneSequence = new Tone.Sequence((time, beat, beatIndex) => {
-            this.playStep(time, beat, beatIndex);
-        }, this._sequence, "64n");
+        const toneSequence = new Tone.Sequence((time, beat) => {
+            this.playStep(time, beat);
+        }, this._beatBarsManager.beatSequence, "64n");
 
-        Tone.getTransport().bpm.value = this.bpm * 3;
-        this._sequence = this.generateFixedMetronomeSequence();
-        this._skipper = 0;
+        Tone.getTransport().bpm.value = this.bpm;
 
-        this._loop = new Tone.Loop(() => {
-            this.getMetronomeLoopCallback();
-        }, "64n");
-        Tone.getTransport().start(0);
-        this._loop.start(0);
+        toneSequence.start(0);
+
+        // Tone.getTransport().bpm.value = this.bpm * 3;
+        // this._sequence = this.generateFixedMetronomeSequence();
+        // this._skipper = 0;
+
+        // this._loop = new Tone.Loop(() => {
+        //     this.getMetronomeLoopCallback();
+        // }, "64n");
+        // Tone.getTransport().start(0);
+        // this._loop.start(0);
 
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
@@ -124,24 +128,20 @@ export class MetronomeManager {
         this._count++;
     }
 
-    playStep(time, beat, beatIndex) {
-        const {sound, settings} = beat;
+    playStep(time, beat) {
+        const {beatSound, settings} = beat;
+        const { sound } = beatSound;
 
-        for (const key in settings) {
-            if (settings.hasOwnProperty(key)) {
-                if (key in sound) {
-                    // Если параметр есть в объекте sound (например, volume)
-                    sound[key].value = settings[key];
-                } else if (key in sound.oscillator) {
-                    // Если параметр относится к осциллятору (например, frequency, detune, phase)
-                    sound.oscillator[key] = settings[key];
-                } else if (key in sound.envelope) {
-                    // Если параметр относится к огибающей (например, attack, decay, sustain, release)
-                    sound.envelope[key] = settings[key];
-                } else if (key in sound.filter) {
-                    // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
-                    sound.filter[key] = settings[key];
-                }
+        const soundParams = {
+            sound: sound,
+            oscillator: sound.oscillator,
+            envelope: sound.envelope,
+            filter: sound.filter
+        };
+
+        for (const [param, target] of Object.entries(soundParams)) {
+            if (param in settings) {
+                target[param] = settings[param];
             }
         }
 

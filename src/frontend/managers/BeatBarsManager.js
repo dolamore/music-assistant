@@ -23,6 +23,10 @@ export class BeatBarsManager {
         makeAutoObservable(this)
     }
 
+    get beatSequence() {
+        return this._beatSequence;
+    }
+
     get beats() {
         return this._beats;
     }
