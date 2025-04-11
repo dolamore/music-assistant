@@ -16,12 +16,12 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
 
 //TODO: перенести это в App и сделать разово появляющимся
 const StartStopButton = observer(({metronomeManager}) => {
-    const onClick = () => {
+    const onClick = async () => {
         if (metronomeManager.isPlaying) {
             metronomeManager.stopMetronome();
         } else {
-             // await Tone.start();
-             // await Tone.getContext().resume();
+              await Tone.start();
+              await Tone.getContext().resume();
             metronomeManager.startMetronome();
         }
     };

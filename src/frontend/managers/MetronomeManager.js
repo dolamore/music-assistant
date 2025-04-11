@@ -140,10 +140,12 @@ export class MetronomeManager {
         }, "64n");
         console.log(Tone.getTransport().bpm.value);
         console.log(this._sequence);
-        this._loop.start(0);
-        Tone.getTransport().start(0);
-        console.log(this._loop.state);
-        console.log(this._loop.progress);
+        Tone.getTransport().start();
+        this._loop.start(0)
+        setInterval(() => {
+            console.log(Tone.getTransport().state);
+            console.log(Tone.getTransport().seconds);
+        }, 5000);
 
         //TODO: move pendulum!
         //    this.elementsManager.movePendulum();
