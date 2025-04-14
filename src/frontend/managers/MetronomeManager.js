@@ -12,6 +12,7 @@ import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager.js";
 import document from "react";
 import {AudioEngine} from "../audio-engine/AudioEngine.js";
+import {TonejsSynthSounds} from "../models/TonejsSynthSounds.js";
 
 
 export class MetronomeManager {

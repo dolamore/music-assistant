@@ -1,6 +1,7 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
 import {SOUNDS} from "../../vars/Sounds";
+import {MetronomeManager} from "../../managers/MetronomeManager";
 
 export class TonejsEngine extends AudioEngine {
     private transport = Tone.getTransport();
@@ -11,14 +12,14 @@ export class TonejsEngine extends AudioEngine {
     const unlockAudioContext = async () => {
         await Tone.start();
         await Tone.getContext().resume();
-        console.log("Audio context unlocked");
+        this.metronomeManager.beatBarsManager.sounds.initSounds();
 
-        // Удаляем обработчик после первого вызова
+        // Delete the unlock function after the first call
         window.removeEventListener("click", unlockAudioContext);
         window.removeEventListener("keydown", unlockAudioContext);
     };
 
-    // Добавляем обработчики на пользовательские взаимодействия
+    // Add event listeners to unlock the audio context
     window.addEventListener("click", unlockAudioContext);
     window.addEventListener("keydown", unlockAudioContext);
     }
@@ -58,13 +59,5 @@ export class TonejsEngine extends AudioEngine {
         } else {
             this.setBpm(newBpm);
         }
-    }
-
-    initializeSounds() {
-        SOUNDS.forEach(soundObj => {
-            if (soundObj.key !== 'no-sound' && !soundObj.sound) {
-                soundObj.sound = new Tone.Synth({ oscillator: { type: soundObj.key } }).toDestination();
-            }
-        });
     }
 }

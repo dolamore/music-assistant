@@ -11,6 +11,7 @@ import {
 import{SOUNDS} from "../vars/sounds.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.js";
+import {TonejsSynthSounds} from "../models/TonejsSynthSounds.js";
 
 export class BeatBarsManager {
 
@@ -18,9 +19,14 @@ export class BeatBarsManager {
         this._beats = [];
         this._beatSequence = [];
         this.metronomeManager = metronomeManager;
+        this._sounds = new TonejsSynthSounds();
         this.generateBeats();
         this.generateBeatSequence();
         makeAutoObservable(this)
+    }
+
+    get sounds() {
+        return this._sounds;
     }
 
     get beatSequence() {

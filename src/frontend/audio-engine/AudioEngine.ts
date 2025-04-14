@@ -10,6 +10,7 @@ export abstract class AudioEngine {
 
     constructor(metronomeManager: MetronomeManager) {
         this._metronomeManager = metronomeManager;
+        this.setupAudioContextUnlocker();
         makeAutoObservable(this);
     }
 
