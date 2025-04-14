@@ -17,13 +17,6 @@ export const DEFAULT_SOUND_SETTINGS = [
     {key: 'sustain', value: 0, label: "Sustain"},
     {key: 'release', value: 0.1, label: "Release"},
 ];
-export const SOUNDS = [
-    {key: 'no-sound', sound: null, label: 'No sound'},
-    {key: 'sine', sound: new Tone.Synth({oscillator: {type: 'sine'}}).toDestination(), label: 'Sine'},
-    {key: 'triangle', sound: new Tone.Synth({oscillator: {type: 'triangle'}}).toDestination(), label: 'Triangle'},
-    {key: 'square', sound: new Tone.Synth({oscillator: {type: 'square'}}).toDestination(), label: 'Square'},
-    {key: 'sawtooth', sound: new Tone.Synth({oscillator: {type: 'sawtooth'}}).toDestination(), label: 'Sawtooth'}
-];
 
 export const NOTES = [
     {noteSize: 1, label: "1", isTriplet: false, note: "1n"},

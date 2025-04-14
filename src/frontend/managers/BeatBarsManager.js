@@ -7,8 +7,8 @@ import {
     INITIAL_NUMBER_OF_BEATS,
     NOTE_AMOUNTS,
     NOTES,
-    SOUNDS
 } from "../vars/vars.js";
+import{SOUNDS} from "../vars/sounds.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.js";
 

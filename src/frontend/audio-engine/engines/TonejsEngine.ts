@@ -1,14 +1,26 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
+import {SOUNDS} from "../../vars/Sounds";
 
 export class TonejsEngine extends AudioEngine {
     private transport = Tone.getTransport();
     private loop: Tone.Loop | null = null;
     private sequence: any[] = [];
     
-    async unblockAudioContext(): Promise<void> {
+    setupAudioContextUnlocker(): void {
+    const unlockAudioContext = async () => {
         await Tone.start();
         await Tone.getContext().resume();
+        console.log("Audio context unlocked");
+
+        // Удаляем обработчик после первого вызова
+        window.removeEventListener("click", unlockAudioContext);
+        window.removeEventListener("keydown", unlockAudioContext);
+    };
+
+    // Добавляем обработчики на пользовательские взаимодействия
+    window.addEventListener("click", unlockAudioContext);
+    window.addEventListener("keydown", unlockAudioContext);
     }
 
     playNote(note: string, duration: string, time: number): void {
@@ -46,5 +58,13 @@ export class TonejsEngine extends AudioEngine {
         } else {
             this.setBpm(newBpm);
         }
+    }
+
+    initializeSounds() {
+        SOUNDS.forEach(soundObj => {
+            if (soundObj.key !== 'no-sound' && !soundObj.sound) {
+                soundObj.sound = new Tone.Synth({ oscillator: { type: soundObj.key } }).toDestination();
+            }
+        });
     }
 }
