@@ -11,26 +11,29 @@ import * as Tone from "tone";
 import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager.js";
 import document from "react";
+import {AudioEngine} from "../audio-engine/AudioEngine.js";
 
 
 export class MetronomeManager {
-    _bpm = DEFAULT_INITIAL_BPM;
-    _isPlaying = false;
-    _loop = null;
-    _count = 0;
-    _loopCount = 0;
-    currentNoteSizeIndex = 2;
-    _sequence = [];
-    _skipper = 0;
-    _currentStep = 0;
-    _isStartOfLoop = false;
 
     constructor() {
+        this._bpm = DEFAULT_INITIAL_BPM;
+        this._isPlaying = false;
+        this._loop = null;
+        this._count = 0;
+        this._loopCount = 0;
+        this.currentNoteSizeIndex = 2;
+        this._sequence = [];
+        this._skipper = 0;
+        this._currentStep = 0;
+        this._isStartOfLoop = false;
+
         this._soundManager = new SoundManager(this);
         this._beatBarsManager = new BeatBarsManager(this);
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();
+        this._audioEngine = new AudioEngine(this);
 
         this._tempSequence = new Tone.Sequence((time, beat) => {
             this.playStep(time, beat);

@@ -1,33 +1,14 @@
-import {AudioEngineInterface} from '../interfaces/audioEngineInterface';
 import * as Tone from 'tone';
+import {AudioEngine} from "../AudioEngine";
 
-export class TonejsEngineService implements AudioEngineInterface {
+export class TonejsEngine extends AudioEngine {
     private transport = Tone.getTransport();
     private loop: Tone.Loop | null = null;
     private sequence: any[] = [];
-
-    async init(): Promise<void> {
+    
+    async unblockAudioContext(): Promise<void> {
         await Tone.start();
-        console.log("Tone.js started");
-    }
-
-    playSound(sound: any, settings: any): void {
-        if (!sound || !sound.triggerAttackRelease) return;
-
-        const duration = settings.duration || "8n";
-        const frequency = settings.frequency || "C4";
-
-        sound.triggerAttackRelease(frequency, duration);
-    }
-
-    async start(): Promise<void> {
-        await Tone.start();
-       // await Tone.getContext().rawContext.resume(); возможно, это нужно
-    }
-
-    stop(): void {
-        if (this.loop) this.loop.stop();
-        this.transport.stop();
+        await Tone.getContext().resume();
     }
 
     playNote(note: string, duration: string, time: number): void {
