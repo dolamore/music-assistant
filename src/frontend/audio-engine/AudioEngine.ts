@@ -7,11 +7,8 @@ export abstract class AudioEngine {
     public _bpm: number | string = DEFAULT_INITIAL_BPM;
     private readonly _metronomeManager: MetronomeManager;
 
-    abstract setupAudioContextUnlocker(): void;
-
     protected constructor(metronomeManager: MetronomeManager) {
         this._metronomeManager = metronomeManager;
-        this.setupAudioContextUnlocker();
     }
 
     get metronomeManager(): MetronomeManager {

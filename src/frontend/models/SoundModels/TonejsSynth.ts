@@ -1,8 +1,8 @@
 import * as Tone from "tone";
 import {Time} from "tone/build/esm/core/type/Units";
-import {Sound, SoundType} from "./Sound";
+import {Instrument, InstrumentType} from "./Instrument";
 
-export class TonejsSynthSound extends Sound implements SoundType {
+export class TonejsSynth extends Instrument implements InstrumentType {
     private _synth: Tone.Synth;
 
     constructor(oscillatorType: Tone.ToneOscillatorType) {

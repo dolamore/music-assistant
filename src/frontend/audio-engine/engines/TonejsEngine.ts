@@ -1,7 +1,6 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
-import {makeAutoObservable, makeObservable} from "mobx";
 
 export class TonejsEngine extends AudioEngine {
     public transport = Tone.getTransport();
@@ -10,11 +9,6 @@ export class TonejsEngine extends AudioEngine {
 
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
-        makeObservable(this, {
-            _loop: true,
-            _sequence: true,
-            transport: true,
-        });
     }
 
 
@@ -22,28 +16,9 @@ export class TonejsEngine extends AudioEngine {
         return this._sequence;
     }
 
-    setupAudioContextUnlocker(): void {
-    const unlockAudioContext = async () => {
-        await Tone.start();
-        await Tone.getContext().resume();
-
-        // Delete the unlock function after the first call
-        window.removeEventListener("click", unlockAudioContext);
-        window.removeEventListener("keydown", unlockAudioContext);
-    };
-
-    // Add event listeners to unlock the audio context
-    window.addEventListener("click", unlockAudioContext);
-    window.addEventListener("keydown", unlockAudioContext);
-    }
-
-    playNote(note: string, duration: string, time: number): void {
-        const synth = new Tone.Synth().toDestination();
-        synth.triggerAttackRelease(note, duration, time);
-    }
-
-    setBpm(bpm: number): void {
-        this.transport.bpm.value = bpm * 3; // Умножаем на 3, как указано в вашем коде
+    setTransportBpm(bpm: number): void {
+        this._bpm = bpm;
+        this.transport.bpm.value = bpm;
     }
 
     generateSequence(): any[] {
@@ -66,11 +41,11 @@ export class TonejsEngine extends AudioEngine {
         }
 
         if (newBpm > 300) {
-            this.setBpm(300);
+            this.setTransportBpm(300);
         } else if (newBpm < 40) {
-            this.setBpm(40);
+            this.setTransportBpm(40);
         } else {
-            this.setBpm(newBpm);
+            this.setTransportBpm(newBpm);
         }
     }
 }

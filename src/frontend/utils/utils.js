@@ -1,3 +1,5 @@
+import * as Tone from "tone";
+
 export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
     increasingButton.disabled = maxLimit;
     decreasingButton.disabled = minLimit;
@@ -21,4 +23,9 @@ function lcm(a, b) {
 
 export function lcmArray(arr) {
     return arr.reduce((a, b) => lcm(a, b));
+}
+
+export async function setupAudioContextUnlocker() {
+        await Tone.start();
+        await Tone.getContext().resume();
 }

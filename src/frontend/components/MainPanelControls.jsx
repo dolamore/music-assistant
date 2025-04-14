@@ -2,7 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys.js";
-import * as Tone from "tone";
+import {setupAudioContextUnlocker} from "../utils/utils.js";
 
 export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
     return (
@@ -20,9 +20,7 @@ const StartStopButton = observer(({metronomeManager}) => {
         if (metronomeManager.isPlaying) {
             metronomeManager.stopMetronome();
         } else {
-            metronomeManager._audioEngine.setupAudioContextUnlocker();
-              // await Tone.start();
-              // await Tone.getContext().resume();
+            await setupAudioContextUnlocker();
             metronomeManager.tempStart();
         }
     };
