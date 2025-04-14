@@ -20,7 +20,6 @@ const root = ReactDOM.createRoot(rootElement);
 const metronomeManager = new MetronomeManager();
 
 function App() {
-
     return (
         <Provider metronomeManager={metronomeManager}>
             <Metronome>

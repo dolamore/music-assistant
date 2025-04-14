@@ -2,7 +2,7 @@ import * as Tone from "tone";
 import {Time} from "tone/build/esm/core/type/Units";
 import {Sound, SoundType} from "./Sound";
 
-export class TonejsSound extends Sound implements SoundType {
+export class TonejsSynthSound extends Sound implements SoundType {
     private _synth: Tone.Synth;
 
     constructor(oscillatorType: Tone.ToneOscillatorType) {

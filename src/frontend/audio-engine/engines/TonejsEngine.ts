@@ -1,18 +1,31 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
-import {SOUNDS} from "../../vars/Sounds";
 import {MetronomeManager} from "../../managers/MetronomeManager";
+import {makeAutoObservable, makeObservable} from "mobx";
 
 export class TonejsEngine extends AudioEngine {
-    private transport = Tone.getTransport();
-    private loop: Tone.Loop | null = null;
-    private sequence: any[] = [];
-    
+    public transport = Tone.getTransport();
+    public _loop: Tone.Loop | null = null;
+    public _sequence: any[] = [];
+
+    constructor(metronomeManager: MetronomeManager) {
+        super(metronomeManager);
+        makeObservable(this, {
+            _loop: true,
+            _sequence: true,
+            transport: true,
+        });
+    }
+
+
+    get sequence(): any[] {
+        return this._sequence;
+    }
+
     setupAudioContextUnlocker(): void {
     const unlockAudioContext = async () => {
         await Tone.start();
         await Tone.getContext().resume();
-        this.metronomeManager.beatBarsManager.sounds.initSounds();
 
         // Delete the unlock function after the first call
         window.removeEventListener("click", unlockAudioContext);
@@ -40,7 +53,7 @@ export class TonejsEngine extends AudioEngine {
     }
 
     updateSequence(): void {
-        // Обновление последовательности (если нужно)
+        this._sequence = [];
     }
 
     handleBpmChange(newBpm: any): void {

@@ -8,10 +8,10 @@ import {
     NOTE_AMOUNTS,
     NOTES,
 } from "../vars/vars.js";
-import{SOUNDS} from "../vars/sounds.ts";
+import{SOUNDS} from "../vars/SOUNDS.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.js";
-import {TonejsSynthSounds} from "../models/TonejsSynthSounds.js";
+import {TonejsSynthSounds} from "../models/Sounds/TonejsSynthSounds.ts";
 
 export class BeatBarsManager {
 
@@ -64,7 +64,6 @@ export class BeatBarsManager {
                 }
             }
         }
-        console.log(this._beatSequence);
     }
 
     generateBeats() {

@@ -1,4 +1,4 @@
-import {SOUNDS} from "../vars/Sounds.ts";
+import {SOUNDS} from "../vars/SOUNDS.ts";
 import document from "react";
 import {makeAutoObservable} from "mobx";
 

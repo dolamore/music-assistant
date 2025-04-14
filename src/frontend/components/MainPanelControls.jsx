@@ -20,8 +20,9 @@ const StartStopButton = observer(({metronomeManager}) => {
         if (metronomeManager.isPlaying) {
             metronomeManager.stopMetronome();
         } else {
-              await Tone.start();
-              await Tone.getContext().resume();
+            metronomeManager._audioEngine.setupAudioContextUnlocker();
+              // await Tone.start();
+              // await Tone.getContext().resume();
             metronomeManager.tempStart();
         }
     };

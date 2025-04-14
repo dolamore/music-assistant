@@ -12,7 +12,8 @@ import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager.js";
 import document from "react";
 import {AudioEngine} from "../audio-engine/AudioEngine.js";
-import {TonejsSynthSounds} from "../models/TonejsSynthSounds.js";
+import {TonejsSynthSounds} from "../models/Sounds/TonejsSynthSounds.ts";
+import {TonejsEngine} from "../audio-engine/engines/TonejsEngine.js";
 
 
 export class MetronomeManager {
@@ -34,7 +35,7 @@ export class MetronomeManager {
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
         this.visualEffectsManager = new VisualEffectsManager();
-        this._audioEngine = new AudioEngine(this);
+        this._audioEngine = new TonejsEngine(this);
 
         this._tempSequence = new Tone.Sequence((time, beat) => {
             this.playStep(time, beat);
