@@ -19,7 +19,7 @@ import {TonejsEngine} from "../audio-engine/engines/TonejsEngine.js";
 export class MetronomeManager {
 
     constructor() {
-        this._bpm = DEFAULT_INITIAL_BPM;
+        //this._bpm = DEFAULT_INITIAL_BPM;
         this._isPlaying = false;
         this._loop = null;
         this._count = 0;
@@ -38,11 +38,11 @@ export class MetronomeManager {
         this._audioEngine = new TonejsEngine(this);
 
         this._tempSequence = new Tone.Sequence((time, beat) => {
-            this.playStep(time, beat);
+           this.playStep(time, beat);
         }, this._beatBarsManager.beatSequence, "4n");
 
-        Tone.getTransport().bpm.value = this.bpm * 3;
-        this._sequence = this.generateFixedMetronomeSequence();
+        //Tone.getTransport().bpm.value = this.bpm * 3;
+        //this._sequence = this.generateFixedMetronomeSequence();
 
         makeAutoObservable(this)
 
@@ -86,8 +86,7 @@ export class MetronomeManager {
 
     tempStart() {
         this._isPlaying = true;
-        Tone.getTransport().start();
-        this._tempSequence.start(0);
+        this._audioEngine.startPlaying();
     }
 
     playStep(time, beat) {

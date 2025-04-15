@@ -5,7 +5,7 @@ import {DEFAULT_INITIAL_BPM} from "../vars/vars";
 export abstract class AudioEngine {
     @observable
     public _bpm: number | string = DEFAULT_INITIAL_BPM;
-    private readonly _metronomeManager: MetronomeManager;
+    protected readonly _metronomeManager: MetronomeManager;
 
     protected constructor(metronomeManager: MetronomeManager) {
         this._metronomeManager = metronomeManager;
@@ -24,4 +24,6 @@ export abstract class AudioEngine {
     setBpm(value: any) {
         this._bpm = value;
     }
+
+    abstract startPlaying(): void;
 }
