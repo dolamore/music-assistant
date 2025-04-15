@@ -77,7 +77,7 @@ export class ElementsManager {
     //     const barWidth = elements.pendulumBarElement.clientWidth;
     //     const pendulumWidth = elements.pendulumElement.clientWidth;
     //     const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-    //     const beatDuration = (60 / this.metronomeManager.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
+    //     const beatDuration = (60 / this.metronomeManager.audioEngine.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
     //     const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
     //
     //     let startTime = performance.now();

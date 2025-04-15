@@ -9,7 +9,7 @@ export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreas
 
 export function handleInputBlur(inputValue, defaultElementValue, metronomeManager) {
     if (inputValue === '') {
-        metronomeManager.handleBpmChange(defaultElementValue)
+        metronomeManager.audioEngine.handleBpmChange(defaultElementValue)
     }
 }
 

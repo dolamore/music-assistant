@@ -48,6 +48,10 @@ export class MetronomeManager {
 
     }
 
+    get audioEngine() {
+        return this._audioEngine;
+    }
+
     get isPlaying() {
         return this._isPlaying;
     }
@@ -246,30 +250,4 @@ export class MetronomeManager {
     //         this.restartMetronomeAndPendulum();
     //     }
      }
-
-    //TODO: вернуться к оптимизации этого
-    handleBpmChange(newBpm) {
-        if (/^0\d/.test(newBpm)) {
-            newBpm = newBpm.replace(/^0+/, '');
-        }
-
-        if (isNaN(newBpm) || newBpm === '') {
-            return;
-        }
-        if (this.bpm === newBpm) {
-            return;
-        }
-        if (newBpm > BPM_MAX_LIMIT) {
-            this.bpm = BPM_MAX_LIMIT;
-        } else if (newBpm < BPM_MIN_LIMIT) {
-            this.bpm = BPM_MIN_LIMIT;
-        } else {
-            this.bpm = newBpm;
-        }
-
-        if (this._loop) this._loop.stop();  // Останавливаем текущий цикл метронома
-        if (this.isPlaying) {
-           // this.restartMetronomeAndPendulum();
-        }
-    }
 }

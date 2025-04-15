@@ -6,7 +6,7 @@ import {ChangingButton} from "./UtilityComponents.jsx";
 
 export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
     const handleBpmChange = (change) => {
-        metronomeManager.handleBpmChange(metronomeManager.bpm + change);
+        metronomeManager.audioEngine.handleBpmChange(metronomeManager.audioEngine.bpm + change);
     };
 
     return (
@@ -17,13 +17,13 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                     id="bpm-decrease-5"
                     label="-5"
                     onClick={() => handleBpmChange(-5)}
-                    disabled={metronomeManager.bpm <= BPM_MIN_LIMIT}
+                    disabled={metronomeManager.audioEngine.bpm <= BPM_MIN_LIMIT}
                 />
                 <ChangingButton
                     id="bpm-decrease-1"
                     label="-1"
                     onClick={() => handleBpmChange(-1)}
-                    disabled={metronomeManager.bpm <= BPM_MIN_LIMIT}
+                    disabled={metronomeManager.audioEngine.bpm <= BPM_MIN_LIMIT}
                 />
                 <BpmInput
                     metronomeManager={metronomeManager}
@@ -32,13 +32,13 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                     id="bpm-increase-1"
                     label="+1"
                     onClick={() => handleBpmChange(1)}
-                    disabled={metronomeManager.bpm >= BPM_MAX_LIMIT}
+                    disabled={metronomeManager.audioEngine.bpm >= BPM_MAX_LIMIT}
                 />
                 <ChangingButton
                     id="bpm-increase-5"
                     label="+5"
                     onClick={() => handleBpmChange(5)}
-                    disabled={metronomeManager.bpm >= BPM_MAX_LIMIT}
+                    disabled={metronomeManager.audioEngine.bpm >= BPM_MAX_LIMIT}
                 />
             </div>
         </div>
@@ -46,11 +46,11 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
 }));
 
 const BpmInput = observer(({metronomeManager}) => {
-    const [inputValue, setInputValue] = useState(metronomeManager.bpm);
+    const [inputValue, setInputValue] = useState(metronomeManager.audioEngine.bpm);
 
     useEffect(() => {
-        setInputValue(metronomeManager.bpm);
-    }, [metronomeManager.bpm]);
+        setInputValue(metronomeManager.audioEngine.bpm);
+    }, [metronomeManager.audioEngine.bpm]);
 
 
     const handleChange = (e) => {
@@ -67,13 +67,13 @@ const BpmInput = observer(({metronomeManager}) => {
             value = BPM_MIN_LIMIT;
         }
         setInputValue(value);
-        metronomeManager.handleBpmChange(value);
+        metronomeManager.audioEngine.handleBpmChange(value);
     };
 
     const handleBlur = () => {
         const newBpm = inputValue === '' ? DEFAULT_INITIAL_BPM : Number(inputValue);
-        metronomeManager.handleBpmChange(newBpm);
-        setInputValue(metronomeManager.bpm);
+        metronomeManager.audioEngine.handleBpmChange(newBpm);
+        setInputValue(metronomeManager.audioEngine.bpm);
     };
 
     return (
