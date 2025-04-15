@@ -8,7 +8,7 @@ import {
     NOTE_AMOUNTS,
     NOTES,
 } from "../vars/vars.js";
-import{SOUNDS} from "../vars/SOUNDS.ts";
+import{DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.js";
 import {TonejsSynthSounds} from "../models/Sounds/TonejsSynthSounds.ts";
@@ -19,14 +19,9 @@ export class BeatBarsManager {
         this._beats = [];
         this._beatSequence = [];
         this.metronomeManager = metronomeManager;
-        this._sounds = new TonejsSynthSounds();
         this.generateBeats();
         this.generateBeatSequence();
         makeAutoObservable(this)
-    }
-
-    get sounds() {
-        return this._sounds;
     }
 
     get beatSequence() {
@@ -43,7 +38,7 @@ export class BeatBarsManager {
 
     addStandardBeat() {
         this.addBeat(
-            SOUNDS[DEFAULT_SOUND_INDEX],
+            DEFAULT_SOUNDS[DEFAULT_SOUND_INDEX],
             NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
             NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
             DEFAULT_SOUND_SETTINGS

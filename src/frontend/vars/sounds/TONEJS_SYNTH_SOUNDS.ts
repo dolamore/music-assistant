@@ -1,5 +1,5 @@
-import {SoundObj} from "../models/SoundObj";
-import {TonejsSynth} from "../models/SoundModels/TonejsSynth";
+import {SoundObj} from "../../models/SoundObj";
+import {TonejsSynth} from "../../models/Instruments/TonejsSynth";
 
 export const TONEJS_SYNTH_SOUNDS: SoundObj[] = [
     new SoundObj("no-sound", "No Sound", null),

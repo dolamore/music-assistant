@@ -1,6 +1,7 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
+import {action} from "mobx";
 
 export class TonejsEngine extends AudioEngine {
     public transport = Tone.getTransport();
@@ -16,7 +17,8 @@ export class TonejsEngine extends AudioEngine {
         return this._sequence;
     }
 
-    setTransportBpm(bpm: number): void {
+    @action
+    setBpm(bpm: number): void {
         this._bpm = bpm;
         this.transport.bpm.value = bpm;
     }
@@ -41,11 +43,11 @@ export class TonejsEngine extends AudioEngine {
         }
 
         if (newBpm > 300) {
-            this.setTransportBpm(300);
+            this.setBpm(300);
         } else if (newBpm < 40) {
-            this.setTransportBpm(40);
+            this.setBpm(40);
         } else {
-            this.setTransportBpm(newBpm);
+            this.setBpm(newBpm);
         }
     }
 }

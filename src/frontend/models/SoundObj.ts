@@ -1,29 +1,29 @@
-import {InstrumentType} from "./SoundModels/Instrument";
+import {InstrumentType} from "./Instruments/Instrument";
 
 export class SoundObj {
     private readonly _key: string;
-    private _sound: InstrumentType | null;
+    private _instrument: InstrumentType | null;
     private readonly _label: string;
 
-    constructor(key: string, label: string, sound: InstrumentType | null) {
+    constructor(key: string, label: string, instrument: InstrumentType | null) {
         this._key = key;
         this._label = label;
-        this._sound = sound;
+        this._instrument = instrument;
     }
 
     get key(): string {
         return this._key;
     }
 
-    get sound(): InstrumentType | null {
-        return this._sound;
+    get instrument(): InstrumentType | null {
+        return this._instrument;
     }
 
     get label(): string {
         return this._label;
     }
 
-    set sound(value: InstrumentType | null) {
-        this._sound = value;
+    set instrument(value: InstrumentType | null) {
+        this._instrument = value;
     }
 }

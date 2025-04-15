@@ -1,4 +1,4 @@
-import {SOUNDS} from "../vars/SOUNDS.ts";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 import document from "react";
 import {makeAutoObservable} from "mobx";
 
@@ -20,7 +20,7 @@ export class SoundManager {
     //     const currentSound = parseInt(beatElement.dataset.sound, 10);
     //
     //     // Cycle through sounds (1 - Sound 1, ..., 4 - Sound 4, 0 - No Sound)
-    //     const nextSound = (currentSound % SOUNDS.length) + 1;
+    //     const nextSound = (currentSound % DEFAULT_SOUNDS.length) + 1;
     //     beatElement.dataset.sound = nextSound;
     //
     //     // Update selectedSounds array
