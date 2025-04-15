@@ -68,14 +68,6 @@ export class MetronomeManager {
         this._loopCount = value;
     }
 
-    get bpm() {
-        return this._bpm;
-    }
-
-    set bpm(value) {
-        this._bpm = value;
-    }
-
     get beatBarsManager() {
         return this._beatBarsManager;
     }
@@ -230,8 +222,7 @@ export class MetronomeManager {
 
      stopMetronome() {
          this.isPlaying = false;
-         this._loop.stop();
-         Tone.getTransport().stop();
+         this._audioEngine.stopPlaying();
 
     //     this.elementsManager.resetPendulumAnimation();
 

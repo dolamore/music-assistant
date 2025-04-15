@@ -7,6 +7,7 @@ export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreas
     decreasingButton.classList.toggle('button-limit', minLimit);
 }
 
+//TODO make it generic
 export function handleInputBlur(inputValue, defaultElementValue, metronomeManager) {
     if (inputValue === '') {
         metronomeManager.audioEngine.handleBpmChange(defaultElementValue)
@@ -28,4 +29,12 @@ export function lcmArray(arr) {
 export async function setupAudioContextUnlocker() {
         await Tone.start();
         await Tone.getContext().resume();
+}
+
+export function preventNonDigitInput(e) {
+    const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
+
+    if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
+        e.preventDefault();
+    }
 }

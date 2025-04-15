@@ -1,8 +1,9 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
-import {action} from "mobx";
+import {action, makeObservable, override} from "mobx";
 import {Sequence} from "tone";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -16,6 +17,10 @@ export class TonejsEngine extends AudioEngine {
         this._sequence = new Tone.Sequence((time, beat) => {
             this.playStep(time, beat);
         }, this._beatSequence, "4n");
+
+        makeObservable(this, {
+            setBpm: override,
+        });
     }
 
 
@@ -23,7 +28,6 @@ export class TonejsEngine extends AudioEngine {
         return this._sequence;
     }
 
-    @action
     setBpm(bpm: number): void {
         this._bpm = bpm;
         this._transport.bpm.value = bpm;
@@ -35,27 +39,14 @@ export class TonejsEngine extends AudioEngine {
         return [];
     }
 
-    handleBpmChange(newBpm: any): void {
-        if (/^0\d/.test(newBpm)) {
-            newBpm = newBpm.replace(/^0+/, '');
-        }
-
-        if (isNaN(newBpm) || newBpm === '') {
-            return;
-        }
-
-        if (newBpm > 300) {
-            this.setBpm(300);
-        } else if (newBpm < 40) {
-            this.setBpm(40);
-        } else {
-            this.setBpm(newBpm);
-        }
-    }
-
     startPlaying(): void {
         this._transport.start();
         this._sequence.start(0);
+    }
+
+    stopPlaying() {
+        this._sequence.stop();
+        this._transport.stop();
     }
 
     playStep(time : any, beat : any) : void {
@@ -88,6 +79,30 @@ export class TonejsEngine extends AudioEngine {
                 }
             }
         }
+    }
+
+    handleBpmChange = (newBpm: any): void  => {
+        if (/^0\d/.test(newBpm)) {
+            newBpm = newBpm.replace(/^0+/, '');
+        }
+
+        if (isNaN(newBpm) || newBpm === '') {
+            return;
+        }
+        if (this._bpm === newBpm) {
+            return;
+        }
+        if (newBpm > BPM_MAX_LIMIT) {
+            this.setBpm(BPM_MAX_LIMIT)
+        } else if (newBpm < BPM_MIN_LIMIT) {
+            this.setBpm(BPM_MIN_LIMIT);
+        } else {
+            this.setBpm(newBpm);
+        }
+        // if (this._loop) this._loop.stop();  // Останавливаем текущий цикл метронома
+        // if (this.isPlaying) {
+        //     // this.restartMetronomeAndPendulum();
+        // }
     }
 
 }

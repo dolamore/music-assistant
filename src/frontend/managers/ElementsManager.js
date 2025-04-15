@@ -105,14 +105,6 @@ export class ElementsManager {
     //     elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
     // }
 
-    preventNonDigitInput(e) {
-        const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
-
-        if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
-            e.preventDefault();
-        }
-    }
-
     //TODO: реализовать это в элементе!!
 
     // handleBeatClick(e) {
