@@ -37,9 +37,9 @@ export class MetronomeManager {
         this.visualEffectsManager = new VisualEffectsManager();
         this._audioEngine = new TonejsEngine(this);
 
-        this._tempSequence = new Tone.Sequence((time, beat) => {
-           this.playStep(time, beat);
-        }, this._beatBarsManager.beatSequence, "4n");
+        // this._tempSequence = new Tone.Sequence((time, beat) => {
+        //    this.playStep(time, beat);
+        // }, this._beatBarsManager.beatSequence, "4n");
 
         //Tone.getTransport().bpm.value = this.bpm * 3;
         //this._sequence = this.generateFixedMetronomeSequence();
@@ -87,26 +87,6 @@ export class MetronomeManager {
     tempStart() {
         this._isPlaying = true;
         this._audioEngine.startPlaying();
-    }
-
-    playStep(time, beat) {
-        const {beatSound, soundSettings} = beat;
-        const { sound } = beatSound;
-
-        const soundParams = {
-            sound: sound,
-            oscillator: sound.oscillator,
-            envelope: sound.envelope,
-            filter: sound.filter
-        };
-
-        // for (const [param, target] of Object.entries(soundParams)) {
-        //     if (param in settings) {
-        //         target[param] = settings[param];
-        //     }
-        // }
-
-        sound.triggerAttackRelease('C4', '64n', time);
     }
 
 

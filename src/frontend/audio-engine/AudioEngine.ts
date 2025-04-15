@@ -26,4 +26,5 @@ export abstract class AudioEngine {
     }
 
     abstract startPlaying(): void;
+    abstract playStep(...args: any[]): void;
 }

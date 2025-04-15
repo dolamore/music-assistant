@@ -11,21 +11,14 @@ import {
 import{DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.js";
-import {TonejsSynthSounds} from "../models/Sounds/TonejsSynthSounds.ts";
 
 export class BeatBarsManager {
 
     constructor(metronomeManager) {
         this._beats = [];
-        this._beatSequence = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
-        this.generateBeatSequence();
         makeAutoObservable(this)
-    }
-
-    get beatSequence() {
-        return this._beatSequence;
     }
 
     get beats() {
@@ -47,18 +40,6 @@ export class BeatBarsManager {
 
     popBeat() {
         this._beats.pop();
-    }
-
-    generateBeatSequence() {
-        for (const beat of this._beats) {
-            for (let i = 0; i < beat.noteAmount; i++) {
-                if (beat.noteSettings.isTriplet) {
-                    this._beatSequence.push(Array(beat.noteAmount * 3).fill(beat));
-                } else {
-                    this._beatSequence.push(beat);
-                }
-            }
-        }
     }
 
     generateBeats() {

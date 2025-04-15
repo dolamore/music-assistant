@@ -8,12 +8,14 @@ export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
     private _loop: Tone.Loop | null = null;
     private readonly _sequence: Sequence<any>;
+    private _beatSequence: any[] = [];
 
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
+        this.generateBeatSequence();
         this._sequence = new Tone.Sequence((time, beat) => {
-            this._metronomeManager.playStep(time, beat);
-        }, this._metronomeManager._beatBarsManager.beatSequence, "4n");
+            this.playStep(time, beat);
+        }, this._beatSequence, "4n");
     }
 
 
@@ -55,4 +57,37 @@ export class TonejsEngine extends AudioEngine {
         this._transport.start();
         this._sequence.start(0);
     }
+
+    playStep(time : any, beat : any) : void {
+        const {beatSound, soundSettings} = beat;
+        const { sound } = beatSound;
+
+        const soundParams = {
+            sound: sound,
+            oscillator: sound.oscillator,
+            envelope: sound.envelope,
+            filter: sound.filter
+        };
+
+        // for (const [param, target] of Object.entries(soundParams)) {
+        //     if (param in settings) {
+        //         target[param] = settings[param];
+        //     }
+        // }
+
+        sound.triggerAttackRelease('C4', '64n', time);
+    }
+
+    generateBeatSequence() {
+        for (const beat of this._metronomeManager._beatBarsManager.beats) {
+            for (let i = 0; i < beat.noteAmount; i++) {
+                if (beat.noteSettings.isTriplet) {
+                    this._beatSequence.push(Array(beat.noteAmount * 3).fill(beat));
+                } else {
+                    this._beatSequence.push(beat);
+                }
+            }
+        }
+    }
+
 }
