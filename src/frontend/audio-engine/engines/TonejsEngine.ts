@@ -3,6 +3,7 @@ import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
 import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
+import {uiState} from "../../states/UIState";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -12,6 +13,7 @@ export class TonejsEngine extends AudioEngine {
     public _loopCount = 0;
     private _currentStep = 0;
     private _isStartOfLoop = false;
+    private _isFirstLoop = true;
     private _skipper = 0;
 
     constructor(metronomeManager: MetronomeManager) {
@@ -57,7 +59,7 @@ export class TonejsEngine extends AudioEngine {
 
     }
 
-    getMetronomeLoopCallback(time : number): void {
+    getMetronomeLoopCallback(time: number): void {
         this._currentStep = this._count % this._beatSequence.length;
         this._isStartOfLoop = this._currentStep === 0;
         this.playMetronomeStep(time);
@@ -92,51 +94,14 @@ export class TonejsEngine extends AudioEngine {
         const currentNote = this._beatSequence[this._currentStep];
         if (!currentNote || !currentNote.beatSound) return;
         if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
-            const {beatSound : {instrument}, soundSettings} = currentNote;
-
-            //TODO: разобраться c настройками звука
-            // const soundParams = {
-            //     sound: instrument,
-            //     oscillator: instrument.oscillator,
-            //     envelope: instrument.envelope,
-            //     filter: instrument.filter
-            // };
-            //
-            // for (const [param, target] of Object.entries(soundParams)) {
-            //     if (param in soundSettings && target) {
-            //         target[param] = soundSettings[param];
-            //     }
-            // }
-
-            //Динамически применяем все параметры из soundSettings к beatSound
-            // for (const key in soundSettings) {
-            //     if (soundSettings.hasOwnProperty(key)) {
-            //         if (key in instrument) {
-            //             // Если параметр есть в объекте beatSound (например, volume)
-            //             instrument[key].value = soundSettings[key];
-            //         } else if (key in instrument.oscillator) {
-            //             // Если параметр относится к осциллятору (например, frequency, detune, phase)
-            //             instrument.oscillator[key] = soundSettings[key];
-            //         } else if (key in instrument.envelope) {
-            //             // Если параметр относится к огибающей (например, attack, decay, sustain, release)
-            //             instrument.envelope[key] = soundSettings[key];
-            //         } else if (key in instrument.filter) {
-            //             // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
-            //             instrument.filter[key] = soundSettings[key];
-            //         }
-            //     }
-            // }
-
-            // Запускаем звук
-            instrument.play(time);
-
-            // Визуальные эффекты
-            // elements.flashingBar.style.opacity = 1;
-            // setTimeout(() => elements.flashingBar.style.opacity = 0, 100);
-            //
-            // const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-            // beatElement.classList.add('playing');
-            // setTimeout(() => beatElement.classList.remove('playing'), 100);
+            const {beatSound: {instrument}, beatIndex} = currentNote;
+            console.log(currentNote);
+            if (instrument) {
+                instrument.play(time);
+            }
+            console.log(beatIndex);
+            uiState.flashBar();
+            uiState.playBeat(beatIndex);
         }
     }
 
@@ -197,3 +162,37 @@ export class TonejsEngine extends AudioEngine {
     }
 
 }
+
+
+//TODO: разобраться c настройками звука
+// const soundParams = {
+//     sound: instrument,
+//     oscillator: instrument.oscillator,
+//     envelope: instrument.envelope,
+//     filter: instrument.filter
+// };
+//
+// for (const [param, target] of Object.entries(soundParams)) {
+//     if (param in soundSettings && target) {
+//         target[param] = soundSettings[param];
+//     }
+// }
+
+//Динамически применяем все параметры из soundSettings к beatSound
+// for (const key in soundSettings) {
+//     if (soundSettings.hasOwnProperty(key)) {
+//         if (key in instrument) {
+//             // Если параметр есть в объекте beatSound (например, volume)
+//             instrument[key].value = soundSettings[key];
+//         } else if (key in instrument.oscillator) {
+//             // Если параметр относится к осциллятору (например, frequency, detune, phase)
+//             instrument.oscillator[key] = soundSettings[key];
+//         } else if (key in instrument.envelope) {
+//             // Если параметр относится к огибающей (например, attack, decay, sustain, release)
+//             instrument.envelope[key] = soundSettings[key];
+//         } else if (key in instrument.filter) {
+//             // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
+//             instrument.filter[key] = soundSettings[key];
+//         }
+//     }
+// }

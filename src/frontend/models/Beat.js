@@ -1,12 +1,18 @@
 import {makeAutoObservable, observable} from "mobx";
 
 export default class Beat {
-    constructor(beatSound, noteSettings, noteAmount, soundSettings) {
+    constructor(beatSound, noteSettings, noteAmount, soundSettings, beatIndex) {
         this._beatSound = observable(beatSound);
         this._noteSettings = observable(noteSettings);
         this._noteAmount = noteAmount;
         this._soundSettings = observable(soundSettings);
+        this._beatIndex = beatIndex;
         makeAutoObservable(this);
+    }
+
+
+    get beatIndex() {
+        return this._beatIndex;
     }
 
     get beatSound() {

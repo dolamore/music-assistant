@@ -18,6 +18,7 @@ export class BeatBarsManager {
         this._beats = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
+        console.log(this._beats);
         makeAutoObservable(this)
     }
 
@@ -25,16 +26,17 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeat(sound, note, noteAmount, soundSettings) {
-        this._beats.push(new Beat(sound, note, noteAmount, soundSettings));
+    addBeat(sound, note, noteAmount, soundSettings, beatIndex) {
+        this._beats.push(new Beat(sound, note, noteAmount, soundSettings, beatIndex));
     }
 
-    addStandardBeat() {
+    addStandardBeat(beatIndex) {
         this.addBeat(
             DEFAULT_SOUNDS[DEFAULT_SOUND_INDEX],
             NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
             NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
-            DEFAULT_SOUND_SETTINGS
+            DEFAULT_SOUND_SETTINGS,
+            beatIndex
         );
     }
 
@@ -44,12 +46,12 @@ export class BeatBarsManager {
 
     generateBeats() {
         for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
-            this.addStandardBeat();
+            this.addStandardBeat(i);
         }
     }
 
     increaseBeats() {
-        this.addStandardBeat()
+        this.addStandardBeat(this._beats.length - 1);
         this.metronomeManager.elementsManager.updateTimeSignature();
     }
 
