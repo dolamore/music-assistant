@@ -35,4 +35,5 @@ export abstract class AudioEngine {
     abstract startPlaying(): void;
     abstract stopPlaying(): void;
     abstract playStep(...args: any[]): void;
+    abstract get loopCount(): number;
 }

@@ -7,6 +7,7 @@ export class ElementsManager {
     pendulumAnimationFrame;
     metronomeManager;
     _timeSignature;
+    _currentNoteSizeIndex = 2;
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;

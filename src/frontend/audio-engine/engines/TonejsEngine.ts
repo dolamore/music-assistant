@@ -1,7 +1,7 @@
 import * as Tone from 'tone';
 import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
-import {makeObservable, override} from "mobx";
+import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 import document from "react";
 
@@ -10,7 +10,7 @@ export class TonejsEngine extends AudioEngine {
     private _loop;
     private _beatSequence;
     private _count = 0;
-    private _loopCount = 0;
+    public _loopCount = 0;
     private _currentStep = 0;
     private _isStartOfLoop = false;
     private _skipper = 0;
@@ -25,8 +25,17 @@ export class TonejsEngine extends AudioEngine {
         Tone.getTransport().bpm.value = Number(this._bpm) * 3;
 
         makeObservable(this, {
+            _loopCount: observable,
+            loopCount: computed,
+            getMetronomeLoopCallback: action,
+            stopPlaying: action,
+
             setBpm: override,
         });
+    }
+
+    get loopCount(): number {
+        return this._loopCount;
     }
 
     setBpm(bpm: number): void {
@@ -35,7 +44,10 @@ export class TonejsEngine extends AudioEngine {
     }
 
     startPlaying(): void {
+        this._count = 0;
+        this._loopCount = 0;
         this._skipper = 0;
+
         this._transport.start();
         this._loop.start(0);
     }
@@ -43,6 +55,8 @@ export class TonejsEngine extends AudioEngine {
     stopPlaying() {
         this._loop.stop();
         this._transport.stop();
+
+
     }
 
     playStep(time : any, beat : any) : void {

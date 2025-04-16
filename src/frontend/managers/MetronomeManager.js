@@ -19,16 +19,7 @@ import {TonejsEngine} from "../audio-engine/engines/TonejsEngine.js";
 export class MetronomeManager {
 
     constructor() {
-        //this._bpm = DEFAULT_INITIAL_BPM;
         this._isPlaying = false;
-        this._loop = null;
-        this._count = 0;
-        this._loopCount = 0;
-        this.currentNoteSizeIndex = 2;
-        this._sequence = [];
-        this._skipper = 0;
-        this._currentStep = 0;
-        this._isStartOfLoop = false;
 
         this._soundManager = new SoundManager(this);
         this._beatBarsManager = new BeatBarsManager(this);
@@ -51,14 +42,6 @@ export class MetronomeManager {
 
     set isPlaying(value) {
         this._isPlaying = value;
-    }
-
-    get loopCount() {
-        return this._loopCount;
-    }
-
-    set loopCount(value) {
-        this._loopCount = value;
     }
 
     get beatBarsManager() {
@@ -87,10 +70,6 @@ export class MetronomeManager {
          this._audioEngine.stopPlaying();
 
     //     this.elementsManager.resetPendulumAnimation();
-
-        // TODO: обнулять лупы после старта
-         this._count = 0;
-         this._loopCount = 0;
     // }
 
     // restartMetronomeAndPendulum() {

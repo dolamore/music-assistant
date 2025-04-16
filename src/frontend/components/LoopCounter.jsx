@@ -6,7 +6,7 @@ export default inject("metronomeManager")(observer(function LoopCounter({metrono
     return (
         <div className="loop-counter-container container">
             <span>Loops played:</span>
-            <div id="loop-counter">{metronomeManager.loopCount}</div>
+            <div id="loop-counter">{metronomeManager.audioEngine.loopCount}</div>
         </div>
     );
 }));
