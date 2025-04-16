@@ -94,18 +94,19 @@ export class TonejsEngine extends AudioEngine {
         if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
             const {beatSound : {instrument}, soundSettings} = currentNote;
 
-            const soundParams = {
-                sound: instrument,
-                oscillator: instrument.oscillator,
-                envelope: instrument.envelope,
-                filter: instrument.filter
-            };
-
-            for (const [param, target] of Object.entries(soundParams)) {
-                if (param in soundSettings && target) {
-                    target[param] = soundSettings[param];
-                }
-            }
+            //TODO: разобраться c настройками звука
+            // const soundParams = {
+            //     sound: instrument,
+            //     oscillator: instrument.oscillator,
+            //     envelope: instrument.envelope,
+            //     filter: instrument.filter
+            // };
+            //
+            // for (const [param, target] of Object.entries(soundParams)) {
+            //     if (param in soundSettings && target) {
+            //         target[param] = soundSettings[param];
+            //     }
+            // }
 
             //Динамически применяем все параметры из soundSettings к beatSound
             // for (const key in soundSettings) {
@@ -126,7 +127,6 @@ export class TonejsEngine extends AudioEngine {
             //     }
             // }
 
-            console.log(instrument);
             // Запускаем звук
             instrument.play(time);
 
@@ -157,14 +157,14 @@ export class TonejsEngine extends AudioEngine {
         const sequence = new Array(totalSteps).fill(null);
 
         for (let beatIndex = 0; beatIndex < beatAmount; beatIndex++) {
-            const {noteSettings, noteAmount, beatSound, soundSettings} = beats[beatIndex];
+            const {noteSettings, noteAmount} = beats[beatIndex];
             const {isTriplet, noteSize} = noteSettings;
 
             const stepSize = isTriplet ? (64 / noteSize) : (64 / noteSize * 3);
 
 
             for (let j = 0; j < (isTriplet ? 3 * noteAmount : noteAmount); j++) {
-                sequence[position] = {beatSound, soundSettings, beatIndex};
+                sequence[position] = beats[beatIndex];
                 position += stepSize;
             }
         }
