@@ -1,9 +1,9 @@
 import {Time} from "tone/build/esm/core/type/Units";
 
 export abstract class Instrument {
-    abstract play(time: Time): void;
+    abstract play(time: number): void;
 }
 
 export type InstrumentType = {
-    play: (time: Time) => void;
+    play: (time: number) => void;
 };

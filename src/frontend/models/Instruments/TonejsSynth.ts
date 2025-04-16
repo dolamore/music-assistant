@@ -1,5 +1,4 @@
 import * as Tone from "tone";
-import {Time} from "tone/build/esm/core/type/Units";
 import {Instrument, InstrumentType} from "./Instrument";
 
 export class TonejsSynth extends Instrument implements InstrumentType {
@@ -15,7 +14,7 @@ export class TonejsSynth extends Instrument implements InstrumentType {
 
     }
 
-    play(time: Time): void {
+    play(time: number): void {
         this._synth.triggerAttackRelease("C4", "64n", time);
     }
 }

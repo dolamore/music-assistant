@@ -3,7 +3,6 @@ import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
 import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
-import {Time} from "tone/build/esm/core/type/Units";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -18,7 +17,7 @@ export class TonejsEngine extends AudioEngine {
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
         this._beatSequence = this.generateFixedMetronomeSequence();
-        this._loop= new Tone.Loop((time) => {
+        this._loop = new Tone.Loop((time) => {
             this.getMetronomeLoopCallback(time);
         }, "64n");
         Tone.getTransport().bpm.value = Number(this._bpm) * 3;
@@ -39,7 +38,7 @@ export class TonejsEngine extends AudioEngine {
 
     setBpm(bpm: number): void {
         this._bpm = bpm;
-        this._transport.bpm.value = bpm;
+        this._transport.bpm.value = bpm * 3;
     }
 
     startPlaying(): void {
@@ -58,11 +57,10 @@ export class TonejsEngine extends AudioEngine {
 
     }
 
-    getMetronomeLoopCallback(time: Time) {
-        console.log("loop callback has started");
+    getMetronomeLoopCallback(time : number): void {
         this._currentStep = this._count % this._beatSequence.length;
         this._isStartOfLoop = this._currentStep === 0;
-
+        this.playMetronomeStep(time);
         // TODO: add training mode back
         // if (this.trainingModeManager.getIsTrainingMode()) {
         //     if (this._isStartOfLoop &&
@@ -74,13 +72,13 @@ export class TonejsEngine extends AudioEngine {
         // if (this._skipper > 0) {
         //     this._skipper--;
         //     if (this.trainingModeManager.getIsFirstLoop()) {
-        //         this.playMetronomeStep(this._sequence, this._currentStep, time);
+        //         this.playMetronomeStep();
         //     }
         //     if (this._skipper === 0) {
         //         this.trainingModeManager.setIsFirstLoop(false);
         //     }
         // } else {
-        //     this.playMetronomeStep(this._sequence, this._currentStep, time);
+        //     this.playMetronomeStep();
         // }
 
         if (this._isStartOfLoop) {
@@ -90,55 +88,47 @@ export class TonejsEngine extends AudioEngine {
         this._count++;
     }
 
-    playStep(time : any, beat : any) : void {
-        const {beatSound, soundSettings} = beat;
-        const { sound } = beatSound;
-
-        const soundParams = {
-            sound: sound,
-            oscillator: sound.oscillator,
-            envelope: sound.envelope,
-            filter: sound.filter
-        };
-
-        // for (const [param, target] of Object.entries(soundParams)) {
-        //     if (param in settings) {
-        //         target[param] = settings[param];
-        //     }
-        // }
-
-        sound.triggerAttackRelease('C4', '64n', time);
-    }
-
-    playMetronomeStep() {
+    playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];
-        if (!currentNote || !currentNote.sound) return;
+        if (!currentNote || !currentNote.beatSound) return;
         if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
-            console.log("stepped here");
-            const {sound, settings} = currentNote;
+            const {beatSound : {instrument}, soundSettings} = currentNote;
 
+            const soundParams = {
+                sound: instrument,
+                oscillator: instrument.oscillator,
+                envelope: instrument.envelope,
+                filter: instrument.filter
+            };
 
-            // Динамически применяем все параметры из settings к sound
-            for (const key in settings) {
-                if (settings.hasOwnProperty(key)) {
-                    if (key in sound) {
-                        // Если параметр есть в объекте sound (например, volume)
-                        sound[key].value = settings[key];
-                    } else if (key in sound.oscillator) {
-                        // Если параметр относится к осциллятору (например, frequency, detune, phase)
-                        sound.oscillator[key] = settings[key];
-                    } else if (key in sound.envelope) {
-                        // Если параметр относится к огибающей (например, attack, decay, sustain, release)
-                        sound.envelope[key] = settings[key];
-                    } else if (key in sound.filter) {
-                        // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
-                        sound.filter[key] = settings[key];
-                    }
+            for (const [param, target] of Object.entries(soundParams)) {
+                if (param in soundSettings && target) {
+                    target[param] = soundSettings[param];
                 }
             }
 
+            //Динамически применяем все параметры из soundSettings к beatSound
+            // for (const key in soundSettings) {
+            //     if (soundSettings.hasOwnProperty(key)) {
+            //         if (key in instrument) {
+            //             // Если параметр есть в объекте beatSound (например, volume)
+            //             instrument[key].value = soundSettings[key];
+            //         } else if (key in instrument.oscillator) {
+            //             // Если параметр относится к осциллятору (например, frequency, detune, phase)
+            //             instrument.oscillator[key] = soundSettings[key];
+            //         } else if (key in instrument.envelope) {
+            //             // Если параметр относится к огибающей (например, attack, decay, sustain, release)
+            //             instrument.envelope[key] = soundSettings[key];
+            //         } else if (key in instrument.filter) {
+            //             // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
+            //             instrument.filter[key] = soundSettings[key];
+            //         }
+            //     }
+            // }
+
+            console.log(instrument);
             // Запускаем звук
-            sound.triggerAttackRelease('C4', '64n');
+            instrument.play(time);
 
             // Визуальные эффекты
             // elements.flashingBar.style.opacity = 1;
@@ -184,10 +174,9 @@ export class TonejsEngine extends AudioEngine {
 
     updateMetronomeSequence() {
         this._beatSequence = this.generateFixedMetronomeSequence();
-        this._loop.callback = (time) => this.getMetronomeLoopCallback(time);
     }
 
-    handleBpmChange = (newBpm: any): void  => {
+    handleBpmChange = (newBpm: any): void => {
         if (/^0\d/.test(newBpm)) {
             newBpm = newBpm.replace(/^0+/, '');
         }
