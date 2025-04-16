@@ -3,7 +3,7 @@ import {AudioEngine} from "../AudioEngine";
 import {MetronomeManager} from "../../managers/MetronomeManager";
 import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
-import document from "react";
+import {Time} from "tone/build/esm/core/type/Units";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -17,10 +17,9 @@ export class TonejsEngine extends AudioEngine {
 
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
-        this.generateBeatSequence();
         this._beatSequence = this.generateFixedMetronomeSequence();
-        this._loop= new Tone.Loop(() => {
-            this.getMetronomeLoopCallback();
+        this._loop= new Tone.Loop((time) => {
+            this.getMetronomeLoopCallback(time);
         }, "64n");
         Tone.getTransport().bpm.value = Number(this._bpm) * 3;
 
@@ -59,6 +58,38 @@ export class TonejsEngine extends AudioEngine {
 
     }
 
+    getMetronomeLoopCallback(time: Time) {
+        console.log("loop callback has started");
+        this._currentStep = this._count % this._beatSequence.length;
+        this._isStartOfLoop = this._currentStep === 0;
+
+        // TODO: add training mode back
+        // if (this.trainingModeManager.getIsTrainingMode()) {
+        //     if (this._isStartOfLoop &&
+        //         (this.trainingModeManager.getIsFirstLoop() || Math.random() < this.trainingModeManager.getLoopSkipProbability())) {
+        //         this._skipper = this._sequence.length;
+        //     }
+        // }
+        //
+        // if (this._skipper > 0) {
+        //     this._skipper--;
+        //     if (this.trainingModeManager.getIsFirstLoop()) {
+        //         this.playMetronomeStep(this._sequence, this._currentStep, time);
+        //     }
+        //     if (this._skipper === 0) {
+        //         this.trainingModeManager.setIsFirstLoop(false);
+        //     }
+        // } else {
+        //     this.playMetronomeStep(this._sequence, this._currentStep, time);
+        // }
+
+        if (this._isStartOfLoop) {
+            this._loopCount += 1;
+        }
+
+        this._count++;
+    }
+
     playStep(time : any, beat : any) : void {
         const {beatSound, soundSettings} = beat;
         const { sound } = beatSound;
@@ -79,54 +110,10 @@ export class TonejsEngine extends AudioEngine {
         sound.triggerAttackRelease('C4', '64n', time);
     }
 
-    generateBeatSequence() {
-        for (const beat of this._metronomeManager._beatBarsManager.beats) {
-            for (let i = 0; i < beat.noteAmount; i++) {
-                if (beat.noteSettings.isTriplet) {
-                    this._beatSequence.push(Array(beat.noteAmount * 3).fill(beat));
-                } else {
-                    this._beatSequence.push(beat);
-                }
-            }
-        }
-    }
-
-    getMetronomeLoopCallback() {
-        console.log("loop callback has started");
-        this._currentStep = this._count % this._sequence.length;
-        this._isStartOfLoop = this._currentStep === 0;
-
-        //TODO: add training mode back
-        // if (this.trainingModeManager.getIsTrainingMode()) {
-        //     if (this._isStartOfLoop &&
-        //         (this.trainingModeManager.getIsFirstLoop() || Math.random() < this.trainingModeManager.getLoopSkipProbability())) {
-        //         this._skipper = this._sequence.length;
-        //     }
-        // }
-
-        // if (this._skipper > 0) {
-        //     this._skipper--;
-        //     if (this.trainingModeManager.getIsFirstLoop()) {
-        //         this.playMetronomeStep(this._sequence, this._currentStep, time);
-        //     }
-        //     if (this._skipper === 0) {
-        //         this.trainingModeManager.setIsFirstLoop(false);
-        //     }
-        // } else {
-        //     this.playMetronomeStep(this._sequence, this._currentStep, time);
-        // }
-
-        if (this._isStartOfLoop) {
-            this._loopCount += 1;
-        }
-
-        this._count++;
-    }
-
-    playMetronomeStep(sequence, currentStep, time) {
-        const currentNote = sequence[currentStep];
+    playMetronomeStep() {
+        const currentNote = this._beatSequence[this._currentStep];
         if (!currentNote || !currentNote.sound) return;
-        if (!(this.trainingModeManager.getIsTrainingMode() && Math.random() < this.trainingModeManager.getNoteSkipProbability() && !this.trainingModeManager.getIsFirstLoop())) {
+        if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
             console.log("stepped here");
             const {sound, settings} = currentNote;
 
@@ -151,15 +138,15 @@ export class TonejsEngine extends AudioEngine {
             }
 
             // Запускаем звук
-            sound.triggerAttackRelease('C4', '64n', time);
+            sound.triggerAttackRelease('C4', '64n');
 
             // Визуальные эффекты
-            elements.flashingBar.style.opacity = 1;
-            setTimeout(() => elements.flashingBar.style.opacity = 0, 100);
-
-            const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
-            beatElement.classList.add('playing');
-            setTimeout(() => beatElement.classList.remove('playing'), 100);
+            // elements.flashingBar.style.opacity = 1;
+            // setTimeout(() => elements.flashingBar.style.opacity = 0, 100);
+            //
+            // const beatElement = document.querySelector(`.beat[data-beat="${currentNote.beatIndex}"]`);
+            // beatElement.classList.add('playing');
+            // setTimeout(() => beatElement.classList.remove('playing'), 100);
         }
     }
 
@@ -218,10 +205,6 @@ export class TonejsEngine extends AudioEngine {
         } else {
             this.setBpm(newBpm);
         }
-        // if (this._loop) this._loop.stop();  // Останавливаем текущий цикл метронома
-        // if (this.isPlaying) {
-        //     // this.restartMetronomeAndPendulum();
-        // }
     }
 
 }
