@@ -11,19 +11,6 @@ export class TonejsSynth extends Instrument implements InstrumentType {
                 type: oscillatorType
             } as Tone.SynthOptions["oscillator"],
         }).toDestination();
-
-        this.initializeSoundSettings();
-    }
-
-    private initializeSoundSettings(): void {
-        this.updateSoundSetting("frequency", this._synth.oscillator.frequency.value);
-        this.updateSoundSetting("detune", this._synth.oscillator.detune.value);
-        this.updateSoundSetting("phase", this._synth.oscillator.phase);
-        this.updateSoundSetting("volume", this._synth.volume.value);
-        this.updateSoundSetting("attack", this._synth.envelope.attack);
-        this.updateSoundSetting("decay", this._synth.envelope.decay);
-        this.updateSoundSetting("sustain", this._synth.envelope.sustain);
-        this.updateSoundSetting("release", this._synth.envelope.release);
     }
 
     updateInstrumentParameter(key: string, value: any): void {
@@ -57,12 +44,17 @@ export class TonejsSynth extends Instrument implements InstrumentType {
             default:
                 console.warn(`Параметр ${key} не поддерживается`);
         }
-        this.updateSoundSetting(key, value); // Синхронизация с soundSettings
     }
 
     play(time: number): void {
         console.log("we are playing");
         console.log(this._synth.oscillator.frequency.value);
+        this._soundSettings.forEach(setting => {
+            this.updateInstrumentParameter(setting.key, setting.value);
+        });
+
         this._synth.triggerAttackRelease("C4", "64n", time);
+        console.log("we finished playing")
+        console.log(this._synth.oscillator.frequency.value);
     }
 }
