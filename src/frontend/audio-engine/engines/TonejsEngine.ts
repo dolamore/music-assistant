@@ -4,17 +4,18 @@ import {MetronomeManager} from "../../managers/MetronomeManager";
 import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 import {uiState} from "../../states/UIState";
+import Beat from "../../models/Beat";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
-    private _loop;
-    private _beatSequence;
-    private _count = 0;
-    public _loopCount = 0;
-    private _currentStep = 0;
-    private _isStartOfLoop = false;
-    private _isFirstLoop = true;
-    private _skipper = 0;
+    private _loop: Tone.Loop;
+    private _beatSequence: Beat[] = [];
+    private _count: number = 0;
+    public _loopCount: number = 0;
+    private _currentStep: number = 0;
+    private _isStartOfLoop: boolean = false;
+    private _isFirstLoop: boolean = true;
+    private _skipper: number = 0;
 
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
@@ -47,6 +48,7 @@ export class TonejsEngine extends AudioEngine {
         this._count = 0;
         this._loopCount = 0;
         this._skipper = 0;
+        this._isFirstLoop = true;
 
         this._transport.start();
         this._loop.start(0);
@@ -83,8 +85,11 @@ export class TonejsEngine extends AudioEngine {
         //     this.playMetronomeStep();
         // }
 
-        if (this._isStartOfLoop) {
-            this._loopCount += 1;
+        if (this._currentStep === 0) {
+            if (this._count !== 0) {
+                this._isFirstLoop = false;
+                this._loopCount += 1;
+            }
         }
 
         this._count++;
