@@ -1,10 +1,11 @@
 import {SoundObj} from "../../models/SoundObj";
 import {TonejsSynth} from "../../models/Instruments/TonejsSynth";
+import {DEFAULT_SOUND_SETTINGS} from "../vars";
 
 export const TONEJS_SYNTH_SOUNDS: SoundObj[] = [
     new SoundObj("no-sound", "No Sound", null),
-    new SoundObj("sine", "Sine", new TonejsSynth('sine')),
-    new SoundObj("triangle", "Triangle", new TonejsSynth('triangle')),
-    new SoundObj("square", "Square", new TonejsSynth('square')),
-    new SoundObj("sawtooth", "Sawtooth", new TonejsSynth('sawtooth')),
+    new SoundObj("sine", "Sine", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'sine')),
+    new SoundObj("triangle", "Triangle", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'triangle')),
+    new SoundObj("square", "Square", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'square')),
+    new SoundObj("sawtooth", "Sawtooth", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'sawtooth')),
 ];

@@ -3,7 +3,6 @@ import {
     DEFAULT_NOTE_AMOUNT,
     DEFAULT_NOTE_SIZE,
     DEFAULT_SOUND_INDEX,
-    DEFAULT_SOUND_SETTINGS,
     INITIAL_NUMBER_OF_BEATS,
     NOTE_AMOUNTS,
     NOTES,
@@ -26,8 +25,8 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeat(sound, note, noteAmount, soundSettings, beatIndex) {
-        this._beats.push(new Beat(sound, note, noteAmount, soundSettings, beatIndex));
+    addBeat(sound, note, noteAmount, beatIndex) {
+        this._beats.push(new Beat(sound, note, noteAmount, beatIndex));
     }
 
     addStandardBeat(beatIndex) {
@@ -35,7 +34,6 @@ export class BeatBarsManager {
             DEFAULT_SOUNDS[DEFAULT_SOUND_INDEX],
             NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
             NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
-            DEFAULT_SOUND_SETTINGS,
             beatIndex
         );
     }

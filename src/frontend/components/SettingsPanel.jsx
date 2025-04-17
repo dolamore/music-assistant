@@ -56,7 +56,6 @@ const SoundRow = observer(({metronomeManager, index}) => {
                     <option
                         key={`${sound.key}`}
                         value={sound.label}
-                        onChange={handleSelectedSoundsChange}
                     >
                         {sound.label}
                     </option>
@@ -68,8 +67,8 @@ const SoundRow = observer(({metronomeManager, index}) => {
                     id={`${setting.key}-${index}`}
                     type="number"
                     placeholder={setting.label}
-                    value={metronomeManager.beatBarsManager.beats[index].soundSettings.find(
-                        beatSoundSetting => setting.key === beatSoundSetting.key).value
+                    value={metronomeManager.beatBarsManager.beats[index].beatSound.instrument.soundSettings.find(
+                        instrumentSoundSetting => setting.key === instrumentSoundSetting.key).value
                     }
                     onChange={(e) => handleSoundSettingsChange(e, setting.key)}
                 />

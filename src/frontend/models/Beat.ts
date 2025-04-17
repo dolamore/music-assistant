@@ -7,7 +7,7 @@ export default class Beat {
     private _noteAmount: number;
     private readonly _beatIndex: number;
 
-    constructor(beatSound: SoundObj, noteSettings: any, noteAmount: number, soundSettings: any, beatIndex: number) {
+    constructor(beatSound: SoundObj, noteSettings: any, noteAmount: number, beatIndex: number) {
         this._beatSound = observable(beatSound);
         this._noteSettings = observable(noteSettings);
         this._noteAmount = noteAmount;

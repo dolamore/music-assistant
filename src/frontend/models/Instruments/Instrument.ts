@@ -1,4 +1,5 @@
 import {observable} from "mobx";
+import {cloneDeep} from "lodash";
 
 export abstract class Instrument {
     private _soundSettings: { key: string; value: any }[] = [];
@@ -6,7 +7,9 @@ export abstract class Instrument {
     abstract updateInstrumentParameter(key: string, value: any): void;
 
     protected constructor(soundSettings: any) {
-        this._soundSettings = observable(soundSettings);
+       // this._soundSettings = observable(soundSettings);
+        this._soundSettings = observable(cloneDeep(soundSettings));
+
     }
 
     get soundSettings(): { key: string; value: any }[] {
