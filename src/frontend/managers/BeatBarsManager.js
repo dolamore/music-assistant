@@ -10,7 +10,7 @@ import {
 } from "../vars/vars.js";
 import{DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 import {makeAutoObservable} from "mobx";
-import Beat from "../models/Beat.js";
+import Beat from "../models/Beat.ts";
 
 export class BeatBarsManager {
 

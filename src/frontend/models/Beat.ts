@@ -1,12 +1,18 @@
 import {makeAutoObservable, observable} from "mobx";
+import {SoundObj} from "./SoundObj";
 
 export default class Beat {
-    constructor(beatSound, noteSettings, noteAmount, soundSettings, beatIndex) {
+    private _beatSound: SoundObj;
+    private _noteSettings: any;
+    private _noteAmount: number;
+    private readonly _beatIndex: number;
+
+    constructor(beatSound: SoundObj, noteSettings: any, noteAmount: number, soundSettings: any, beatIndex: number) {
         this._beatSound = observable(beatSound);
         this._noteSettings = observable(noteSettings);
         this._noteAmount = noteAmount;
-        this._soundSettings = observable(soundSettings);
         this._beatIndex = beatIndex;
+
         makeAutoObservable(this);
     }
 
@@ -40,15 +46,14 @@ export default class Beat {
     }
 
     get soundSettings() {
-        return this._soundSettings;
+        return this._beatSound.instrument?.soundSettings;
     }
 
-    set soundSettings(value) {
-        this._soundSettings = value;
-    }
-
-    updateSoundSetting(key, value) {
-        const setting = this._soundSettings.find(s => s.key === key);
-        if (setting) setting.value = value;
+    updateSoundSetting(key: string, value: any) {
+        const setting = this._beatSound.instrument?.soundSettings.find((s: { key: string; }) => s.key === key);
+        if (setting && this._beatSound.instrument) {
+            setting.value = value;
+            this._beatSound.instrument.updateInstrumentParameter(key, value);
+        }
     }
 }
