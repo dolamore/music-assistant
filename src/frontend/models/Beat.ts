@@ -46,7 +46,7 @@ export default class Beat {
     }
 
     get soundSettings() {
-        return this._beatSound.instrument?.soundSettings;
+        return this._beatSound.instrument.soundSettings;
     }
 
     updateSoundSetting(key: string, value: any) {

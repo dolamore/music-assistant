@@ -1,30 +1,30 @@
-import {observable} from "mobx";
+import {action, computed, makeAutoObservable, makeObservable, observable} from "mobx";
 import {cloneDeep} from "lodash";
 import {SoundSetting} from "../SoundSetting";
 
 export abstract class Instrument {
-    protected _soundSettings: SoundSetting[] = [];
+    public _soundSettings: SoundSetting[] = [];
 
     abstract play(time: number): void;
 
     abstract updateInstrumentParameter(key: string, value: any): void;
 
     protected constructor(soundSettings: any) {
-        // this._soundSettings = observable(soundSettings);
-        this._soundSettings = observable(cloneDeep(soundSettings));
+        this._soundSettings = cloneDeep(soundSettings);
 
+        makeObservable(this, {
+            _soundSettings: observable,
+            soundSettings: computed,
+            updateSoundSetting: action
+        });
     }
 
-    get soundSettings(): { key: string; value: number | string }[] {
+    get soundSettings(): SoundSetting[] {
         return this._soundSettings;
     }
 
     set soundSettings(value: SoundSetting[]) {
         this._soundSettings = value;
-    }
-
-    getSoundSetting(key: string): number | string | undefined {
-        return this._soundSettings.find(s => s.key === key)?.value;
     }
 
     updateSoundSetting(key: string, value: number | string): void {
@@ -36,7 +36,7 @@ export abstract class Instrument {
 }
 
 export type InstrumentType = {
-    get soundSettings(): { key: string; value: string | number}[];
+    get soundSettings(): SoundSetting[];
     play: (time: number) => void;
-    updateInstrumentParameter(key: string, value: any): void;
+    updateSoundSetting(key: string, value: any): void;
 };

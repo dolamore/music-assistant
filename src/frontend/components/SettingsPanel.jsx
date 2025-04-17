@@ -37,18 +37,12 @@ const SoundRow = observer(({metronomeManager, index}) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
     const handleSelectedSoundsChange = (e, key) => {
-        const newValue = e.target.value;
-        if (newValue === "No Sound") {
-            beat.disableSound();
-        } else {
-            beat.enableSound(newValue);
-            beat.updateSoundSetting(key, newValue)
-        }
+        beat.beatSound.instrument.updateSoundSetting(key, e.target.value)
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
-        beat.updateSoundSetting(key, newValue);
+        beat.beatSound.instrument.updateSoundSetting(key, newValue);
     };
 
     return (
@@ -56,19 +50,19 @@ const SoundRow = observer(({metronomeManager, index}) => {
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
             <select
                 id={`sound-${index}`}
-                value={beat.beatSound.label}
+                value={beat.beatSound.key}
                 onChange={handleSelectedSoundsChange}
             >
                 {DEFAULT_SOUNDS.map((sound) => (
                     <option
                         key={`${sound.key}`}
-                        value={sound.label}
+                        value={sound.key}
                     >
                         {sound.label}
                     </option>
                 ))}
             </select>
-            {DEFAULT_SOUND_SETTINGS.map(setting => (
+            {beat.beatSound.instrument.soundSettings.map(setting => (
                 <input
                     key={setting.key}
                     id={`${setting.key}-${index}`}
