@@ -1,8 +1,8 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {DEFAULT_SOUND_SETTINGS} from "../vars/vars.js";
-import{DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
+import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS.js";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
@@ -34,14 +34,21 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 }));
 
 const SoundRow = observer(({metronomeManager, index}) => {
-    const handleSelectedSoundsChange = (e) => {
-        metronomeManager.beatBarsManager.beats[index].beatSound =
-            DEFAULT_SOUNDS.find(sound => sound.label === e.target.value);
+    const beat = metronomeManager.beatBarsManager.beats[index];
+
+    const handleSelectedSoundsChange = (e, key) => {
+        const newValue = e.target.value;
+        if (newValue === "No Sound") {
+            beat.disableSound();
+        } else {
+            beat.enableSound(newValue);
+            beat.updateSoundSetting(key, newValue)
+        }
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
-        metronomeManager.beatBarsManager.beats[index].updateSoundSetting(key, newValue);
+        beat.updateSoundSetting(key, newValue);
     };
 
     return (
@@ -49,7 +56,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
             <select
                 id={`sound-${index}`}
-                value={metronomeManager.beatBarsManager.beats[index].beatSound.label}
+                value={beat.beatSound.label}
                 onChange={handleSelectedSoundsChange}
             >
                 {DEFAULT_SOUNDS.map((sound) => (
@@ -67,7 +74,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
                     id={`${setting.key}-${index}`}
                     type="number"
                     placeholder={setting.label}
-                    value={metronomeManager.beatBarsManager.beats[index].beatSound.instrument.soundSettings.find(
+                    value={beat.beatSound.instrument.soundSettings.find(
                         instrumentSoundSetting => setting.key === instrumentSoundSetting.key).value
                     }
                     onChange={(e) => handleSoundSettingsChange(e, setting.key)}

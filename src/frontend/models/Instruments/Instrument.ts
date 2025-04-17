@@ -1,14 +1,13 @@
 import {observable} from "mobx";
 import {cloneDeep} from "lodash";
 import {SoundSetting} from "../SoundSetting";
-import {Time} from "tone/build/esm/core/type/Units";
 
 export abstract class Instrument {
     protected _soundSettings: SoundSetting[] = [];
 
     abstract play(time: number): void;
 
-    abstract updateInstrumentParameter(key: string, value: number | string | Time): void;
+    abstract updateInstrumentParameter(key: string, value: any): void;
 
     protected constructor(soundSettings: any) {
         // this._soundSettings = observable(soundSettings);
@@ -16,7 +15,7 @@ export abstract class Instrument {
 
     }
 
-    get soundSettings(): { key: string; value: number | string | Time }[] {
+    get soundSettings(): { key: string; value: number | string }[] {
         return this._soundSettings;
     }
 
@@ -24,11 +23,11 @@ export abstract class Instrument {
         this._soundSettings = value;
     }
 
-    getSoundSetting(key: string): number | string | Time | undefined {
+    getSoundSetting(key: string): number | string | undefined {
         return this._soundSettings.find(s => s.key === key)?.value;
     }
 
-    updateSoundSetting(key: string, value: number | string | Time): void {
+    updateSoundSetting(key: string, value: number | string): void {
         const setting = this._soundSettings.find(s => s.key === key);
         if (setting) {
             setting.value = value;
@@ -37,7 +36,7 @@ export abstract class Instrument {
 }
 
 export type InstrumentType = {
-    get soundSettings(): { key: string; value: string | number | Time}[];
+    get soundSettings(): { key: string; value: string | number}[];
     play: (time: number) => void;
-    updateInstrumentParameter(key: string, value: string | number | Time): void;
+    updateInstrumentParameter(key: string, value: any): void;
 };

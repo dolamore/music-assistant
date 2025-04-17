@@ -1,9 +1,9 @@
 import {SoundObj} from "../../models/SoundObj";
 import {TonejsSynth} from "../../models/Instruments/TonejsSynth";
-import {DEFAULT_SOUND_SETTINGS} from "../vars";
+import {DEFAULT_SOUND_SETTINGS} from "../sound-settings/DEFAULT_SOUND_SETTINGS";
 
 export const TONEJS_SYNTH_SOUNDS: SoundObj[] = [
-    new SoundObj("no-sound", "No Sound", null),
+    new SoundObj("no-sound", "No Sound", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'no-sound')),
     new SoundObj("sine", "Sine", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'sine')),
     new SoundObj("triangle", "Triangle", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'triangle')),
     new SoundObj("square", "Square", new TonejsSynth(DEFAULT_SOUND_SETTINGS, 'square')),

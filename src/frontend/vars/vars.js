@@ -7,17 +7,6 @@ export const INITIAL_NUMBER_OF_BEATS = 4;
 export const MAX_BEATS_AMOUNT = 16;
 export const MIN_BEATS_AMOUNT = 1;
 
-export const DEFAULT_SOUND_SETTINGS = [
-    {key: 'frequency', value: 440, label: "Frequency"},
-    {key: 'detune', value: 0, label: "Detune"},
-    {key: 'phase', value: 0, label: "Phase"},
-    {key: 'volume', value: 0, label: "Volume"},
-    {key: 'attack', value: 0.001, label: "Attack"},
-    {key: 'decay', value: 0.1, label: "Decay"},
-    {key: 'sustain', value: 0, label: "Sustain"},
-    {key: 'release', value: 0.1, label: "Release"},
-];
-
 export const NOTES = [
     {noteSize: 1, label: "1", isTriplet: false, note: "1n"},
     {noteSize: 1, label: "1T", isTriplet: true, note: "1t"},
