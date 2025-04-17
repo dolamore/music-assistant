@@ -49,11 +49,13 @@ export default class Beat {
         return this._beatSound.instrument.soundSettings;
     }
 
-    updateSoundSetting(key: string, value: any) {
-        const setting = this._beatSound.instrument?.soundSettings.find((s: { key: string; }) => s.key === key);
+    updateSoundSetting(key: string, value: string | number) {
+        const setting = this._beatSound.instrument.soundSettings.find((s: { key: string; }) => s.key === key);
+        //TODO check ths out!!
+        console.log(setting);
         if (setting && this._beatSound.instrument) {
             setting.value = value;
-            this._beatSound.instrument.updateInstrumentParameter(key, value);
+            this._beatSound.instrument.updateSoundSetting(key, value);
         }
     }
 }

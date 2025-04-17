@@ -28,6 +28,7 @@ export abstract class Instrument {
     }
 
     updateSoundSetting(key: string, value: number | string): void {
+        console.log("entered here");
         const setting = this._soundSettings.find(s => s.key === key);
         if (setting) {
             setting.value = value;
@@ -38,5 +39,5 @@ export abstract class Instrument {
 export type InstrumentType = {
     get soundSettings(): SoundSetting[];
     play: (time: number) => void;
-    updateSoundSetting(key: string, value: any): void;
+    updateSoundSetting(key: string, value: string | number): void;
 };

@@ -36,15 +36,15 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 const SoundRow = observer(({metronomeManager, index}) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
-    const handleSelectedSoundsChange = (e, key) => {
-        beat.beatSound.instrument.updateSoundSetting(key, e.target.value)
+    const handleSelectedSoundsChange = (e) => {
+        beat.updateSoundSetting('oscillatorType', e.target.value)
     };
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
         beat.beatSound.instrument.updateSoundSetting(key, newValue);
     };
-
+    console.log("dope: " + beat.beatSound.key);
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
