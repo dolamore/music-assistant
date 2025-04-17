@@ -41,4 +41,5 @@ export abstract class AudioEngine {
     abstract startPlaying(): void;
     abstract stopPlaying(): void;
     abstract get loopCount(): number;
+    abstract updateBeatSequence(): void;
 }

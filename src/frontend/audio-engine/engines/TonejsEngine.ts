@@ -142,7 +142,7 @@ export class TonejsEngine extends AudioEngine {
         return sequence;
     }
 
-    updateMetronomeSequence() {
+    updateBeatSequence() {
         this._beatSequence = this.generateFixedMetronomeSequence();
     }
 

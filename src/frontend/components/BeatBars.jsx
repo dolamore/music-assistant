@@ -46,7 +46,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
             NOTES.find(
                 note => note.noteSize === noteSize && note.isTriplet === isTriplet);
 
-        metronomeManager.elementsManager.updateTimeSignature();
+        metronomeManager.updateMetronome();
     }
 
     const currentValue = `${beat.noteSettings.noteSize}-${beat.noteSettings.isTriplet}`;
@@ -73,7 +73,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
 const NoteAmountDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
         beat.noteAmounts = Number(e.target.value);
-        metronomeManager.elementsManager.updateTimeSignature();
+        metronomeManager.updateMetronome();
     }
 
     return (

@@ -52,12 +52,12 @@ export class BeatBarsManager {
 
     increaseBeats() {
         this.addStandardBeat(this._beats.length - 1);
-        this.metronomeManager.elementsManager.updateTimeSignature();
+        this.metronomeManager.updateMetronome();
     }
 
     decreaseBeats() {
         this.popBeat();
-        this.metronomeManager.elementsManager.updateTimeSignature();
+        this.metronomeManager.updateMetronome();
     }
 
 
@@ -75,6 +75,6 @@ export class BeatBarsManager {
             const newIndex = currentIndex + (direction ? 2 : -2);
             beat.noteSettings = NOTES[newIndex];
         });
-        this.metronomeManager.elementsManager.updateTimeSignature();
+        this.metronomeManager.updateMetronome();
     }
 }

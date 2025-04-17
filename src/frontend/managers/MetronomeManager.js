@@ -82,4 +82,9 @@ export class MetronomeManager {
     //         this.restartMetronomeAndPendulum();
     //     }
      }
+
+     updateMetronome() {
+            this._audioEngine.updateBeatSequence();
+            this._elementsManager.updateTimeSignature();
+     }
 }
