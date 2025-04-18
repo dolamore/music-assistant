@@ -71,14 +71,9 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
 
 const NoteAmountDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
-        beat.noteAmounts = Number(e.target.value);
+        beat.noteAmount = Number(e.target.value);
 
         metronomeManager.updateMetronome();
-        const newSeq = metronomeManager.audioEngine.beatSequence;
-        const oldSeq = metronomeManager.audioEngine.beatSequence;
-        console.log(oldSeq === newSeq);
-        console.log(oldSeq);
-        console.log(newSeq);
     }
 
     return (
@@ -86,7 +81,7 @@ const NoteAmountDropdown = observer(({metronomeManager, beat, index}) => {
             id={`note-amount-dropdown-${index}`}
             className="note-amount-dropdown"
             onChange={handleChange}
-            value={beat.noteAmounts}
+            value={beat.noteAmount}
         >
             {NOTE_AMOUNTS.map((amount, amountIndex) => (
                 <option
