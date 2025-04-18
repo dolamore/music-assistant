@@ -1,6 +1,5 @@
 import {SoundObj} from "../../models/SoundObj";
 import {TonejsSynth} from "../../models/Instruments/TonejsSynth";
-import {DEFAULT_SOUND_SETTINGS} from "../sound-settings/DEFAULT_SOUND_SETTINGS";
 import {DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS} from "../sound-settings/DEFAULT_TONEJS_SYNTH_SOUND_SETTING";
 
 export const TONEJS_SYNTH_SOUNDS: SoundObj[] = [

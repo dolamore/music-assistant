@@ -2,14 +2,13 @@ import {
     DEFAULT_IS_TRIPLET,
     DEFAULT_NOTE_AMOUNT,
     DEFAULT_NOTE_SIZE,
-    DEFAULT_SOUND_INDEX,
     INITIAL_NUMBER_OF_BEATS,
     NOTE_AMOUNTS,
     NOTES,
 } from "../vars/vars.js";
-import{DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat.ts";
+import {createDefaultSoundObject} from "../vars/sounds/DEFAULT_SOUNDS.js";
 
 export class BeatBarsManager {
 
@@ -17,7 +16,6 @@ export class BeatBarsManager {
         this._beats = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
-        console.log(this._beats);
         makeAutoObservable(this)
     }
 
@@ -31,7 +29,7 @@ export class BeatBarsManager {
 
     addStandardBeat(beatIndex) {
         this.addBeat(
-            DEFAULT_SOUNDS[DEFAULT_SOUND_INDEX],
+            createDefaultSoundObject(),
             NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET),
             NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT),
             beatIndex

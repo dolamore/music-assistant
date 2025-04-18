@@ -42,10 +42,9 @@ const SoundRow = observer(({metronomeManager, index}) => {
 
     const handleSoundSettingsChange = (e, key) => {
         const newValue = Number(e.target.value);
-        console.log(key);
         beat.beatSound.instrument.updateSoundSetting(key, newValue);
     };
-
+    console.log(metronomeManager.beatBarsManager.beats[0].beatSound.instrument.soundSettings === metronomeManager.beatBarsManager.beats[1].beatSound.instrument.soundSettings);
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>

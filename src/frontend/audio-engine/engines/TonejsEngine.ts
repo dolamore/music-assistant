@@ -100,11 +100,7 @@ export class TonejsEngine extends AudioEngine {
         if (!currentNote || !currentNote.beatSound) return;
         if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
             const {beatSound: {instrument}, beatIndex} = currentNote;
-            console.log(currentNote);
-            if (instrument) {
-                instrument.play(time);
-            }
-            console.log(beatIndex);
+            instrument.play(time);
             uiState.flashBar();
             uiState.playBeat(beatIndex);
         }
