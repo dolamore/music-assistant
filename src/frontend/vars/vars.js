@@ -24,7 +24,15 @@ export const NOTES = [
     {noteSize: 64, label: "1/64T", isTriplet: true, note: "64t"}
 ];
 
+export function getDefaultNote() {
+    return NOTES.find(note => note.noteSize === DEFAULT_NOTE_SIZE && note.isTriplet === DEFAULT_IS_TRIPLET);
+}
+
 export const NOTE_AMOUNTS = [1, 2, 3, 4];
+
+export function getDefaultNoteAmount() {
+    return NOTE_AMOUNTS.find(noteAmount => noteAmount === DEFAULT_NOTE_AMOUNT);
+}
 
 export const DEFAULT_INITIAL_BPM = 120;
 export const BPM_MAX_LIMIT = 500;

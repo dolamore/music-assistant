@@ -29,7 +29,6 @@ export class MetronomeManager {
         this._audioEngine = new TonejsEngine(this);
 
         makeAutoObservable(this)
-
     }
 
     get audioEngine() {
@@ -65,26 +64,26 @@ export class MetronomeManager {
     }
 
 
-     stopMetronome() {
-         this.isPlaying = false;
-         this._audioEngine.stopPlaying();
+    stopMetronome() {
+        this.isPlaying = false;
+        this._audioEngine.stopPlaying();
 
-    //     this.elementsManager.resetPendulumAnimation();
-    // }
+        //     this.elementsManager.resetPendulumAnimation();
+        // }
 
-    // restartMetronomeAndPendulum() {
-    //     this.stopMetronome();
-    //     this.startMetronome();
-    // }
+        // restartMetronomeAndPendulum() {
+        //     this.stopMetronome();
+        //     this.startMetronome();
+        // }
 
-    // restartIfPlaying() {
-    //     if (this.isPlaying) {
-    //         this.restartMetronomeAndPendulum();
-    //     }
-     }
+        // restartIfPlaying() {
+        //     if (this.isPlaying) {
+        //         this.restartMetronomeAndPendulum();
+        //     }
+    }
 
-     updateMetronome() {
-            this._audioEngine.updateBeatSequence();
-            this._elementsManager.updateTimeSignature();
-     }
+    updateMetronome() {
+        this._audioEngine.updateBeatSequence();
+        this._elementsManager.updateTimeSignature();
+    }
 }

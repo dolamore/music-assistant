@@ -5,6 +5,7 @@ import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 import {uiState} from "../../states/UIState";
 import Beat from "../../models/Beat";
+import {isNaN} from "lodash";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -33,6 +34,10 @@ export class TonejsEngine extends AudioEngine {
 
             setBpm: override,
         });
+    }
+
+    get beatSequence(): Beat[] {
+        return this._beatSequence;
     }
 
     get loopCount(): number {
@@ -114,9 +119,10 @@ export class TonejsEngine extends AudioEngine {
 
 
         for (let i = 0; i < beatAmount; i++) {
+            console.log(beats);
             const noteSize = beats[i].noteSettings.noteSize;
             const noteAmount = beats[i].noteAmount;
-
+            console.log(noteAmount);
             totalSteps += 64 / noteSize * 3 * noteAmount;
         }
 
