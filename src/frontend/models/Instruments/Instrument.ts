@@ -1,7 +1,6 @@
 import {action, computed, makeObservable, observable} from "mobx";
 import {cloneDeep} from "lodash";
 import {SoundSetting} from "../SoundSetting";
-import {DEFAULT_SOUND_SETTINGS} from "../../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
 
 export abstract class Instrument {
     public _soundSettings: SoundSetting[] = [];
@@ -37,6 +36,7 @@ export abstract class Instrument {
 }
 
 export type InstrumentType = {
+    get soundType(): string;
     get soundSettings(): SoundSetting[];
     play: (time: number) => void;
     updateSoundSetting(key: string, value: string | number): void;

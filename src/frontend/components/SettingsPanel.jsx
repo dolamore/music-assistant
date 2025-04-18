@@ -50,7 +50,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
             <select
                 id={`sound-${index}`}
-                value={beat.beatSound.key}
+                value={beat.beatSound.instrument.oscillatorType}
                 onChange={handleSelectedSoundsChange}
             >
                 {DEFAULT_SOUNDS.map((sound) => (

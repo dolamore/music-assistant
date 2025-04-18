@@ -1,11 +1,14 @@
 import * as Tone from "tone";
 import {Instrument, InstrumentType} from "./Instrument";
+import {ToneOscillatorType} from "tone";
 
 export class TonejsSynth extends Instrument implements InstrumentType {
     private _synth: Tone.Synth;
+    private _oscillatorType: string | ToneOscillatorType;
 
     constructor(soundSettings: any, oscillatorType: string | Tone.ToneOscillatorType) {
         super(soundSettings);
+        this._oscillatorType = oscillatorType;
         const noSound = oscillatorType === "no-sound";
         this._synth = new Tone.Synth({
             oscillator: {
@@ -15,16 +18,20 @@ export class TonejsSynth extends Instrument implements InstrumentType {
         }).toDestination();
     }
 
-    updateInstrumentParameter(key: string, value: number | string): void {
-        if (key === "oscillatorType") {
-            if (value === "no-sound") {
-                this._synth.volume.value = -Infinity;
-            } else {
-                this._synth.oscillator.type = value as Tone.ToneOscillatorType;
-            }
-            return;
-        }
 
+    get soundType(): string {
+        return this._oscillatorType as string;
+    }
+
+    updateOscillatorType(): void {
+        if (this._oscillatorType === "no-sound") {
+            this._synth.volume.value = -Infinity;
+        } else {
+            this._synth.oscillator.type = this._oscillatorType as Tone.ToneOscillatorType;
+        }
+    }
+
+    updateInstrumentParameter(key: string, value: number | string): void {
         const numValue = Number(value);
 
         switch (key) {
@@ -55,12 +62,22 @@ export class TonejsSynth extends Instrument implements InstrumentType {
         }
     }
 
+    updateSoundSetting(key: string, value: number | string) {
+        if (key === "oscillatorType") {
+            console.log("Oscillator type changed to: " + value);
+            this._oscillatorType = value as string;
+        } else {
+            super.updateSoundSetting(key, value);
+        }
+    }
+
     play(time: number): void {
         const volumeSetting = this._soundSettings.find(setting => setting.key === 'volume')?.value !== -Infinity;
         if (volumeSetting) {
             this._soundSettings.forEach(setting => {
                 this.updateInstrumentParameter(setting.key, setting.value);
             });
+            this.updateOscillatorType();
 
             this._synth.triggerAttackRelease("C4", "64n", time);
         }
