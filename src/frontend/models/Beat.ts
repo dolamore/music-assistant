@@ -1,5 +1,6 @@
 import {makeAutoObservable, observable} from "mobx";
 import {SoundObj} from "./SoundObj";
+import {cloneDeep} from "lodash";
 
 export default class Beat {
     private _beatSound: SoundObj;
@@ -8,7 +9,9 @@ export default class Beat {
     private readonly _beatIndex: number;
 
     constructor(beatSound: SoundObj, noteSettings: any, noteAmount: number, beatIndex: number) {
-        this._beatSound = observable(beatSound);
+        const beatSoundCopy = cloneDeep(beatSound);
+
+        this._beatSound = observable(beatSoundCopy);
         this._noteSettings = observable(noteSettings);
         this._noteAmount = noteAmount;
         this._beatIndex = beatIndex;

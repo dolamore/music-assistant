@@ -60,6 +60,7 @@
     "@nestjs/core": "^11.0.14",
     "@nestjs/platform-express": "^11.0.14",
     "babel-loader": "^10.0.0",
+    "flatted": "^3.3.3",
     "howler": "^2.2.4",
     "lodash": "^4.17.21",
     "mobx": "^6.13.6",
