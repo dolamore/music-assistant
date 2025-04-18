@@ -49,7 +49,7 @@ export class BeatBarsManager {
     }
 
     increaseBeats() {
-        this.addStandardBeat(this._beats.length - 1);
+        this.addStandardBeat(this._beats.length);
         this.metronomeManager.updateMetronome();
     }
 
