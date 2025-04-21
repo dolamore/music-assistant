@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {SoundManager} from "./SoundManager.js";
 import {BeatBarsManager} from "./BeatBarsManager.js";
 import {ElementsManager} from "./ElementsManager.js";
 import {TrainingModeManager} from "./TrainingModeManager.js";
@@ -12,7 +11,6 @@ export class MetronomeManager {
     constructor() {
         this._isPlaying = false;
 
-        this._soundManager = new SoundManager(this);
         this._beatBarsManager = new BeatBarsManager(this);
         this._elementsManager = new ElementsManager(this);
         this.trainingModeManager = new TrainingModeManager();
@@ -40,10 +38,6 @@ export class MetronomeManager {
 
     get elementsManager() {
         return this._elementsManager;
-    }
-
-    get soundManager() {
-        return this._soundManager;
     }
 
     startMetronome() {

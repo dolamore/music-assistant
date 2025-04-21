@@ -20,6 +20,9 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
 }));
 
 const BeatRow = observer(({metronomeManager, index, uiState}) => {
+    const handleClick = () => {
+
+    }
     const beat = metronomeManager.beatBarsManager.beats[index];
     const isPlaying = uiState.currentPlayingBeatIndex === index;
 //TODO: добавить изменение саунда
@@ -29,6 +32,7 @@ const BeatRow = observer(({metronomeManager, index, uiState}) => {
                 className={`beat ${isPlaying ? 'playing' : ''}`}
                 data-beat={index}
                 data-sound="1"
+                onClick={handleClick}
             ></div>
             <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
             <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>

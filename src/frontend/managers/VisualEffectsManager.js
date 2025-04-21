@@ -9,7 +9,6 @@ export class VisualEffectsManager {
         makeAutoObservable(this);
     }
 
-
     get isPendulumVisible() {
         return this._isPendulumVisible;
     }
@@ -20,18 +19,6 @@ export class VisualEffectsManager {
 
     get areBeatBarsVisible() {
         return this._areBeatBarsVisible;
-    }
-
-    set isPendulumVisible(value) {
-        this._isPendulumVisible = value;
-    }
-
-    set isFlashingBarVisible(value) {
-        this._isFlashingBarVisible = value;
-    }
-
-    set areBeatBarsVisible(value) {
-        this._areBeatBarsVisible = value;
     }
 
     togglePendulumVisibility() {
