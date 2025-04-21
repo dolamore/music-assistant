@@ -33,9 +33,11 @@ export class SoundObj {
         return this._soundIndex;
     }
 
-    chooseNextSound(newSoundIndex: number): void {
+    chooseAnotherSound(newSoundIndex: number): string {
         this._soundIndex = (newSoundIndex) % DEFAULT_SOUNDS.length;
         this._key = DEFAULT_SOUNDS[this._soundIndex].key;
         this._label = DEFAULT_SOUNDS[this._soundIndex].label;
+
+        return this._key
     }
 }

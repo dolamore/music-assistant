@@ -53,7 +53,7 @@ export default class Beat {
     updateSoundSetting(key: string, value: string | number) {
         if (key === "soundType") {
             const newSoundIndex = DEFAULT_SOUNDS.findIndex(sound => sound.key === value);
-            this._beatSound.chooseNextSound(newSoundIndex)
+            this._beatSound.chooseAnotherSound(newSoundIndex)
         }
         this._beatSound.instrument.updateSoundSetting(key, value);
     }

@@ -21,28 +21,28 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
 }));
 
 const BeatRow = observer(({metronomeManager, index, uiState}) => {
-    const handleClick = (e) => {
-        beat.updateSoundSetting('oscillatorType', e.target.value);
-    }
-    const beat = metronomeManager.beatBarsManager.beats[index];
-    const isPlaying = uiState.currentPlayingBeatIndex === index;
+        const beat = metronomeManager.beatBarsManager.beats[index];
+        const isPlaying = uiState.currentPlayingBeatIndex === index;
 
-    const [soundIndex, setSoundIndex] = React.useState(
-        DEFAULT_SOUNDS.findIndex((sound) => beat.beatSound.key === sound.key));
-//TODO: добавить изменение саунда
-return (
-    <div className="beat-row">
-        <div
-            className={`beat ${isPlaying ? 'playing' : ''}`}
-            data-beat={index}
-            data-sound={beat.beatSound.soundIndex}
-            onClick={handleClick}
-        ></div>
-        <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
-        <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
-    </div>
-)
-})
+        const handleClick = (e) => {
+            const newSoundType = Number(e.target.dataset.sound) + 1;
+            const newValue = beat.beatSound.chooseAnotherSound(newSoundType);
+            beat.updateSoundSetting("soundType", newValue);
+        }
+
+        return (
+            <div className="beat-row">
+                <div
+                    className={`beat ${isPlaying ? 'playing' : ''}`}
+                    data-beat={index}
+                    data-sound={beat.beatSound.soundIndex}
+                    onClick={handleClick}
+                ></div>
+                <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
+                <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
+            </div>
+        )
+    })
 ;
 //TODO: переписать с учётом наличия поля note
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {

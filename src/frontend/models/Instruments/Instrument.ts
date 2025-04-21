@@ -8,6 +8,7 @@ export abstract class Instrument {
     abstract play(time: number): void;
 
     abstract get soundType(): string;
+    abstract set soundType(value: string);
 
     abstract updateInstrumentParameter(key: string, value: any): void;
 
