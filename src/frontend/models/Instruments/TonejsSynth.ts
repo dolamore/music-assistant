@@ -61,7 +61,7 @@ export class TonejsSynth extends Instrument {
     }
 
     updateSoundSetting(key: string, value: number | string) {
-        if (key === "oscillatorType") {
+        if (key === "soundType") {
             this._oscillatorType = value as string;
         } else {
             super.updateSoundSetting(key, value);

@@ -1,8 +1,8 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS.js";
-import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.ts";
+import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
@@ -37,7 +37,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
     const handleSoundTypeChange = (e) => {
-        beat.updateSoundSetting('oscillatorType', e.target.value)
+        beat.updateSoundSetting('soundType', e.target.value)
     };
 
     const handleSoundSettingsChange = (e, key) => {

@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {uiState} from "../states/UIState.js";
+import {uiState} from "../states/UIState";
 
 export default inject("metronomeManager")(observer(function FlashingBar({metronomeManager}) {
     const isPlaying = uiState.flashingBarVisible;

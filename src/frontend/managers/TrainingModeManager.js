@@ -1,4 +1,4 @@
-import {toggleButtonsLimit} from "../utils/utils.js";
+import {toggleButtonsLimit} from "../utils/utils";
 
 export class TrainingModeManager {
     constructor() {

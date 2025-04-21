@@ -1,5 +1,6 @@
 import {makeAutoObservable, observable} from "mobx";
 import {SoundObj} from "./SoundObj";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
 
 export default class Beat {
     private _beatSound: SoundObj;
@@ -50,6 +51,10 @@ export default class Beat {
     }
 
     updateSoundSetting(key: string, value: string | number) {
+        if (key === "soundType") {
+            const newSoundIndex = DEFAULT_SOUNDS.findIndex(sound => sound.key === value);
+            this._beatSound.chooseNextSound(newSoundIndex)
+        }
         this._beatSound.instrument.updateSoundSetting(key, value);
     }
 }

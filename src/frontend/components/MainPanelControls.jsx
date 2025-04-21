@@ -1,8 +1,8 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {useHotkeys} from "../hooks/useHotKeys.js";
-import {setupAudioContextUnlocker} from "../utils/utils.js";
+import {useHotkeys} from "../hooks/useHotKeys";
+import {setupAudioContextUnlocker} from "../utils/utils";
 
 export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
     return (

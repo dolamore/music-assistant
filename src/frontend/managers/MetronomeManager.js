@@ -1,9 +1,9 @@
 import {makeAutoObservable} from "mobx";
-import {BeatBarsManager} from "./BeatBarsManager.js";
-import {ElementsManager} from "./ElementsManager.js";
-import {TrainingModeManager} from "./TrainingModeManager.js";
-import {VisualEffectsManager} from "./VisualEffectsManager.js";
-import {TonejsEngine} from "../audio-engine/engines/TonejsEngine.js";
+import {BeatBarsManager} from "./BeatBarsManager";
+import {ElementsManager} from "./ElementsManager";
+import {TrainingModeManager} from "./TrainingModeManager";
+import {VisualEffectsManager} from "./VisualEffectsManager";
+import {TonejsEngine} from "../audio-engine/engines/TonejsEngine";
 
 
 export class MetronomeManager {

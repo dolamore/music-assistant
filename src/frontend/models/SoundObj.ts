@@ -1,14 +1,20 @@
 import {Instrument} from "./Instruments/Instrument";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
+import {makeAutoObservable} from "mobx";
 
 export class SoundObj {
-    private readonly _key: string;
+    private _key: string;
     private readonly _instrument: Instrument;
-    private readonly _label: string;
+    public _label: string;
+    public _soundIndex: number;
 
-    constructor(key: string, label: string, instrument: Instrument) {
+    constructor(key: string, label: string, instrument: Instrument, soundIndex: number) {
         this._key = key;
         this._label = label;
         this._instrument = instrument;
+        this._soundIndex = soundIndex;
+
+        makeAutoObservable(this);
     }
 
     get key(): string {
@@ -21,5 +27,15 @@ export class SoundObj {
 
     get label(): string {
         return this._label;
+    }
+
+    get soundIndex(): number {
+        return this._soundIndex;
+    }
+
+    chooseNextSound(newSoundIndex: number): void {
+        this._soundIndex = (newSoundIndex) % DEFAULT_SOUNDS.length;
+        this._key = DEFAULT_SOUNDS[this._soundIndex].key;
+        this._label = DEFAULT_SOUNDS[this._soundIndex].label;
     }
 }

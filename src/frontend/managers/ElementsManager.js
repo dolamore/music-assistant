@@ -1,4 +1,4 @@
-import {lcmArray} from "../utils/utils.js";
+import {lcmArray} from "../utils/utils";
 import {makeAutoObservable} from "mobx";
 
 export class ElementsManager {
@@ -107,14 +107,6 @@ export class ElementsManager {
     //     cancelAnimationFrame(this.pendulumAnimationFrame); // Stop the current animation
     //     elements.pendulumElement.style.left = '0px'; // Reset pendulum to initial position
     // }
-
-    //TODO: реализовать это в элементе!!
-
-    // handleBeatClick(e) {
-    //     if (e.target.classList.contains('beat')) {
-    //         this.metronomeManager.soundManager.changeBeatSound(e.target);
-    //     }
-    // }
 }
 
 //     renderElements() {
@@ -124,7 +116,5 @@ export class ElementsManager {
 //         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 //
 //         elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
-//
-//         document.addEventListener('click', (e) => this.handleBeatClick(e));
 //     }
 // }

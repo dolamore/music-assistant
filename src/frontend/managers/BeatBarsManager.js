@@ -2,10 +2,10 @@ import {
     getDefaultNote, getDefaultNoteAmount,
     INITIAL_NUMBER_OF_BEATS,
     NOTES,
-} from "../vars/vars.js";
+} from "../vars/vars";
 import {makeAutoObservable} from "mobx";
-import Beat from "../models/Beat.ts";
-import {createDefaultSoundObject} from "../vars/sounds/DEFAULT_SOUNDS.js";
+import Beat from "../models/Beat";
+import {createDefaultSoundObject} from "../vars/sounds/DEFAULT_SOUNDS";
 
 export class BeatBarsManager {
 

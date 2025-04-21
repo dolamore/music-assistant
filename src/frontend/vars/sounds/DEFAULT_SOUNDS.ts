@@ -6,5 +6,5 @@ import {DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS} from "../sound-settings/DEFAULT_TON
 export const DEFAULT_SOUNDS: SoundObj[] = TONEJS_SYNTH_SOUNDS;
 
 export function createDefaultSoundObject(): SoundObj {
-    return new SoundObj("sine", "Sine", new TonejsSynth(DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS, 'sine'));
+    return new SoundObj("sine", "Sine", new TonejsSynth(DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS, 'sine'), 1);
 }

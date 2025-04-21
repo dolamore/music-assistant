@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
-import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars.js";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars";
 import {inject} from "mobx-react";
-import {ChangingButton} from "./UtilityComponents.jsx";
-import {preventNonDigitInput} from "../utils/utils.js";
+import {ChangingButton} from "./UtilityComponents";
+import {preventNonDigitInput} from "../utils/utils";
 
 export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
     const { bpm, handleBpmChange } = metronomeManager.audioEngine;
