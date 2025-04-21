@@ -1,10 +1,11 @@
 import * as Tone from "tone";
 import {Instrument, InstrumentType} from "./Instrument";
 import {ToneOscillatorType} from "tone";
+import {action, computed, makeObservable, observable, override} from "mobx";
 
 export class TonejsSynth extends Instrument implements InstrumentType {
     private _synth: Tone.Synth;
-    private _oscillatorType: string | ToneOscillatorType;
+    public _oscillatorType: string | ToneOscillatorType;
 
     constructor(soundSettings: any, oscillatorType: string | Tone.ToneOscillatorType) {
         super(soundSettings);
@@ -16,9 +17,17 @@ export class TonejsSynth extends Instrument implements InstrumentType {
             } as Tone.SynthOptions["oscillator"],
             volume: noSound ? -Infinity : 0,
         }).toDestination();
+
+        makeObservable(this, {
+            _oscillatorType: observable,
+            soundType: computed,
+            updateSoundSetting: override,
+
+        });
     }
 
 
+    //TODO: change in settings and think about generic usage
     get soundType(): string {
         return this._oscillatorType as string;
     }
@@ -64,7 +73,6 @@ export class TonejsSynth extends Instrument implements InstrumentType {
 
     updateSoundSetting(key: string, value: number | string) {
         if (key === "oscillatorType") {
-            console.log("Oscillator type changed to: " + value);
             this._oscillatorType = value as string;
         } else {
             super.updateSoundSetting(key, value);
@@ -78,7 +86,6 @@ export class TonejsSynth extends Instrument implements InstrumentType {
                 this.updateInstrumentParameter(setting.key, setting.value);
             });
             this.updateOscillatorType();
-
             this._synth.triggerAttackRelease("C4", "64n", time);
         }
     }

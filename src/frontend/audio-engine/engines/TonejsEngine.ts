@@ -5,7 +5,6 @@ import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 import {uiState} from "../../states/UIState";
 import Beat from "../../models/Beat";
-import {isNaN} from "lodash";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();

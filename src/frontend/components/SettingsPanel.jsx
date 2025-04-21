@@ -36,7 +36,7 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 const SoundRow = observer(({metronomeManager, index}) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
-    const handleSelectedSoundsChange = (e) => {
+    const handleSoundTypeChange = (e) => {
         beat.updateSoundSetting('oscillatorType', e.target.value)
     };
 
@@ -50,8 +50,8 @@ const SoundRow = observer(({metronomeManager, index}) => {
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
             <select
                 id={`sound-${index}`}
-                value={beat.beatSound.instrument.oscillatorType}
-                onChange={handleSelectedSoundsChange}
+                value={beat.beatSound.instrument.soundType}
+                onChange={handleSoundTypeChange}
             >
                 {DEFAULT_SOUNDS.map((sound) => (
                     <option
