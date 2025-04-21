@@ -1,9 +1,9 @@
 import * as Tone from "tone";
-import {Instrument, InstrumentType} from "./Instrument";
+import {Instrument} from "./Instrument";
 import {ToneOscillatorType} from "tone";
-import {action, computed, makeObservable, observable, override} from "mobx";
+import {computed, makeObservable, observable, override} from "mobx";
 
-export class TonejsSynth extends Instrument implements InstrumentType {
+export class TonejsSynth extends Instrument {
     private _synth: Tone.Synth;
     public _oscillatorType: string | ToneOscillatorType;
 
