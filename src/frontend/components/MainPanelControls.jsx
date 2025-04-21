@@ -21,7 +21,7 @@ const StartStopButton = observer(({metronomeManager}) => {
             metronomeManager.stopMetronome();
         } else {
             await setupAudioContextUnlocker();
-            metronomeManager.tempStart();
+            metronomeManager.startMetronome();
         }
     };
 

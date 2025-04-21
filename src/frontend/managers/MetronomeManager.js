@@ -1,18 +1,9 @@
 import {makeAutoObservable} from "mobx";
 import {SoundManager} from "./SoundManager.js";
-import {
-    BPM_MAX_LIMIT,
-    BPM_MIN_LIMIT,
-    DEFAULT_INITIAL_BPM,
-} from "../vars/vars.js";
 import {BeatBarsManager} from "./BeatBarsManager.js";
 import {ElementsManager} from "./ElementsManager.js";
-import * as Tone from "tone";
 import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager.js";
-import document from "react";
-import {AudioEngine} from "../audio-engine/AudioEngine.js";
-import {TonejsSynthSounds} from "../models/Sounds/TonejsSynthSounds.ts";
 import {TonejsEngine} from "../audio-engine/engines/TonejsEngine.js";
 
 
@@ -55,7 +46,7 @@ export class MetronomeManager {
         return this._soundManager;
     }
 
-    tempStart() {
+    startMetronome() {
         this._isPlaying = true;
         this._audioEngine.startPlaying();
 
@@ -70,16 +61,6 @@ export class MetronomeManager {
 
         //     this.elementsManager.resetPendulumAnimation();
         // }
-
-        // restartMetronomeAndPendulum() {
-        //     this.stopMetronome();
-        //     this.startMetronome();
-        // }
-
-        // restartIfPlaying() {
-        //     if (this.isPlaying) {
-        //         this.restartMetronomeAndPendulum();
-        //     }
     }
 
     updateMetronome() {

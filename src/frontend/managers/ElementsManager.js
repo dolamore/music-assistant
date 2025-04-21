@@ -43,6 +43,8 @@ export class ElementsManager {
         this._timeSignature = this.countSize();
     }
 
+
+    //TODO: перенести в битбар менеджер?
     countSize() {
         let beatAmount = this.metronomeManager.beatBarsManager.beats.length;
         let beatPattern = [];
@@ -122,8 +124,6 @@ export class ElementsManager {
 //         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 //
 //         elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
-//
-//         document.addEventListener('change', (e) => this.updateBeatDropdowns(e));
 //
 //         document.addEventListener('click', (e) => this.handleBeatClick(e));
 //     }

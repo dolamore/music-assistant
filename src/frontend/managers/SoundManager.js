@@ -8,13 +8,6 @@ export class SoundManager {
         makeAutoObservable(this);
     }
 
-    // getSoundSettingsData(row) {
-    //     return Object.fromEntries(Object.keys(DEFAULT_SOUND_SETTINGS).map(key => {
-    //         const input = row.querySelector(`input[placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}"]`);
-    //         return [key, input ? parseFloat(input.value) : DEFAULT_SOUND_SETTINGS[key]];
-    //     }));
-    // }
-
     // changeBeatSound(beatElement) {
     //     const beatIndex = parseInt(beatElement.dataset.beat, 10);
     //     const currentSound = parseInt(beatElement.dataset.sound, 10);
