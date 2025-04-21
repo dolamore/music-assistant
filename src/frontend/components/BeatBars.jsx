@@ -3,7 +3,6 @@ import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {NOTE_AMOUNTS, NOTES} from "../vars/vars";
 import {uiState} from "../states/UIState";
-import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS.js";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
