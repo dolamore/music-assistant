@@ -2,11 +2,13 @@ import {action, computed, makeObservable, observable} from "mobx";
 import {cloneDeep} from "lodash";
 import {SoundSetting} from "../SoundSetting";
 
-export abstract class Instrument implements InstrumentType {
+export abstract class Instrument {
     public _soundSettings: SoundSetting[] = [];
 
     abstract play(time: number): void;
+
     abstract get soundType(): string;
+
     abstract updateInstrumentParameter(key: string, value: any): void;
 
     protected constructor(soundSettings: any) {
@@ -34,10 +36,3 @@ export abstract class Instrument implements InstrumentType {
         }
     }
 }
-
-export type InstrumentType = {
-    get soundType(): string;
-    get soundSettings(): SoundSetting[];
-    play: (time: number) => void;
-    updateSoundSetting(key: string, value: string | number): void;
-};
