@@ -166,37 +166,3 @@ export class TonejsEngine extends AudioEngine {
     }
 
 }
-
-
-//TODO: разобраться c настройками звука
-// const soundParams = {
-//     sound: instrument,
-//     oscillator: instrument.oscillator,
-//     envelope: instrument.envelope,
-//     filter: instrument.filter
-// };
-//
-// for (const [param, target] of Object.entries(soundParams)) {
-//     if (param in soundSettings && target) {
-//         target[param] = soundSettings[param];
-//     }
-// }
-
-//Динамически применяем все параметры из soundSettings к beatSound
-// for (const key in soundSettings) {
-//     if (soundSettings.hasOwnProperty(key)) {
-//         if (key in instrument) {
-//             // Если параметр есть в объекте beatSound (например, volume)
-//             instrument[key].value = soundSettings[key];
-//         } else if (key in instrument.oscillator) {
-//             // Если параметр относится к осциллятору (например, frequency, detune, phase)
-//             instrument.oscillator[key] = soundSettings[key];
-//         } else if (key in instrument.envelope) {
-//             // Если параметр относится к огибающей (например, attack, decay, sustain, release)
-//             instrument.envelope[key] = soundSettings[key];
-//         } else if (key in instrument.filter) {
-//             // Если параметр относится к фильтру (например, filterFrequency, filterQ, filterType)
-//             instrument.filter[key] = soundSettings[key];
-//         }
-//     }
-// }

@@ -15,7 +15,6 @@ export class TonejsSynth extends Instrument implements InstrumentType {
             oscillator: {
                 type: (noSound ? 'sine' : oscillatorType) as Tone.ToneOscillatorType,
             } as Tone.SynthOptions["oscillator"],
-            volume: noSound ? -Infinity : 0,
         }).toDestination();
 
         makeObservable(this, {
@@ -26,18 +25,8 @@ export class TonejsSynth extends Instrument implements InstrumentType {
         });
     }
 
-
-    //TODO: change in settings and think about generic usage
     get soundType(): string {
         return this._oscillatorType as string;
-    }
-
-    updateOscillatorType(): void {
-        if (this._oscillatorType === "no-sound") {
-            this._synth.volume.value = -Infinity;
-        } else {
-            this._synth.oscillator.type = this._oscillatorType as Tone.ToneOscillatorType;
-        }
     }
 
     updateInstrumentParameter(key: string, value: number | string): void {
@@ -80,13 +69,12 @@ export class TonejsSynth extends Instrument implements InstrumentType {
     }
 
     play(time: number): void {
-        const volumeSetting = this._soundSettings.find(setting => setting.key === 'volume')?.value !== -Infinity;
-        if (volumeSetting) {
+        if (this._oscillatorType !== "no-sound") {
             this._soundSettings.forEach(setting => {
                 this.updateInstrumentParameter(setting.key, setting.value);
             });
-            this.updateOscillatorType();
-            this._synth.triggerAttackRelease("C4", "64n", time);
+            this._synth.oscillator.type = this._oscillatorType as Tone.ToneOscillatorType;
+            this._synth.triggerAttack("C4", time);
         }
     }
 }
