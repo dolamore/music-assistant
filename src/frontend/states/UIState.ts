@@ -1,50 +1,40 @@
 import {makeAutoObservable, action} from "mobx";
 
 class UIState {
-    flashingBarVisible: boolean = false;
-    currentPlayingBeatIndex: number | null = null;
-
-    pendulumPosition = 0;
+    private _flashingBarBlinking: boolean = false;
+    private _currentPlayingBeatIndex: number | null = null;
 
     constructor() {
         makeAutoObservable(this, {
-            flashBar: action.bound,
             playBeat: action.bound,
-
-            updatePendulum: action.bound,
         });
     }
 
-    updatePendulum(progress: number) {
-        if (progress < 0.5) {
-            this.pendulumPosition = progress * 200;
-        } else {
-            this.pendulumPosition = (1 - progress) * 200;
-        }
+    get currentPlayingBeatIndex(): number | null {
+        return this._currentPlayingBeatIndex;
     }
 
-    flashBar() {
-        this.flashingBarVisible = true;
-        setTimeout(() => {
-            this.setFlashingBarVisible(false);
-        }, 100);
+    get flashingBarBlinking(): boolean {
+        return this._flashingBarBlinking;
     }
 
     playBeat(index: number) {
-        this.currentPlayingBeatIndex = index;
+        this._currentPlayingBeatIndex = index;
+        this._flashingBarBlinking = true;
         setTimeout(() => {
-            if (this.currentPlayingBeatIndex === index) {
+            if (this._currentPlayingBeatIndex === index) {
                 this.setCurrentPlayingBeatIndex(null);
+                this.setFlashingBarVisible(false);
             }
         }, 100);
     }
 
     setFlashingBarVisible(value: boolean) {
-        this.flashingBarVisible = value;
+        this._flashingBarBlinking = value;
     }
 
     setCurrentPlayingBeatIndex(index: number | null) {
-        this.currentPlayingBeatIndex = index;
+        this._currentPlayingBeatIndex = index;
     }
 }
 

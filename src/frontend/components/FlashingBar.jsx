@@ -4,7 +4,7 @@ import {inject} from "mobx-react";
 import {uiState} from "../states/UIState";
 
 export default inject("metronomeManager")(observer(function FlashingBar({metronomeManager}) {
-    const isPlaying = uiState.flashingBarVisible;
+    const isBeatPlaying = uiState.flashingBarBlinking;
 
     return (
         <div
@@ -12,7 +12,7 @@ export default inject("metronomeManager")(observer(function FlashingBar({metrono
             className={`flashing-bar
                        container
                        ${!metronomeManager.visualEffectsManager.isFlashingBarVisible ? 'hidden' : ''}`}
-            style={{ opacity: isPlaying ? 1 : 0 }}
+            style={{ opacity: isBeatPlaying ? 1 : 0 }}
         >
         </div>
     )

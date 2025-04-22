@@ -21,7 +21,7 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
 
 const BeatRow = observer(({metronomeManager, index, uiState}) => {
         const beat = metronomeManager.beatBarsManager.beats[index];
-        const isPlaying = uiState.currentPlayingBeatIndex === index;
+        const isBeatPlaying = uiState.currentPlayingBeatIndex === index;
 
         const handleClick = (e) => {
             const newSoundType = Number(e.target.dataset.sound) + 1;
@@ -32,7 +32,7 @@ const BeatRow = observer(({metronomeManager, index, uiState}) => {
         return (
             <div className="beat-row">
                 <div
-                    className={`beat ${isPlaying ? 'playing' : ''}`}
+                    className={`beat ${isBeatPlaying ? 'playing' : ''}`}
                     data-beat={index}
                     data-sound={beat.beatSound.soundIndex}
                     onClick={handleClick}
