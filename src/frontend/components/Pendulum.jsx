@@ -1,58 +1,33 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {NOTE_MULTIPLIERS} from "../vars/vars.js";
+import {uiState} from "../states/UIState.js";
 
 export default inject("metronomeManager")(observer(function Pendulum({metronomeManager}) {
     const pendulumBarRef = useRef(null);
     const pendulumRef = useRef(null);
 
-    // Эффект для обработки анимации маятника
     useEffect(() => {
         if (!metronomeManager.isPlaying) {
-            // Сбрасываем позицию маятника
             if (pendulumRef.current) {
-                pendulumRef.current.style.left = '0px';
+                pendulumRef.current.style.transform = 'translateX(0px)';
             }
             return;
         }
 
-        // Запуск анимации маятника
-        let animationFrame;
+        // Получаем размеры для расчета максимального смещения
         const barWidth = pendulumBarRef.current?.clientWidth || 0;
         const pendulumWidth = pendulumRef.current?.clientWidth || 0;
-        const maxPosition = barWidth - pendulumWidth;
-        const beatDuration = (60 / metronomeManager.audioEngine.bpm) * 1000 *
-            NOTE_MULTIPLIERS[metronomeManager.elementsManager._currentNoteSizeIndex];
-        const pendulumPeriod = beatDuration * 2;
+        const maxPosition = (barWidth - pendulumWidth); // Половина доступного пространства
 
-        let startTime = performance.now();
-
-        const updatePendulumPosition = (currentTime) => {
-            if (!metronomeManager.isPlaying) return;
-
-            const elapsed = (currentTime - startTime) % pendulumPeriod;
-            const normalizedTime = elapsed / pendulumPeriod;
-
-            const position = normalizedTime <= 0.5
-                ? normalizedTime * 2 * maxPosition
-                : maxPosition - (normalizedTime - 0.5) * 2 * maxPosition;
-
-            if (pendulumRef.current) {
-                pendulumRef.current.style.left = `${position}px`;
-            }
-
-            animationFrame = requestAnimationFrame(updatePendulumPosition);
-        };
-
-        animationFrame = requestAnimationFrame(updatePendulumPosition);
-
-        // Очистка при размонтировании или изменении состояния
-        return () => {
-            cancelAnimationFrame(animationFrame);
-        };
-    }, [metronomeManager.isPlaying, metronomeManager.audioEngine.bpm,
-        metronomeManager.elementsManager._currentNoteSizeIndex]);
+        // Обновляем CSS-переменную для маятника
+        if (pendulumRef.current) {
+// Используем значение из uiState для позиции (-100 до 100)
+            // и масштабируем его до реальных пикселей
+            const position = (uiState.pendulumPosition / 100) * maxPosition;
+            pendulumRef.current.style.transform = `translateX(${position}px)`;
+        }
+    }, [metronomeManager.isPlaying, uiState.pendulumPosition]);
 
     return (
         <div
@@ -68,7 +43,9 @@ export default inject("metronomeManager")(observer(function Pendulum({metronomeM
                 <div
                     ref={pendulumRef}
                     id="pendulum"
-                    className="pendulum"></div>
+                    className="pendulum"
+                    >
+                </div>
             </div>
         </div>
     );

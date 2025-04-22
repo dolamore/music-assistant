@@ -16,6 +16,7 @@ export class TonejsEngine extends AudioEngine {
     private _isStartOfLoop: boolean = false;
     private _isFirstLoop: boolean = true;
     private _skipper: number = 0;
+    private _totalSteps = 0;
 
     constructor(metronomeManager: MetronomeManager) {
         super(metronomeManager);
@@ -68,6 +69,11 @@ export class TonejsEngine extends AudioEngine {
     getMetronomeLoopCallback(time: number): void {
         this._currentStep = this._count % this._beatSequence.length;
         this._isStartOfLoop = this._currentStep === 0;
+
+        const progress = this._currentStep / this._totalSteps;
+        uiState.updatePendulum(progress);
+
+
         this.playMetronomeStep(time);
         // TODO: add training mode back
         // if (this.trainingModeManager.getIsTrainingMode()) {
@@ -137,6 +143,8 @@ export class TonejsEngine extends AudioEngine {
                 position += stepSize;
             }
         }
+
+        this._totalSteps = totalSteps;
 
         return sequence;
     }

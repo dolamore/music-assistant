@@ -1,14 +1,26 @@
 import {makeAutoObservable, action} from "mobx";
 
 class UIState {
-    flashingBarVisible = false;
+    flashingBarVisible: boolean = false;
     currentPlayingBeatIndex: number | null = null;
+
+    pendulumPosition = 0;
 
     constructor() {
         makeAutoObservable(this, {
             flashBar: action.bound,
             playBeat: action.bound,
+
+            updatePendulum: action.bound,
         });
+    }
+
+    updatePendulum(progress: number) {
+        if (progress < 0.5) {
+            this.pendulumPosition = progress * 200;
+        } else {
+            this.pendulumPosition = (1 - progress) * 200;
+        }
     }
 
     flashBar() {
