@@ -1,6 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
+import {ToggleCheckbox} from "./UtilityComponents.jsx";
 
 export default inject("metronomeManager")(observer(function VisualCheckBoxControls({metronomeManager}) {
     return (
@@ -26,12 +27,3 @@ export default inject("metronomeManager")(observer(function VisualCheckBoxContro
         </div>
     );
 }));
-
-const ToggleCheckbox = observer(({id, checked, onChange, label}) => {
-    return (
-        <label>
-            <input type="checkbox" id={id} checked={checked} onChange={onChange}/>
-            {label}
-        </label>
-    );
-});

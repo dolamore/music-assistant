@@ -1,22 +1,20 @@
 import {lcmArray} from "../utils/utils";
 import {makeAutoObservable} from "mobx";
+import {NOTE_MULTIPLIERS} from "../vars/vars.js";
 
 export class ElementsManager {
     _isSettingsPanelVisible = false;
-    _isTrainingMode = false;
     pendulumAnimationFrame;
     metronomeManager;
+    _beatBarsManager;
     _timeSignature;
     _currentNoteSizeIndex = 2;
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
+        this._beatBarsManager = metronomeManager.beatBarsManager;
         this._timeSignature = this.countSize();
         makeAutoObservable(this)
-    }
-
-    get isTrainingMode() {
-        return this._isTrainingMode;
     }
 
     get timeSignature() {
@@ -35,10 +33,6 @@ export class ElementsManager {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
     }
 
-    toggleTrainingMode() {
-        this._isTrainingMode = !this._isTrainingMode;
-    }
-
     updateTimeSignature() {
         this._timeSignature = this.countSize();
     }
@@ -46,12 +40,12 @@ export class ElementsManager {
 
     //TODO: перенести в битбар менеджер?
     countSize() {
-        let beatAmount = this.metronomeManager.beatBarsManager.beats.length;
+        let beatAmount = this._beatBarsManager.beats.length;
         let beatPattern = [];
 
         for (let index = 0; index < beatAmount; index++) {
-            const { isTriplet, noteSize } = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
-            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmount;
+            const { isTriplet, noteSize } = this._beatBarsManager.beats[index].noteSettings;
+            const noteAmount = this._beatBarsManager.beats[index].noteAmount;
 
             for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
                 beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
@@ -62,8 +56,8 @@ export class ElementsManager {
         let numerator = 0;
 
         for (let index = 0; index < beatAmount; index++) {
-            const noteAmount = this.metronomeManager.beatBarsManager.beats[index].noteAmount;
-            const {isTriplet, noteSize} = this.metronomeManager.beatBarsManager.beats[index].noteSettings;
+            const noteAmount = this._beatBarsManager.beats[index].noteAmount;
+            const {isTriplet, noteSize} = this._beatBarsManager.beats[index].noteSettings;
 
             if (isTriplet) {
                 numerator += noteAmount * 3 * (denominator / noteSize);
@@ -76,11 +70,10 @@ export class ElementsManager {
     }
 
     movePendulum() {
-
         const barWidth = elements.pendulumBarElement.clientWidth;
         const pendulumWidth = elements.pendulumElement.clientWidth;
         const maxPosition = barWidth - pendulumWidth; // Amplitude of movement
-        const beatDuration = (60 / this.metronomeManager.audioEngine.bpm) * 1000 * NOTE_MULTIPLIERS[this.metronomeManager.currentNoteSizeIndex]; // Duration of one beat in milliseconds
+        const beatDuration = (60 / this.metronomeManager.audioEngine.bpm) * 1000 * NOTE_MULTIPLIERS[this._currentNoteSizeIndex]; // Duration of one beat in milliseconds
         const pendulumPeriod = beatDuration * 2; // Full cycle (back and forth)
 
         let startTime = performance.now();

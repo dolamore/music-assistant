@@ -53,3 +53,12 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
         />
     );
 });
+
+export const ToggleCheckbox = observer(({id, checked, onChange, label}) => {
+    return (
+        <label>
+            <input type="checkbox" id={id} checked={checked} onChange={onChange}/>
+            {label}
+        </label>
+    );
+});
