@@ -36,10 +36,6 @@ export class TonejsEngine extends AudioEngine {
         });
     }
 
-    get beatSequence(): Beat[] {
-        return this._beatSequence;
-    }
-
     get loopCount(): number {
         return this._loopCount;
     }

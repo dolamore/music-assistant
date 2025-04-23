@@ -1,19 +1,5 @@
 import * as Tone from "tone";
 
-export function toggleButtonsLimit(minLimit, maxLimit, increasingButton, decreasingButton) {
-    increasingButton.disabled = maxLimit;
-    decreasingButton.disabled = minLimit;
-    increasingButton.classList.toggle('button-limit', maxLimit);
-    decreasingButton.classList.toggle('button-limit', minLimit);
-}
-
-//TODO make it generic
-export function handleInputBlur(inputValue, defaultElementValue, metronomeManager) {
-    if (inputValue === '') {
-        metronomeManager.audioEngine.handleBpmChange(defaultElementValue)
-    }
-}
-
 export function handleVariableChange(newValue, variable, minLimit, maxLimit, varSetter) {
     if (/^0\d/.test(newValue)) {
         newValue = newValue.replace(/^0+/, '');
