@@ -5,6 +5,7 @@ import {action, computed, makeObservable, observable, override} from "mobx";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT} from "../../vars/vars";
 import {uiState} from "../../states/UIState";
 import Beat from "../../models/Beat";
+import {handleVariableChange} from "../../utils/utils";
 
 export class TonejsEngine extends AudioEngine {
     private _transport = Tone.getTransport();
@@ -146,23 +147,7 @@ export class TonejsEngine extends AudioEngine {
     }
 
     handleBpmChange = (newBpm: any): void => {
-        if (/^0\d/.test(newBpm)) {
-            newBpm = newBpm.replace(/^0+/, '');
-        }
-
-        if (isNaN(newBpm) || newBpm === '') {
-            return;
-        }
-        if (this._bpm === newBpm) {
-            return;
-        }
-        if (newBpm > BPM_MAX_LIMIT) {
-            this.setBpm(BPM_MAX_LIMIT)
-        } else if (newBpm < BPM_MIN_LIMIT) {
-            this.setBpm(BPM_MIN_LIMIT);
-        } else {
-            this.setBpm(newBpm);
-        }
+        handleVariableChange(newBpm, this._bpm, BPM_MIN_LIMIT, BPM_MAX_LIMIT,
+            (value: number) => this.setBpm(value))
     }
-
 }
