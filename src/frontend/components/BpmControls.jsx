@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars";
 import {inject} from "mobx-react";
-import {ChangingButton} from "./UtilityComponents";
-import {preventNonDigitInput} from "../utils/utils";
+import {ChangingButton, InputField} from "./UtilityComponents";
 
 export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
     const { bpm, handleBpmChange } = metronomeManager.audioEngine;
@@ -27,10 +26,14 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
                     onClick={() => changeBpm(-1)}
                     disabled={bpm <= BPM_MIN_LIMIT}
                 />
-                <BpmInput
-                    bpm={bpm}
-                    handleBpmChange={handleBpmChange}
-                />
+                <InputField
+                    id="bpm-input"
+                    inputVar={bpm}
+                    changeHandler={handleBpmChange}
+                    defaultValue={DEFAULT_INITIAL_BPM}
+                    minLimit={BPM_MIN_LIMIT}
+                    maxLimit={BPM_MAX_LIMIT}
+                    />
                 <ChangingButton
                     id="bpm-increase-1"
                     label="+1"
@@ -47,48 +50,3 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
         </div>
     );
 }));
-
-const BpmInput = observer(({bpm, handleBpmChange}) => {
-    const [inputValue, setInputValue] = useState(bpm);
-
-    useEffect(() => {
-        setInputValue(bpm);
-    }, [bpm]);
-
-    const handleMouseEnter = () => {
-    };
-
-    const handleChange = (e) => {
-        let value = e.target.value;
-        // Remove leading zeros
-        if (/^0\d/.test(value)) {
-            value = value.replace(/^0+/, '');
-        }
-        // Limit the value to the allowable BPM range
-        const intValue = parseInt(value, 10);
-        if (intValue > BPM_MAX_LIMIT) {
-            value = BPM_MAX_LIMIT;
-        } else if (intValue < BPM_MIN_LIMIT) {
-            value = BPM_MIN_LIMIT;
-        }
-        setInputValue(value);
-    };
-
-    const handleBlur = () => {
-        const newBpm = inputValue === '' ? DEFAULT_INITIAL_BPM : Number(inputValue);
-        handleBpmChange(newBpm);
-        setInputValue(newBpm);
-    };
-
-    return (
-        <input
-            type="number"
-            id="bpm-input"
-            value={inputValue}
-            onMouseEnter={handleMouseEnter}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onKeyDown={(e) => preventNonDigitInput(e)}
-        />
-    );
-});

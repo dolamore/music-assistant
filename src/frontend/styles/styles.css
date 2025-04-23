@@ -202,11 +202,6 @@ button:hover {
     transition: opacity 0.3s ease;
 }
 
-.pendulum-container.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
 .horizontal-bar {
     position: relative;
     width: 100%; /* На всю ширину контейнера */
@@ -225,9 +220,6 @@ button:hover {
     background-color: #444;
     border-radius: 50%;
     transition: transform 0.01s linear; /* Небольшая задержка для плавности */
-}
-
-.pendulum {
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -289,7 +281,7 @@ button:hover {
 }
 
 .button-limit:hover {
-    background-color: #000000 !important;
+    background-color: #000000;
 }
 
 .main-panel-controls {
