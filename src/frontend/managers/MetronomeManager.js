@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 import {BeatBarsManager} from "./BeatBarsManager";
 import {ElementsManager} from "./ElementsManager";
-import {TrainingModeManager} from "./TrainingModeManager";
+import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager";
 import {TonejsEngine} from "../audio-engine/engines/TonejsEngine";
 

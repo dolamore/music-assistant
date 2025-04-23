@@ -40,5 +40,5 @@ export const DEFAULT_NOTE_SIZE = 4;
 export const DEFAULT_IS_TRIPLET = false;
 export const DEFAULT_NOTE_AMOUNT = 1;
 export const DEFAULT_SOUND_INDEX = 1;
-//export const defaultNoteSkipProbability = elements.noteSkipProbabilityInput.value / 100
-//export const defaultLoopSkipProbability = elements.loopSkipProbabilityInput.value / 100;
+export const DEFAULT_NOTE_SKIP_PROBABILITY = 20
+export const DEFAULT_LOOP_SKIP_PROBABILITY = 20;

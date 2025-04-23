@@ -100,7 +100,7 @@ export class TonejsEngine extends AudioEngine {
     playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];
         if (!currentNote || !currentNote.beatSound) return;
-        if (!(this._trainingModeManager.getIsTrainingMode() && Math.random() < this._trainingModeManager.getNoteSkipProbability() && !this._trainingModeManager.getIsFirstLoop())) {
+        if (!(this._trainingModeManager.isTrainingMode && Math.random() < this._trainingModeManager.noteSkipProbability && !this.metronomeManager.trainingModeManager.isFirstLoop)) {
             const {beatSound: {instrument}, beatIndex} = currentNote;
             instrument.play(time);
             uiState.playBeat(beatIndex);
