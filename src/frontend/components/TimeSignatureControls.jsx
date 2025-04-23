@@ -8,7 +8,7 @@ export default inject("metronomeManager")(observer(function TimeSignatureControl
     return (
         <div className="time-signature-controls-container container">
             <BeatsControlGroup metronomeManager={metronomeManager}/>
-            <TimeSignatureInfo timeSignature={metronomeManager.elementsManager.timeSignature}/>
+            <TimeSignatureInfo timeSignature={metronomeManager.beatBarsManager.timeSignature}/>
             <NotesControlGroup metronomeManager={metronomeManager}/>
         </div>
     );

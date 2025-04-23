@@ -59,6 +59,6 @@ export class MetronomeManager {
 
     updateMetronome() {
         this._audioEngine.updateBeatSequence();
-        this._elementsManager.updateTimeSignature();
+        this.beatBarsManager.updateTimeSignature();
     }
 }

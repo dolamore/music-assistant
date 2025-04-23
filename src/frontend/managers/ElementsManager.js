@@ -7,18 +7,12 @@ export class ElementsManager {
     pendulumAnimationFrame;
     metronomeManager;
     _beatBarsManager;
-    _timeSignature;
     _currentNoteSizeIndex = 2;
 
     constructor(metronomeManager) {
         this.metronomeManager = metronomeManager;
         this._beatBarsManager = metronomeManager.beatBarsManager;
-        this._timeSignature = this.countSize();
         makeAutoObservable(this)
-    }
-
-    get timeSignature() {
-        return this._timeSignature;
     }
 
     get isSettingsPanelVisible() {
@@ -31,42 +25,6 @@ export class ElementsManager {
 
     toggleSettingsPanel() {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
-    }
-
-    updateTimeSignature() {
-        this._timeSignature = this.countSize();
-    }
-
-
-    //TODO: перенести в битбар менеджер?
-    countSize() {
-        let beatAmount = this._beatBarsManager.beats.length;
-        let beatPattern = [];
-
-        for (let index = 0; index < beatAmount; index++) {
-            const { isTriplet, noteSize } = this._beatBarsManager.beats[index].noteSettings;
-            const noteAmount = this._beatBarsManager.beats[index].noteAmount;
-
-            for (let i = 0; i < (isTriplet ? 3 * noteAmount : noteAmount); i++) {
-                beatPattern.push(isTriplet ? noteSize * 3 / 2 : noteSize);
-            }
-        }
-
-        const denominator = lcmArray(beatPattern);
-        let numerator = 0;
-
-        for (let index = 0; index < beatAmount; index++) {
-            const noteAmount = this._beatBarsManager.beats[index].noteAmount;
-            const {isTriplet, noteSize} = this._beatBarsManager.beats[index].noteSettings;
-
-            if (isTriplet) {
-                numerator += noteAmount * 3 * (denominator / noteSize);
-            } else {
-                numerator += noteAmount * (denominator / noteSize);
-            }
-        }
-
-        return {numerator: numerator, tactSize: denominator};
     }
 
     movePendulum() {
