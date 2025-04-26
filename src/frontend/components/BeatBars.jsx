@@ -43,20 +43,16 @@ const BeatRow = observer(({metronomeManager, index, uiState}) => {
         )
     })
 ;
-//TODO: переписать с учётом наличия поля note
+//TODO: переписать с учётом наличия поля note ???
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
-        const [noteSizeStr, isTripletStr] = e.target.value.split("-");
-        const noteSize = Number(noteSizeStr);
-        const isTriplet = isTripletStr === "true";
-
-        beat.noteSettings =
-            NOTES.find(
-                note => note.noteSize === noteSize && note.isTriplet === isTriplet);
+        const targetValue = e.target.value;
+        beat.noteSettings = NOTES.find(
+            noteObject => targetValue === noteObject.note);
         metronomeManager.updateMetronome();
     }
 
-    const currentValue = `${beat.noteSettings.noteSize}-${beat.noteSettings.isTriplet}`;
+    const currentValue = `${beat.noteSettings.note}`;
 
     return (
         <select
@@ -68,7 +64,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
             {NOTES.map((note, noteIndex) => (
                 <option
                     key={`note-${noteIndex}`}
-                    value={`${note.noteSize}-${note.isTriplet}`}
+                    value={`${note.note}`}
                 >
                     {note.label}
                 </option>

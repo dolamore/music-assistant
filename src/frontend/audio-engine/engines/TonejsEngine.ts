@@ -113,7 +113,6 @@ export class TonejsEngine extends AudioEngine {
         let totalSteps = 0;
         let beatAmount = beats.length;
 
-
         for (let i = 0; i < beatAmount; i++) {
             const noteSize = beats[i].noteSettings.noteSize;
             const noteAmount = beats[i].noteAmount;

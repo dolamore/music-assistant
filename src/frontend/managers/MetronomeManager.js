@@ -43,9 +43,6 @@ export class MetronomeManager {
     startMetronome() {
         this._isPlaying = true;
         this._audioEngine.startPlaying();
-
-        //TODO: move pendulum!
-        //    this.elementsManager.movePendulum();
     }
 
 
