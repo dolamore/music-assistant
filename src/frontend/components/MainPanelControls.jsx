@@ -13,25 +13,12 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
             <ToggleCheckbox
                 id="toggle-training-mode"
                 checked={metronomeManager.trainingModeManager.isTrainingMode}
-                onChange={() => metronomeManager.visualEffectsManager.toggleFlashingBarVisibility()}
+                onChange={() => metronomeManager.trainingModeManager.toggleTrainingMode()}
                 label="Training Mode"
             />
-            <ToggleTrainingMode metronomeManager={metronomeManager}/>
         </div>
     );
 }));
-
-const ToggleTrainingMode = observer(({metronomeManager}) => {
-    return (
-        <label>
-            <input type="checkbox"
-                   id="toggle-training-mode"
-                   onChange={() => metronomeManager.toggleTrainingMode()}
-            />
-            Training Mode
-        </label>
-    );
-});
 
 //TODO: перенести это в App и сделать разово появляющимся
 const StartStopButton = observer(({metronomeManager}) => {

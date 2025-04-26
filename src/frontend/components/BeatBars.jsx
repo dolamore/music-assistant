@@ -43,7 +43,7 @@ const BeatRow = observer(({metronomeManager, index, uiState}) => {
         )
     })
 ;
-//TODO: переписать с учётом наличия поля note ???
+
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
     const handleChange = (e) => {
         const targetValue = e.target.value;

@@ -43,6 +43,10 @@ export class TrainingModeManager {
         return this._isFirstLoop;
     }
 
+    toggleTrainingMode(): void {
+        this._isTrainingMode = !this._isTrainingMode;
+    }
+
     setTrainingMode(enabled: boolean): void {
         this._isTrainingMode = enabled;
         this._isFirstLoop = enabled;
