@@ -1,6 +1,8 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
+import {ChangingButton, InputField} from "./UtilityComponents";
+import {DEFAULT_LOOP_SKIP_PROBABILITY} from "../vars/vars";
 
 export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}) {
     return (
@@ -9,23 +11,12 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
             className={`container
                        ${!metronomeManager.trainingModeManager.isTrainingMode ? 'hidden' : ''}`}
         >
-            <div id="loop-skip-probability-container" className="probability-container">
-                <label htmlFor="loop-skip-probability-input">Loop Skip:</label>
-                <div className="probability-controls">
-                    <button id="decrease-loop-skip-probability-5-button">-5</button>
-                    <button id="decrease-loop-skip-probability-button">-1</button>
-                    <input
-                        type="number"
-                        id="loop-skip-probability-input"
-                        value={metronomeManager.loopSkipProbability}
-                        onChange={(e) => metronomeManager.setLoopSkipProbability(Number(e.target.value))}
-                        min="0"
-                        max="100"
-                    />
-                    <button id="increase-loop-skip-probability-button">+1</button>
-                    <button id="increase-loop-skip-probability-5-button">+5</button>
-                </div>
-            </div>
+            <ProbabilityContainer
+                trainingModeManager={metronomeManager.trainingModeManager}
+                label="Loop Skip"
+                id="loop-skip-probability"
+                defaultValue={DEFAULT_LOOP_SKIP_PROBABILITY}
+            />
             <div id="note-skip-probability-container" className="probability-container">
                 <label htmlFor="note-skip-probability-input">Note Skip:</label>
                 <div className="probability-controls">
@@ -34,8 +25,8 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
                     <input
                         type="number"
                         id="note-skip-probability-input"
-                        value={metronomeManager.noteSkipProbability}
-                        onChange={(e) => metronomeManager.setNoteSkipProbability(Number(e.target.value))}
+                        value={metronomeManager.trainingModeManager.noteSkipProbability}
+                        onChange={(e) => metronomeManager.trainingModeManager.handleNoteSkipProbabilityChange(Number(e.target.value))}
                         min="0"
                         max="100"
                     />
@@ -46,6 +37,63 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
         </div>
     )
 }));
+
+const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultValue}) => {
+    return (
+        <div
+            id={`${id}-container`}
+            className="probability-container"
+        >
+            <label htmlFor={`${id}-input`}>{label}:</label>
+            <ProbabilityControls
+                id={id}
+                probability={trainingModeManager.loopSkipProbability}
+                changeFunction={trainingModeManager.handleLoopSkipProbabilityChange}
+                defaultValue={defaultValue}
+            />
+        </div>
+    );
+});
+
+const ProbabilityControls = observer(({id, probability, changeFunction, defaultValue}) => {
+
+    return (
+        <div className="probability-controls">
+            <ChangingButton
+                id={`decrease-${id}-5-button`}
+                onClick={() => changeFunction(probability - 5)}
+                label="-5"
+                disabled={probability <= 0}
+            />
+            <ChangingButton
+                id={`decrease-${id}-button`}
+                onClick={() => changeFunction(probability - 1)}
+                label="-1"
+                disabled={probability <= 0}
+            />
+            <InputField
+                id={`${id}-input`}
+                inputVar={probability}
+                changeHandler={changeFunction}
+                defaultValue={defaultValue}
+                minLimit={0}
+                maxLimit={100}
+            />
+            <ChangingButton
+                id={`increase-${id}-button`}
+                onClick={() => changeFunction(probability + 1)}
+                label="+1"
+                disabled={probability >= 100}
+            />
+            <ChangingButton
+                id={`increase-${id}-5-button`}
+                onClick={() => changeFunction(probability + 5)}
+                label="+5"
+                disabled={probability >= 100}
+            />
+        </div>
+    );
+});
 
 
 // <div id="training-settings" className="hidden container">

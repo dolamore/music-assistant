@@ -41,4 +41,4 @@ export const DEFAULT_IS_TRIPLET = false;
 export const DEFAULT_NOTE_AMOUNT = 1;
 export const DEFAULT_SOUND_INDEX = 1;
 export const DEFAULT_NOTE_SKIP_PROBABILITY = 20
-export const DEFAULT_LOOP_SKIP_PROBABILITY = 20;
+export const DEFAULT_LOOP_SKIP_PROBABILITY = 25;

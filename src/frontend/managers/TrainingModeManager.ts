@@ -4,7 +4,7 @@ import {makeAutoObservable} from "mobx";
 export class TrainingModeManager {
     public _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
     public _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
-    public _isTrainingMode: boolean = false;
+    public _isTrainingMode: boolean = true;
     public _isFirstLoop: boolean = true;
 
     constructor() {
