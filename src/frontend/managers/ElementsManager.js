@@ -1,4 +1,3 @@
-import {lcmArray} from "../utils/utils";
 import {makeAutoObservable} from "mobx";
 import {NOTE_MULTIPLIERS} from "../vars/vars.js";
 

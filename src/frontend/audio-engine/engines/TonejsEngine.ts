@@ -14,8 +14,6 @@ export class TonejsEngine extends AudioEngine {
     private _count: number = 0;
     public _loopCount: number = 0;
     private _currentStep: number = 0;
-    private _isStartOfLoop: boolean = false;
-    private _isFirstLoop: boolean = true;
     private _skipper: number = 0;
 
     constructor(metronomeManager: MetronomeManager) {
@@ -49,7 +47,7 @@ export class TonejsEngine extends AudioEngine {
         this._count = 0;
         this._loopCount = 0;
         this._skipper = 0;
-        this._isFirstLoop = true;
+        this._trainingModeManager._isFirstLoop = true;
 
         this._transport.start();
         this._loop.start(0);
@@ -63,33 +61,32 @@ export class TonejsEngine extends AudioEngine {
     }
 
     getMetronomeLoopCallback(time: number): void {
-        this._currentStep = this._count % this._beatSequence.length;
-        this._isStartOfLoop = this._currentStep === 0;
+        const length = this._beatSequence.length;
+        this._currentStep = this._count % length;
+        const isStartOfLoop = this._currentStep === 0;
 
-        this.playMetronomeStep(time);
-        // TODO: add training mode back
-        // if (this.trainingModeManager.getIsTrainingMode()) {
-        //     if (this._isStartOfLoop &&
-        //         (this.trainingModeManager.getIsFirstLoop() || Math.random() < this.trainingModeManager.getLoopSkipProbability())) {
-        //         this._skipper = this._sequence.length;
-        //     }
-        // }
-        //
-        // if (this._skipper > 0) {
-        //     this._skipper--;
-        //     if (this.trainingModeManager.getIsFirstLoop()) {
-        //         this.playMetronomeStep();
-        //     }
-        //     if (this._skipper === 0) {
-        //         this.trainingModeManager.setIsFirstLoop(false);
-        //     }
-        // } else {
-        //     this.playMetronomeStep();
-        // }
+        if (this._trainingModeManager.isTrainingMode) {
+            if (isStartOfLoop &&
+                (this._trainingModeManager.isFirstLoop || Math.random() < this._trainingModeManager.loopSkipProbability)) {
+                this._skipper = length;
+            }
+        }
+
+        if (this._skipper > 0) {
+            this._skipper--;
+            if (this._trainingModeManager.isFirstLoop) {
+                this.playMetronomeStep(time);
+            }
+            if (this._skipper === 0) {
+                this._trainingModeManager.isFirstLoop = false;
+            }
+        } else {
+            this.playMetronomeStep(time);
+        }
 
         if (this._currentStep === 0) {
             if (this._count !== 0) {
-                this._isFirstLoop = false;
+                this._trainingModeManager.isFirstLoop = false;
                 this._loopCount += 1;
             }
         }
@@ -100,7 +97,7 @@ export class TonejsEngine extends AudioEngine {
     playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];
         if (!currentNote || !currentNote.beatSound) return;
-        if (!(this._trainingModeManager.isTrainingMode && Math.random() < this._trainingModeManager.noteSkipProbability && !this.metronomeManager.trainingModeManager.isFirstLoop)) {
+        if (!(this._trainingModeManager.isTrainingMode && Math.random() < this._trainingModeManager.noteSkipProbability && !this._trainingModeManager.isFirstLoop)) {
             const {beatSound: {instrument}, beatIndex} = currentNote;
             instrument.play(time);
             uiState.playBeat(beatIndex);

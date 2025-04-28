@@ -23,10 +23,6 @@ export class TrainingModeManager {
         this._isFirstLoop = isFirstLoop;
     }
 
-    set isTrainingMode(isTrainingMode) {
-        this._isTrainingMode = isTrainingMode;
-    }
-
     get loopSkipProbability(): number {
         return this._loopSkipProbability;
     }
@@ -45,11 +41,10 @@ export class TrainingModeManager {
 
     toggleTrainingMode(): void {
         this._isTrainingMode = !this._isTrainingMode;
-    }
 
-    setTrainingMode(enabled: boolean): void {
-        this._isTrainingMode = enabled;
-        this._isFirstLoop = enabled;
+        if (this._isTrainingMode) {
+            this._isFirstLoop = true;
+        }
     }
 
     handleLoopSkipProbabilityChange(changeProbability: number | string): void {
