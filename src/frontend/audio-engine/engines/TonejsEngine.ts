@@ -56,12 +56,11 @@ export class TonejsEngine extends AudioEngine {
     stopPlaying() {
         this._loop.stop();
         this._transport.stop();
-
-
     }
 
     getMetronomeLoopCallback(time: number): void {
         const length = this._beatSequence.length;
+
         this._currentStep = this._count % length;
         const isStartOfLoop = this._currentStep === 0;
 
@@ -88,8 +87,6 @@ export class TonejsEngine extends AudioEngine {
 
         this._count++;
     }
-
-    //TODO: что случится когда каунт превысит лимит своего значения?
 
     playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];

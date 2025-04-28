@@ -61,8 +61,6 @@ export class ElementsManager {
 
 //     renderElements() {
 //
-//         window.addEventListener('resize', () => this.metronomeManager.restartIfPlaying());
-//
 //         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
 //
 //         elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
