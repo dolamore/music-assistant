@@ -65,34 +65,31 @@ export class TonejsEngine extends AudioEngine {
         this._currentStep = this._count % length;
         const isStartOfLoop = this._currentStep === 0;
 
-        if (this._trainingModeManager.isTrainingMode) {
-            if (isStartOfLoop &&
-                (this._trainingModeManager.isFirstLoop || Math.random() < this._trainingModeManager.loopSkipProbability)) {
-                this._skipper = length;
-            }
+        if (this._trainingModeManager.isTrainingMode && isStartOfLoop &&
+            (Math.random() < this._trainingModeManager.loopSkipProbability || this._trainingModeManager.isFirstLoop)) {
+            this._skipper = length;
         }
 
         if (this._skipper > 0) {
             this._skipper--;
             if (this._trainingModeManager.isFirstLoop) {
                 this.playMetronomeStep(time);
-            }
-            if (this._skipper === 0) {
-                this._trainingModeManager.isFirstLoop = false;
+                if (this._skipper === 0) {
+                    this._trainingModeManager.isFirstLoop = false;
+                }
             }
         } else {
             this.playMetronomeStep(time);
         }
 
-        if (this._currentStep === 0) {
-            if (this._count !== 0) {
-                this._trainingModeManager.isFirstLoop = false;
-                this._loopCount += 1;
-            }
+        if (this._currentStep === 0 && this._count > 0) {
+                this._loopCount++;
         }
 
         this._count++;
     }
+
+    //TODO: что случится когда каунт превысит лимит своего значения?
 
     playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];
