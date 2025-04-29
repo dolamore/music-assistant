@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {ChangingButton, ControlsContainer, InputField} from "./UtilityComponents";
+import {ControlsContainer} from "./UtilityComponents";
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 
 export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}) {

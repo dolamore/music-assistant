@@ -56,9 +56,18 @@ export class TrainingModeManager {
     }
 
     handleProbabilityChange(newValue: number | string, currentValue: number, type: ProbabilityType): void {
+        if (/^0\d/.test(String(newValue))) {
+            newValue = String(newValue).replace(/^0+/, '');
+        }
+
         if (Number.isNaN(newValue) || newValue === "") {
             return;
         }
+
+        if (currentValue === newValue) {
+            return;
+        }
+
         let probability = Number((currentValue + Number(newValue)).toFixed(5));
 
         if (probability > 1) {
