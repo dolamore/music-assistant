@@ -3,23 +3,15 @@ import {makeAutoObservable} from "mobx";
 import {handleVariableChange} from "../utils/utils";
 
 export class TrainingModeManager {
-    public _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
-    public _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
-    public _isTrainingMode: boolean = true;
-    public _isFirstLoop: boolean = true;
-    public _loopSkipPercentage = this._loopSkipProbability / 100;
-    public _noteSkipPercentage = this._noteSkipProbability / 100;
+    private _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
+    private _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
+    private _isTrainingMode: boolean = true;
+    private _isFirstLoop: boolean = true;
+    private _loopSkipPercentage = this._loopSkipProbability / 100;
+    private _noteSkipPercentage = this._noteSkipProbability / 100;
 
     constructor() {
         makeAutoObservable(this);
-    }
-
-    set loopSkipProbability(probability) {
-        this._loopSkipProbability = probability;
-    }
-
-    set noteSkipProbability(probability) {
-        this._noteSkipProbability = probability;
     }
 
     set isFirstLoop(isFirstLoop) {
@@ -40,6 +32,15 @@ export class TrainingModeManager {
 
     get isFirstLoop(): boolean {
         return this._isFirstLoop;
+    }
+
+
+    get loopSkipPercentage(): number {
+        return this._loopSkipPercentage;
+    }
+
+    get noteSkipPercentage(): number {
+        return this._noteSkipPercentage;
     }
 
     toggleTrainingMode(): void {
@@ -70,12 +71,12 @@ export class TrainingModeManager {
 
     handleProbabilityChange(newValue: number | string, currentProbability: number, type: ProbabilityType): void {
         if (type === ProbabilityType.LOOP) {
-            handleVariableChange(newValue, this._loopSkipProbability, 0, 100, (value: number) => this.setLoopSkipProbability(value))
+            handleVariableChange(newValue, currentProbability, 0, 100, (value: number) => this.setLoopSkipProbability(value))
         } else {
-            handleVariableChange(newValue, this._noteSkipProbability, 0, 100, (value: number) => this.setNoteSkipProbability(value))
+            handleVariableChange(newValue, currentProbability, 0, 100, (value: number) => this.setNoteSkipProbability(value))
         }
 
-        if (!(Number(newValue) === currentProbability)) {
+        if (Number(newValue) !== currentProbability) {
             this._isFirstLoop = true;
         }
     }

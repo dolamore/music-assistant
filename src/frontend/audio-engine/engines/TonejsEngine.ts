@@ -47,7 +47,7 @@ export class TonejsEngine extends AudioEngine {
         this._count = 0;
         this._loopCount = 0;
         this._skipper = 0;
-        this._trainingModeManager._isFirstLoop = true;
+        this._trainingModeManager.isFirstLoop = true;
 
         this._transport.start();
         this._loop.start(0);
@@ -65,7 +65,7 @@ export class TonejsEngine extends AudioEngine {
         const isStartOfLoop = this._currentStep === 0;
 
         if (this._trainingModeManager.isTrainingMode && isStartOfLoop &&
-            (Math.random() < this._trainingModeManager.loopSkipProbability || this._trainingModeManager.isFirstLoop)) {
+            (Math.random() < this._trainingModeManager.loopSkipPercentage || this._trainingModeManager.isFirstLoop)) {
             this._skipper = length;
         }
 
@@ -91,7 +91,7 @@ export class TonejsEngine extends AudioEngine {
     playMetronomeStep(time: number) {
         const currentNote = this._beatSequence[this._currentStep];
         if (!currentNote || !currentNote.beatSound) return;
-        if (!(this._trainingModeManager.isTrainingMode && Math.random() < this._trainingModeManager.noteSkipProbability && !this._trainingModeManager.isFirstLoop)) {
+        if (!(this._trainingModeManager.isTrainingMode && Math.random() < this._trainingModeManager.noteSkipPercentage && !this._trainingModeManager.isFirstLoop)) {
             const {beatSound: {instrument}, beatIndex} = currentNote;
             instrument.play(time);
             uiState.playBeat(beatIndex);
