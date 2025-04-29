@@ -30,7 +30,7 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
                  label="Note Skip Probability:"
                  id="note-skip-probability"
                  defaultValue={DEFAULT_NOTE_SKIP_PROBABILITY}
-                 probability={noteSkipProbability}
+                 variable={noteSkipProbability}
                  changeFunc={handleNoteSkipProbabilityChange}
                  minLimit={0}
                  maxLimit={100}
