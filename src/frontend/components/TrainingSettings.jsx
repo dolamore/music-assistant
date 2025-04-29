@@ -1,13 +1,15 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {ChangingButton, InputField} from "./UtilityComponents";
+import {ChangingButton, ControlsContainer, InputField} from "./UtilityComponents";
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 
 export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}) {
     const trainingModeManager = metronomeManager.trainingModeManager;
-    const {isTrainingMode, loopSkipProbability,
-        handleLoopSkipProbabilityChange, noteSkipProbability, handleNoteSkipProbabilityChange} = trainingModeManager
+    const {
+        isTrainingMode, loopSkipProbability,
+        handleLoopSkipProbabilityChange, noteSkipProbability, handleNoteSkipProbabilityChange
+    } = trainingModeManager
 
     return (
         <div
@@ -15,81 +17,27 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
             className={`container
                        ${!isTrainingMode ? 'hidden' : ''}`}
         >
-            <ProbabilityContainer
-                label="Loop Skip"
+            <ControlsContainer
+                label="Loop Skip Probability:"
                 id="loop-skip-probability"
                 defaultValue={DEFAULT_LOOP_SKIP_PROBABILITY}
-                probability={loopSkipProbability}
-                changeFunction={handleLoopSkipProbabilityChange}
-            />
-           <ProbabilityContainer
-                label="Note Skip"
-                id="note-skip-probability"
-                defaultValue={DEFAULT_NOTE_SKIP_PROBABILITY}
-                probability={noteSkipProbability}
-                changeFunction={handleNoteSkipProbabilityChange}
-            />
-        </div>
-    )
-}));
-
-const ProbabilityContainer = observer(({label, id, defaultValue, probability, changeFunction}) => {
-    return (
-        <div
-            id={`${id}-controls-container`}
-            className="probability-controls-container controls-container container"
-        >
-            <label htmlFor={`${id}-input`}>{label}:</label>
-            <ProbabilityControls
-                id={id}
-                probability={probability}
-                changeFunction={changeFunction}
-                defaultValue={defaultValue}
-            />
-        </div>
-    );
-});
-
-const ProbabilityControls = observer(({id, probability, changeFunction, defaultValue}) => {
-
-    return (
-        <div className="probability-controls">
-            <ChangingButton
-                id={`decrease-${id}-5-button`}
-                onClick={() => changeFunction(probability - 5)}
-                label="-5"
-                disabled={probability <= 0}
-            />
-            <ChangingButton
-                id={`decrease-${id}-button`}
-                onClick={() => changeFunction(probability - 1)}
-                label="-1"
-                disabled={probability <= 0}
-            />
-            <InputField
-                id={`${id}-input`}
-                inputVar={probability}
-                changeHandler={changeFunction}
-                defaultValue={defaultValue}
+                variable={loopSkipProbability}
+                changeFunc={handleLoopSkipProbabilityChange}
                 minLimit={0}
                 maxLimit={100}
             />
-            <ChangingButton
-                id={`increase-${id}-button`}
-                onClick={() => changeFunction(probability + 1)}
-                label="+1"
-                disabled={probability >= 100}
-            />
-            <ChangingButton
-                id={`increase-${id}-5-button`}
-                onClick={() => changeFunction(probability + 5)}
-                label="+5"
-                disabled={probability >= 100}
-            />
+            <ControlsContainer
+                 label="Note Skip Probability:"
+                 id="note-skip-probability"
+                 defaultValue={DEFAULT_NOTE_SKIP_PROBABILITY}
+                 probability={noteSkipProbability}
+                 changeFunc={handleNoteSkipProbabilityChange}
+                 minLimit={0}
+                 maxLimit={100}
+                 />
         </div>
-    );
-});
-
+    )
+}));
 
 // <div id="training-settings" className="hidden container">
 //     <div id="loop-skip-probability-container container" className="probability-container">

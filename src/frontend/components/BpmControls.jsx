@@ -1,6 +1,6 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
-import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM, DEFAULT_LOOP_SKIP_PROBABILITY} from "../vars/vars";
 import {inject} from "mobx-react";
 import {ControlsContainer} from "./UtilityComponents";
 
@@ -15,6 +15,7 @@ export default inject("metronomeManager")(observer(function BpmControls({metrono
             minLimit={BPM_MIN_LIMIT}
             maxLimit={BPM_MAX_LIMIT}
             defaultValue={DEFAULT_INITIAL_BPM}
+            label={"BPM:"}
         />
     );
 }));

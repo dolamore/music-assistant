@@ -2,11 +2,13 @@ import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import {preventNonDigitInput} from "../utils/utils.js";
 
-export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue}) => {
+export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue, label}) => {
     return (
         <div className={`${id}-controls-container controls-container container`}>
-            <label htmlFor={`${id}-controls`}>BPM:</label>
-            <div className={`${id}-controls container`}>
+            <label htmlFor={`${id}-controls`}>{label}</label>
+            <div
+                id={`${id}-controls`}
+                className={`${id}-controls container`}>
                 <ChangingButton
                     id={`${id}-decrease-5`}
                     label="-5"
