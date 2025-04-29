@@ -39,7 +39,7 @@ label {
     align-items: center;
 }
 
-.probability-container {
+.probability-controls-container {
     display: flex;
     flex-direction: column;
     align-items: center;

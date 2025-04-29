@@ -36,8 +36,8 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
 const ProbabilityContainer = observer(({label, id, defaultValue, probability, changeFunction}) => {
     return (
         <div
-            id={`${id}-container`}
-            className="probability-container"
+            id={`${id}-controls-container`}
+            className="probability-controls-container controls-container container"
         >
             <label htmlFor={`${id}-input`}>{label}:</label>
             <ProbabilityControls

@@ -2,6 +2,48 @@ import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
 import {preventNonDigitInput} from "../utils/utils.js";
 
+export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue}) => {
+    return (
+        <div className={`${id}-controls-container controls-container container`}>
+            <label htmlFor={`${id}-controls`}>BPM:</label>
+            <div className={`${id}-controls container`}>
+                <ChangingButton
+                    id={`${id}-decrease-5`}
+                    label="-5"
+                    onClick={() => changeFunc(variable-5)}
+                    disabled={variable <= minLimit}
+                />
+                <ChangingButton
+                    id={`${id}-decrease-1`}
+                    label="-1"
+                    onClick={() => changeFunc(variable-1)}
+                    disabled={variable <= minLimit}
+                />
+                <InputField
+                    id={`${id}-input`}
+                    inputVar={variable}
+                    changeHandler={changeFunc}
+                    defaultValue={defaultValue}
+                    minLimit={minLimit}
+                    maxLimit={maxLimit}
+                />
+                <ChangingButton
+                    id={`${id}-increase-1`}
+                    label="+1"
+                    onClick={() => changeFunc(variable + 1)}
+                    disabled={variable >= maxLimit}
+                />
+                <ChangingButton
+                    id={`${id}-increase-5`}
+                    label="+5"
+                    onClick={() => changeFunc(variable + 5)}
+                    disabled={variable >= maxLimit}
+                />
+            </div>
+        </div>
+    )
+});
+
 export const ChangingButton = observer(({ id, onClick, disabled, label }) => (
     <button
         id={id}
