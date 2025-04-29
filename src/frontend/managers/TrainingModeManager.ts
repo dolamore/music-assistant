@@ -1,11 +1,14 @@
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars.js";
 import {makeAutoObservable} from "mobx";
+import {handleVariableChange} from "../utils/utils";
 
 export class TrainingModeManager {
     public _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
     public _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
     public _isTrainingMode: boolean = true;
     public _isFirstLoop: boolean = true;
+    public _loopSkipPercentage = this._loopSkipProbability / 100;
+    public _noteSkipPercentage = this._noteSkipProbability / 100;
 
     constructor() {
         makeAutoObservable(this);
@@ -55,37 +58,26 @@ export class TrainingModeManager {
         this.handleProbabilityChange(changeProbability, this._noteSkipProbability, ProbabilityType.NOTE);
     }
 
+    setLoopSkipProbability(probability: number): void {
+        this._loopSkipProbability = probability;
+        this._loopSkipPercentage = probability / 100;
+    }
 
-    //TODO: сделать handleVariableChange ts и дженерик для этого случая
-    handleProbabilityChange = (newValue: number | string, currentValue: number, type: ProbabilityType): void => {
-        if (/^0\d/.test(String(newValue))) {
-            newValue = String(newValue).replace(/^0+/, '');
-        }
+    setNoteSkipProbability(probability: number): void {
+        this._noteSkipProbability = probability;
+        this._noteSkipPercentage = probability / 100;
+    }
 
-        if (Number.isNaN(newValue) || newValue === "") {
-            return;
-        }
-
-        if (currentValue === newValue) {
-            return;
-        }
-
-        let probability = Number((currentValue + Number(newValue)).toFixed(5));
-
-        if (probability > 1) {
-            probability = 1;
-        } else if (probability < 0) {
-            probability = 0;
-        } else {
-            probability = Math.round(probability * 100) / 100;
-        }
-
+    handleProbabilityChange(newValue: number | string, currentProbability: number, type: ProbabilityType): void {
         if (type === ProbabilityType.LOOP) {
-            this._loopSkipProbability = probability;
+            handleVariableChange(newValue, this._loopSkipProbability, 0, 100, (value: number) => this.setLoopSkipProbability(value))
         } else {
-            this._noteSkipProbability = probability;
+            handleVariableChange(newValue, this._noteSkipProbability, 0, 100, (value: number) => this.setNoteSkipProbability(value))
         }
-        this._isFirstLoop = true;
+
+        if (!(Number(newValue) === currentProbability)) {
+            this._isFirstLoop = true;
+        }
     }
 }
 
@@ -93,4 +85,3 @@ enum ProbabilityType {
     LOOP,
     NOTE
 }
-
