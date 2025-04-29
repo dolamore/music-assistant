@@ -5,33 +5,35 @@ import {ChangingButton, InputField} from "./UtilityComponents";
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 
 export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}) {
+    const trainingModeManager = metronomeManager.trainingModeManager;
+    const {isTrainingMode, loopSkipProbability,
+        handleLoopSkipProbabilityChange, noteSkipProbability, handleNoteSkipProbabilityChange} = trainingModeManager
+
     return (
         <div
             id="training-settings"
             className={`container
-                       ${!metronomeManager.trainingModeManager.isTrainingMode ? 'hidden' : ''}`}
+                       ${!isTrainingMode ? 'hidden' : ''}`}
         >
             <ProbabilityContainer
-                trainingModeManager={metronomeManager.trainingModeManager}
                 label="Loop Skip"
                 id="loop-skip-probability"
                 defaultValue={DEFAULT_LOOP_SKIP_PROBABILITY}
-                probability={metronomeManager.trainingModeManager.loopSkipProbability}
-                changeFunction={metronomeManager.trainingModeManager.handleLoopSkipProbabilityChange}
+                probability={loopSkipProbability}
+                changeFunction={handleLoopSkipProbabilityChange}
             />
            <ProbabilityContainer
-                trainingModeManager={metronomeManager.trainingModeManager}
                 label="Note Skip"
                 id="note-skip-probability"
                 defaultValue={DEFAULT_NOTE_SKIP_PROBABILITY}
-                probability={metronomeManager.trainingModeManager.noteSkipProbability}
-                changeFunction={metronomeManager.trainingModeManager.handleNoteSkipProbabilityChange}
+                probability={noteSkipProbability}
+                changeFunction={handleNoteSkipProbabilityChange}
             />
         </div>
     )
 }));
 
-const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultValue, probability, changeFunction}) => {
+const ProbabilityContainer = observer(({label, id, defaultValue, probability, changeFunction}) => {
     return (
         <div
             id={`${id}-container`}
@@ -41,7 +43,7 @@ const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultV
             <ProbabilityControls
                 id={id}
                 probability={probability}
-                changeFunction={trainingModeManager.handleLoopSkipProbabilityChange}
+                changeFunction={changeFunction}
                 defaultValue={defaultValue}
             />
         </div>
