@@ -47,15 +47,17 @@ export class TrainingModeManager {
         }
     }
 
-    handleLoopSkipProbabilityChange(changeProbability: number | string): void {
+    handleLoopSkipProbabilityChange = (changeProbability: number | string): void => {
         this.handleProbabilityChange(changeProbability, this._loopSkipProbability, ProbabilityType.LOOP);
     }
 
-    handleNoteSkipProbabilityChange(changeProbability: number | string): void {
+    handleNoteSkipProbabilityChange = (changeProbability: number | string): void => {
         this.handleProbabilityChange(changeProbability, this._noteSkipProbability, ProbabilityType.NOTE);
     }
 
-    handleProbabilityChange(newValue: number | string, currentValue: number, type: ProbabilityType): void {
+
+    //TODO: сделать handleVariableChange ts и дженерик для этого случая
+    handleProbabilityChange = (newValue: number | string, currentValue: number, type: ProbabilityType): void => {
         if (/^0\d/.test(String(newValue))) {
             newValue = String(newValue).replace(/^0+/, '');
         }
