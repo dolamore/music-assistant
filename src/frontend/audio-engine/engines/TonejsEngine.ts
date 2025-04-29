@@ -132,8 +132,12 @@ export class TonejsEngine extends AudioEngine {
         this._beatSequence = this.generateFixedMetronomeSequence();
     }
 
-    handleBpmChange = (newBpm: any): void => {
+    handleBpmChange = (newBpm: number): void => {
         handleVariableChange(newBpm, this._bpm, BPM_MIN_LIMIT, BPM_MAX_LIMIT,
             (value: number) => this.setBpm(value))
+    }
+
+    cleanTrainingMode(): void {
+        this._skipper = 0;
     }
 }

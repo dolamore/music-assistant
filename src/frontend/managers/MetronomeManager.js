@@ -13,7 +13,7 @@ export class MetronomeManager {
 
         this._beatBarsManager = new BeatBarsManager(this);
         this._elementsManager = new ElementsManager(this);
-        this.trainingModeManager = new TrainingModeManager();
+        this.trainingModeManager = new TrainingModeManager(this);
         this.visualEffectsManager = new VisualEffectsManager();
         this._audioEngine = new TonejsEngine(this);
 

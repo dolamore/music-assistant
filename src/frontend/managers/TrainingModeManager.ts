@@ -1,6 +1,7 @@
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars.js";
 import {makeAutoObservable} from "mobx";
 import {handleVariableChange} from "../utils/utils";
+import {MetronomeManager} from "./MetronomeManager";
 
 export class TrainingModeManager {
     private _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
@@ -9,8 +10,10 @@ export class TrainingModeManager {
     private _isFirstLoop: boolean = true;
     private _loopSkipPercentage = this._loopSkipProbability / 100;
     private _noteSkipPercentage = this._noteSkipProbability / 100;
+    private _metronomeManager;
 
-    constructor() {
+    constructor(metronomeManager: MetronomeManager) {
+        this._metronomeManager = metronomeManager;
         makeAutoObservable(this);
     }
 
@@ -48,6 +51,8 @@ export class TrainingModeManager {
 
         if (this._isTrainingMode) {
             this._isFirstLoop = true;
+        } else {
+            this._metronomeManager.audioEngine.cleanTrainingMode();
         }
     }
 

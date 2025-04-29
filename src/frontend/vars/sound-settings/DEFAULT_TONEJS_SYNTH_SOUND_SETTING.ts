@@ -1,5 +1,5 @@
 export const DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS = [
-    {key: 'frequency', value: 440, label: "Frequency"},
+    {key: 'frequency', value: 440, label: "Frequency", minValue: 0, maxValue: 1000},
     {key: 'detune', value: 0, label: "Detune"},
     {key: 'phase', value: 0, label: "Phase"},
     {key: 'volume', value: 0, label: "Volume"},
@@ -8,3 +8,4 @@ export const DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS = [
     {key: 'sustain', value: 0, label: "Sustain"},
     {key: 'release', value: 0.1, label: "Release"},
 ];
+//TODO: проверить значения min, max

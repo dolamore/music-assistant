@@ -34,9 +34,10 @@ export abstract class AudioEngine {
 
 
 
-    abstract handleBpmChange(newBpm: any): void;
+    abstract handleBpmChange(newBpm: number): void;
     abstract startPlaying(): void;
     abstract stopPlaying(): void;
     abstract get loopCount(): number;
     abstract updateBeatSequence(): void;
+    abstract cleanTrainingMode(): void
 }
