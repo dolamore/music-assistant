@@ -2,7 +2,7 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {ChangingButton, InputField} from "./UtilityComponents";
-import {DEFAULT_LOOP_SKIP_PROBABILITY} from "../vars/vars";
+import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 
 export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}) {
     return (
@@ -16,29 +16,22 @@ export default inject("metronomeManager")(observer(function TrainingSettings({me
                 label="Loop Skip"
                 id="loop-skip-probability"
                 defaultValue={DEFAULT_LOOP_SKIP_PROBABILITY}
+                probability={metronomeManager.trainingModeManager.loopSkipProbability}
+                changeFunction={metronomeManager.trainingModeManager.handleLoopSkipProbabilityChange}
             />
-            <div id="note-skip-probability-container" className="probability-container">
-                <label htmlFor="note-skip-probability-input">Note Skip:</label>
-                <div className="probability-controls">
-                    <button id="decrease-note-skip-probability-5-button">-5</button>
-                    <button id="decrease-note-skip-probability-button">-1</button>
-                    <input
-                        type="number"
-                        id="note-skip-probability-input"
-                        value={metronomeManager.trainingModeManager.noteSkipProbability}
-                        onChange={(e) => metronomeManager.trainingModeManager.handleNoteSkipProbabilityChange(Number(e.target.value))}
-                        min="0"
-                        max="100"
-                    />
-                    <button id="increase-note-skip-probability-button">+1</button>
-                    <button id="increase-note-skip-probability-5-button">+5</button>
-                </div>
-            </div>
+           <ProbabilityContainer
+                trainingModeManager={metronomeManager.trainingModeManager}
+                label="Note Skip"
+                id="note-skip-probability"
+                defaultValue={DEFAULT_NOTE_SKIP_PROBABILITY}
+                probability={metronomeManager.trainingModeManager.noteSkipProbability}
+                changeFunction={metronomeManager.trainingModeManager.handleNoteSkipProbabilityChange}
+            />
         </div>
     )
 }));
 
-const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultValue}) => {
+const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultValue, probability, changeFunction}) => {
     return (
         <div
             id={`${id}-container`}
@@ -47,7 +40,7 @@ const ProbabilityContainer = observer(({trainingModeManager, label, id, defaultV
             <label htmlFor={`${id}-input`}>{label}:</label>
             <ProbabilityControls
                 id={id}
-                probability={trainingModeManager.loopSkipProbability}
+                probability={probability}
                 changeFunction={trainingModeManager.handleLoopSkipProbabilityChange}
                 defaultValue={defaultValue}
             />
