@@ -4,17 +4,25 @@ import {ElementsManager} from "./ElementsManager.js";
 import {TrainingModeManager} from "./TrainingModeManager.js";
 import {VisualEffectsManager} from "./VisualEffectsManager.js";
 import {TonejsEngine} from "../audio-engine/engines/TonejsEngine";
+import {AudioEngine} from "../audio-engine/AudioEngine";
 
 
 export class MetronomeManager {
+
+    private readonly _beatBarsManager: BeatBarsManager;
+    private readonly _elementsManager: ElementsManager;
+    private readonly _trainingModeManager: TrainingModeManager;
+    private readonly _visualEffectsManager: VisualEffectsManager;
+    private readonly _audioEngine: AudioEngine;
+    private _isPlaying: boolean;
 
     constructor() {
         this._isPlaying = false;
 
         this._beatBarsManager = new BeatBarsManager(this);
         this._elementsManager = new ElementsManager(this);
-        this.trainingModeManager = new TrainingModeManager(this);
-        this.visualEffectsManager = new VisualEffectsManager();
+        this._trainingModeManager = new TrainingModeManager(this);
+        this._visualEffectsManager = new VisualEffectsManager();
         this._audioEngine = new TonejsEngine(this);
 
         makeAutoObservable(this)
@@ -40,6 +48,14 @@ export class MetronomeManager {
         return this._elementsManager;
     }
 
+    get trainingModeManager(): TrainingModeManager {
+        return this._trainingModeManager;
+    }
+
+    get visualEffectsManager(): VisualEffectsManager {
+        return this._visualEffectsManager;
+    }
+
     startMetronome() {
         this._isPlaying = true;
         this._audioEngine.startPlaying();
@@ -47,15 +63,12 @@ export class MetronomeManager {
 
 
     stopMetronome() {
-        this.isPlaying = false;
+        this._isPlaying = false;
         this._audioEngine.stopPlaying();
-
-        //     this.elementsManager.resetPendulumAnimation();
-        // }
     }
 
     updateMetronome() {
         this._audioEngine.updateBeatSequence();
-        this.beatBarsManager.updateTimeSignature();
+        this._beatBarsManager.updateTimeSignature();
     }
 }

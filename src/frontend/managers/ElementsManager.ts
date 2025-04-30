@@ -25,10 +25,6 @@ export class ElementsManager {
         return this._isSettingsPanelVisible;
     }
 
-    set isSettingsPanelVisible(value: boolean) {
-        this._isSettingsPanelVisible = value;
-    }
-
     toggleSettingsPanel(): void {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
     }

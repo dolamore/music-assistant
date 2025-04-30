@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import Metronome from "./components/Metronome";
 import LoopCounter from "./components/LoopCounter";
 import BpmControls from "./components/BpmControls";
-import {MetronomeManager} from "./managers/MetronomeManager";
+import {MetronomeManager} from "./managers/MetronomeManager.js";
 import VisualCheckBoxControls from "./components/VisualsCheckBoxControls";
 import MainPanelControls from "./components/MainPanelControls";
 import TrainingSettings from "./components/TrainingSettings.jsx";

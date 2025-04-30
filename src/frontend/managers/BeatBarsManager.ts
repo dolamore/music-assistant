@@ -77,6 +77,7 @@ export class BeatBarsManager {
         this.changeDropdownSize(false);
     }
 
+    //change note size for all beats, either increase or decrease
     changeDropdownSize(direction: boolean): void {
         this._beats.forEach((beat) => {
             const currentIndex = NOTES.findIndex(note => note.label === beat.noteSettings.label);
@@ -86,6 +87,7 @@ export class BeatBarsManager {
         this.metronomeManager.updateMetronome();
     }
 
+    //calculate the new time signature based on the current beats and their note sizes
     updateTimeSignature(): void {
         let beatAmount = this._beats.length;
         let beatPattern = [];
