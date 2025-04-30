@@ -1,3 +1,5 @@
+import {makeAutoObservable} from "mobx";
+
 export default class TimeSignature {
     private _numerator: number;
     private _denominator: number;
@@ -5,6 +7,7 @@ export default class TimeSignature {
     constructor(numerator: number, denominator: number) {
         this._numerator = numerator;
         this._denominator = denominator;
+        makeAutoObservable(this);
     }
 
     get numerator(): number {
