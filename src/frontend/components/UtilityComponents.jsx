@@ -67,7 +67,7 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
     const handleChange = (e) => {
         let value = e.target.value;
         // Remove leading zeros
-        if (/^0\d/.test(value)) {
+        if (/^0\d+$/.test(value)) {
             value = value.replace(/^0+/, '');
         }
         // Limit the value to the allowable BPM range
