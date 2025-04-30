@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 
 export function handleVariableChange(newValue, variable, minLimit, maxLimit, varSetter) {
-    if (/^0\d/.test(newValue)) {
+    if (/^0\d+$/.test(newValue)) {
         newValue = newValue.replace(/^0+/, '');
     }
 
