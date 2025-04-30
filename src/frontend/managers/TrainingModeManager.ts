@@ -8,9 +8,9 @@ export class TrainingModeManager {
     private _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
     private _isTrainingMode: boolean = false;
     private _isFirstLoop: boolean = true;
-    private _loopSkipPercentage = this._loopSkipProbability / 100;
-    private _noteSkipPercentage = this._noteSkipProbability / 100;
-    private _metronomeManager;
+    private _loopSkipPercentage: number = this._loopSkipProbability / 100;
+    private _noteSkipPercentage: number = this._noteSkipProbability / 100;
+    private _metronomeManager: MetronomeManager;
 
     constructor(metronomeManager: MetronomeManager) {
         this._metronomeManager = metronomeManager;

@@ -1,5 +1,7 @@
 import {
-    getDefaultNote, getDefaultNoteAmount,
+    DEFAULT_NOTE_AMOUNT,
+    DEFAULT_NOTE_SIZE,
+    getDefaultNote,
     INITIAL_NUMBER_OF_BEATS,
     NOTES,
 } from "../vars/vars";
@@ -7,18 +9,25 @@ import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat";
 import {createDefaultSoundObject} from "../vars/sounds/DEFAULT_SOUNDS";
 import {lcmArray} from "../utils/utils.js";
+import {MetronomeManager} from "./MetronomeManager";
+import {SoundObj} from "../models/SoundObj";
+import Note from "../models/Note";
+import TimeSignature from "../models/TimeSignature";
 
 export class BeatBarsManager {
+    _beats: Beat[];
+    _timeSignature: TimeSignature = new TimeSignature(INITIAL_NUMBER_OF_BEATS, DEFAULT_NOTE_SIZE);
+    metronomeManager: MetronomeManager;
 
-    constructor(metronomeManager) {
+    constructor(metronomeManager: MetronomeManager) {
         this._beats = [];
         this.metronomeManager = metronomeManager;
         this.generateBeats();
-        this._timeSignature = this.countSize();
+        this.updateTimeSignature();
         makeAutoObservable(this)
     }
 
-    get timeSignature() {
+    get timeSignature(): { numerator: number, denominator: number } {
         return this._timeSignature;
     }
 
@@ -26,54 +35,49 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    updateTimeSignature() {
-        this._timeSignature = this.countSize();
-    }
-
-
-    addBeat(sound, note, noteAmount, beatIndex) {
+    addBeat(sound: SoundObj, note: Note, noteAmount: number, beatIndex: number) {
         this._beats.push(new Beat(sound, note, noteAmount, beatIndex));
     }
 
-    addStandardBeat(beatIndex) {
+    addStandardBeat(beatIndex: number): void {
         this.addBeat(
             createDefaultSoundObject(),
             getDefaultNote(),
-            getDefaultNoteAmount(),
+            DEFAULT_NOTE_AMOUNT,
             beatIndex
         );
     }
 
-    popBeat() {
+    popBeat(): void {
         this._beats.pop();
     }
 
-    generateBeats() {
+    generateBeats(): void {
         for (let i = 0; i < INITIAL_NUMBER_OF_BEATS; i++) {
             this.addStandardBeat(i);
         }
     }
 
-    increaseBeats() {
+    increaseBeats(): void {
         this.addStandardBeat(this._beats.length);
         this.metronomeManager.updateMetronome();
     }
 
-    decreaseBeats() {
+    decreaseBeats(): void {
         this.popBeat();
         this.metronomeManager.updateMetronome();
     }
 
 
-    increaseNotes() {
+    increaseNotes(): void {
         this.changeDropdownSize(true);
     }
 
-    decreaseNotes() {
+    decreaseNotes(): void {
         this.changeDropdownSize(false);
     }
 
-    changeDropdownSize(direction) {
+    changeDropdownSize(direction: boolean): void {
         this._beats.forEach((beat) => {
             const currentIndex = NOTES.findIndex(note => note.label === beat.noteSettings.label);
             const newIndex = currentIndex + (direction ? 2 : -2);
@@ -82,7 +86,7 @@ export class BeatBarsManager {
         this.metronomeManager.updateMetronome();
     }
 
-    countSize() {
+    updateTimeSignature(): void {
         let beatAmount = this._beats.length;
         let beatPattern = [];
 
@@ -109,6 +113,7 @@ export class BeatBarsManager {
             }
         }
 
-        return {numerator: numerator, tactSize: denominator};
+        this._timeSignature.numerator = numerator;
+        this._timeSignature.denominator = denominator;
     }
 }

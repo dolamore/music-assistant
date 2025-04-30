@@ -1,12 +1,13 @@
 import {makeAutoObservable} from "mobx";
+import {MetronomeManager} from "./MetronomeManager";
+import {BeatBarsManager} from "./BeatBarsManager";
 
 export class ElementsManager {
-    _isSettingsPanelVisible = false;
-    metronomeManager;
-    _beatBarsManager;
-    _currentNoteSizeIndex = 2;
+    _isSettingsPanelVisible: boolean = false;
+    metronomeManager: MetronomeManager;
+    _beatBarsManager: BeatBarsManager;
 
-    constructor(metronomeManager) {
+    constructor(metronomeManager: MetronomeManager) {
         this.metronomeManager = metronomeManager;
         this._beatBarsManager = metronomeManager.beatBarsManager;
         makeAutoObservable(this)
@@ -20,7 +21,7 @@ export class ElementsManager {
         this._isSettingsPanelVisible = value;
     }
 
-    toggleSettingsPanel() {
+    toggleSettingsPanel(): void {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
     }
 }

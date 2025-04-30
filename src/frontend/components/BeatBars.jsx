@@ -1,7 +1,7 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {NOTE_AMOUNTS, NOTES} from "../vars/vars";
+import {NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
 import {uiState} from "../states/UIState";
 
 export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {

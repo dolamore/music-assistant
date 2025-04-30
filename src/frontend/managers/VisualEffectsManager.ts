@@ -1,9 +1,9 @@
 import {makeAutoObservable} from "mobx";
 
 export class VisualEffectsManager {
-    _isPendulumVisible = true;
-    _isFlashingBarVisible = true;
-    _areBeatBarsVisible = true;
+    _isPendulumVisible: boolean = true;
+    _isFlashingBarVisible: boolean = true;
+    _areBeatBarsVisible: boolean = true;
 
     constructor() {
         makeAutoObservable(this);
@@ -21,15 +21,15 @@ export class VisualEffectsManager {
         return this._areBeatBarsVisible;
     }
 
-    togglePendulumVisibility() {
+    togglePendulumVisibility(): void {
         this._isPendulumVisible = !this._isPendulumVisible;
     }
 
-    toggleFlashingBarVisibility() {
+    toggleFlashingBarVisibility(): void {
         this._isFlashingBarVisible = !this._isFlashingBarVisible;
     }
 
-    toggleBeatBarsVisibility() {
+    toggleBeatBarsVisibility(): void {
         this._areBeatBarsVisible = !this._areBeatBarsVisible;
     }
 }
