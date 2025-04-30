@@ -4,8 +4,8 @@ import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
 import Note from "./Note";
 
 export default class Beat {
-    private _beatSound: SoundObj;
-    private _noteSettings: any;
+    private readonly _beatSound: SoundObj;
+    private _noteSettings: Note;
     private _noteAmount: number;
     private readonly _beatIndex: number;
 
@@ -27,10 +27,6 @@ export default class Beat {
         return this._beatSound;
     }
 
-    set beatSound(value) {
-        this._beatSound = value;
-    }
-
     get noteSettings() {
         return this._noteSettings;
     }
@@ -45,10 +41,6 @@ export default class Beat {
 
     set noteAmount(value) {
         this._noteAmount = value;
-    }
-
-    get soundSettings() {
-        return this._beatSound.instrument.soundSettings;
     }
 
     updateSoundSetting(key: string, value: string | number) {

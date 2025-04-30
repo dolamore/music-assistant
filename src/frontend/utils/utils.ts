@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 
-export function handleVariableChange(newValue, variable, minLimit, maxLimit, varSetter) {
+export function handleVariableChange(newValue: any, variable: number, minLimit: number, maxLimit: number, varSetter: (value: number) => void) {
     if (/^0\d+$/.test(newValue)) {
         newValue = newValue.replace(/^0+/, '');
     }

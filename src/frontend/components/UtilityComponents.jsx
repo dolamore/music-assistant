@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
-import {preventNonDigitInput} from "../utils/utils.js";
+import {preventNonDigitInput} from "../utils/utils.ts";
 
 export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue, label}) => {
     return (
