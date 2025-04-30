@@ -75,7 +75,6 @@ const NotesControlGroup = observer(({metronomeManager}) => {
 });
 
 const TimeSignatureInfo = observer(({timeSignature}) => {
-    const {numerator, denominator} = timeSignature;
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>
@@ -83,7 +82,7 @@ const TimeSignatureInfo = observer(({timeSignature}) => {
                 id="time-signature"
                 className="signature-box"
             >
-                {`${numerator}/${denominator}`}
+                {`${timeSignature.numerator}/${timeSignature.denominator}`}
             </div>
         </div>
     );

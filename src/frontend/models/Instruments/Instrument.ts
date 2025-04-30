@@ -13,7 +13,7 @@ export abstract class Instrument {
 
     abstract updateInstrumentParameter(key: string, value: any): void;
 
-    protected constructor(soundSettings: any) {
+    protected constructor(soundSettings: SoundSetting[]) {
         this._soundSettings = cloneDeep(soundSettings);
 
         makeObservable(this, {

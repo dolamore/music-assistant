@@ -2,12 +2,13 @@ import * as Tone from "tone";
 import {Instrument} from "./Instrument";
 import {ToneOscillatorType} from "tone";
 import {computed, makeObservable, observable, override} from "mobx";
+import {SoundSetting} from "../SoundSetting";
 
 export class TonejsSynth extends Instrument {
     private _synth: Tone.Synth;
     public _oscillatorType: string | ToneOscillatorType;
 
-    constructor(soundSettings: any, oscillatorType: string | Tone.ToneOscillatorType) {
+    constructor(soundSettings: SoundSetting[], oscillatorType: string | Tone.ToneOscillatorType) {
         super(soundSettings);
         this._oscillatorType = oscillatorType;
         const noSound = oscillatorType === "no-sound";
@@ -60,7 +61,7 @@ export class TonejsSynth extends Instrument {
         }
     }
 
-    updateSoundSetting(key: string, value: number | string) {
+    updateSoundSetting(key: string, value: number | string): void {
         if (key === "soundType") {
             this._oscillatorType = value as string;
         } else {

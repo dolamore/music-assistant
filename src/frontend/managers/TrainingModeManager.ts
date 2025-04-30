@@ -10,14 +10,14 @@ export class TrainingModeManager {
     private _isFirstLoop: boolean = true;
     private _loopSkipPercentage: number = this._loopSkipProbability / 100;
     private _noteSkipPercentage: number = this._noteSkipProbability / 100;
-    private _metronomeManager: MetronomeManager;
+    private readonly _metronomeManager: MetronomeManager;
 
     constructor(metronomeManager: MetronomeManager) {
         this._metronomeManager = metronomeManager;
         makeAutoObservable(this);
     }
 
-    set isFirstLoop(isFirstLoop) {
+    set isFirstLoop(isFirstLoop: boolean) {
         this._isFirstLoop = isFirstLoop;
     }
 

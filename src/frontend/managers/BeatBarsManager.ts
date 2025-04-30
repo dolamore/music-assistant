@@ -15,9 +15,9 @@ import Note from "../models/Note";
 import TimeSignature from "../models/TimeSignature";
 
 export class BeatBarsManager {
-    _beats: Beat[];
-    _timeSignature: TimeSignature = new TimeSignature(INITIAL_NUMBER_OF_BEATS, DEFAULT_NOTE_SIZE);
-    metronomeManager: MetronomeManager;
+    private readonly _beats: Beat[];
+    private readonly _timeSignature: TimeSignature = new TimeSignature(INITIAL_NUMBER_OF_BEATS, DEFAULT_NOTE_SIZE);
+    private readonly metronomeManager: MetronomeManager;
 
     constructor(metronomeManager: MetronomeManager) {
         this._beats = [];
@@ -27,7 +27,7 @@ export class BeatBarsManager {
         makeAutoObservable(this)
     }
 
-    get timeSignature(): { numerator: number, denominator: number } {
+    get timeSignature(): TimeSignature {
         return this._timeSignature;
     }
 
@@ -35,7 +35,7 @@ export class BeatBarsManager {
         return this._beats;
     }
 
-    addBeat(sound: SoundObj, note: Note, noteAmount: number, beatIndex: number) {
+    addBeat(sound: SoundObj, note: Note, noteAmount: number, beatIndex: number): void {
         this._beats.push(new Beat(sound, note, noteAmount, beatIndex));
     }
 

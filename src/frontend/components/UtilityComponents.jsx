@@ -5,7 +5,7 @@ import {preventNonDigitInput} from "../utils/utils.js";
 export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue, label}) => {
     return (
         <div className={`${id}-controls-container controls-container container`}>
-            <label htmlFor={`${id}-controls`}>{label}</label>
+            <label htmlFor={`${id}-input`}>{label}</label>
             <div
                 id={`${id}-controls`}
                 className={`${id}-controls container`}>
