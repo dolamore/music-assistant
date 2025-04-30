@@ -3,15 +3,17 @@ export class SoundSetting {
     private readonly _label: string;
     private _value: number | string;
 
-    private readonly _min: number | undefined;
-    private readonly _max: number | undefined;
+    private readonly _minValue: number | undefined;
+    private readonly _maxValue: number | undefined;
+    private readonly _defaultValue: number;
 
-    constructor(key: string, label: string, value: number | string, min?: number, max?: number) {
+    constructor(key: string, label: string, value: number | string, defaultValue: number, min?: number, max?: number) {
         this._key = key;
         this._label = label;
         this._value = value;
-        this._min = min;
-        this._max = max;
+        this._minValue = min;
+        this._maxValue = max;
+        this._defaultValue = defaultValue;
     }
 
     get key(): string {
@@ -26,15 +28,23 @@ export class SoundSetting {
         return this._value;
     }
 
-    get min(): number | undefined {
-        return this._min;
+    get minValue(): number | undefined {
+        return this._minValue;
     }
 
-    get max(): number | undefined {
-        return this._max;
+    get maxValue(): number | undefined {
+        return this._maxValue;
+    }
+
+    get defaultValue(): number {
+        return this._defaultValue;
     }
 
     set value(value: number | string) {
+        this._value = value;
+    }
+
+    setValue(value: number | string) {
         this._value = value;
     }
 }

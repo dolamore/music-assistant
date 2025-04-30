@@ -3,6 +3,7 @@ import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
 import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
+import {InputField} from "./UtilityComponents.jsx";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
@@ -40,11 +41,6 @@ const SoundRow = observer(({metronomeManager, index}) => {
         beat.updateSoundSetting('soundType', e.target.value)
     };
 
-    const handleSoundSettingsChange = (e, key) => {
-        const newValue = Number(e.target.value);
-        beat.beatSound.instrument.updateSoundSetting(key, newValue);
-    };
-
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>
@@ -63,17 +59,16 @@ const SoundRow = observer(({metronomeManager, index}) => {
                 ))}
             </select>
             {beat.beatSound.instrument.soundSettings.map(setting => (
-                <input
+                <InputField
                     key={setting.key}
                     id={`${setting.key}-${index}`}
-                    type="number"
-                    placeholder={setting.label}
-                    value={beat.beatSound.instrument.soundSettings.find(
-                        instrumentSoundSetting => setting.key === instrumentSoundSetting.key).value
-                    }
-                    onChange={(e) => handleSoundSettingsChange(e, setting.key)}
+                    inputVar={setting.value}
+                    changeHandler={beat.beatSound.instrument.updateSoundSetting.bind(beat.beatSound.instrument, setting.key)}
+                    defaultValue={setting.defaultValue}
+                    minLimit={setting.minValue}
+                    maxLimit={setting.maxValue}
                 />
             ))}
         </div>
-    )
+    );
 });

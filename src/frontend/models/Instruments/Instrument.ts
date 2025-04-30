@@ -1,6 +1,7 @@
 import {action, computed, makeObservable, observable} from "mobx";
 import {cloneDeep} from "lodash";
 import {SoundSetting} from "../SoundSetting";
+import {handleVariableChange} from "../../utils/utils";
 
 export abstract class Instrument {
     public _soundSettings: SoundSetting[] = [];
@@ -32,8 +33,6 @@ export abstract class Instrument {
 
     updateSoundSetting(key: string, value: number | string): void {
         const setting = this._soundSettings.find(s => s.key === key);
-        if (setting) {
-            setting.value = value;
-        }
+        handleVariableChange(value, setting, setting?.minValue, setting?.maxValue, (value: number) => setting?.setValue(value));
     }
 }
