@@ -6,7 +6,7 @@ import {MetronomeManager} from "./MetronomeManager";
 export class TrainingModeManager {
     private _loopSkipProbability: number = DEFAULT_LOOP_SKIP_PROBABILITY;
     private _noteSkipProbability: number = DEFAULT_NOTE_SKIP_PROBABILITY;
-    private _isTrainingMode: boolean = true;
+    private _isTrainingMode: boolean = false;
     private _isFirstLoop: boolean = true;
     private _loopSkipPercentage = this._loopSkipProbability / 100;
     private _noteSkipPercentage = this._noteSkipProbability / 100;

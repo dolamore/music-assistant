@@ -24,11 +24,3 @@ export class ElementsManager {
         this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
     }
 }
-
-//     renderElements() {
-//
-//         elements.loopSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
-//
-//         elements.noteSkipProbabilityInput.addEventListener('keypress', (e) => this.preventNonDigitInput(e));
-//     }
-// }
