@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",  // Для совместимости с NestJS, ES2017 или выше
+    "module": "commonjs",  // NestJS использует CommonJS модули
+    "moduleResolution": "node",  // Разрешение модулей как в Node.js
+    "jsx": "react-jsx",  // Если проект использует React
+    "esModuleInterop": true,  // Для импорта CommonJS модулей в стиле ES6
+    "experimentalDecorators": true,  // Включение поддержки декораторов
+    "emitDecoratorMetadata": true,  // Включение метаданных для декораторов
+    "strict": true,  // Включение строгой проверки типов
+    "skipLibCheck": true,  // Пропуск проверки типов в библиотеках
+    "forceConsistentCasingInFileNames": true,  // Обеспечение согласованности регистров в путях
+    "outDir": "./dist",  // Папка для выходных файлов
+    "allowJs": true,  // Разрешение работы с JavaScript-файлами
+    "checkJs": false,  // Не проверять файлы .js на ошибки TypeScript
+    "resolveJsonModule": true,  // Разрешение работы с JSON модулями
+    "noEmit": false,  // Не отключать вывод компилятора (оставим для использования с Vite)
+    "skipDefaultLibCheck": true  // Пропуск проверки стандартных библиотек
+  },
+  "include": [
+    "src/**/*"  // Указание, что все файлы внутри папки src должны быть обработаны
+  ],
+  "exclude": [
+    "node_modules",  // Исключаем node_modules
+    "dist"  // Исключаем папку dist
+  ]
+}

@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin'; // Импортируем плагин для HTML
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 import path from 'path';
 
 export default {
-    entry: './src/index.jsx',
+    entry: './src/frontend/index.jsx',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
@@ -29,6 +29,11 @@ export default {
                 },
             },
             {
+                test: /\.ts?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
                 test: /\.css$/,
                 use: [
                     process.env.NODE_ENV === 'production'
@@ -40,7 +45,9 @@ export default {
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.jsx', '.tsx', '.ts'],
+        enforceExtension: false,
+
     },
     devServer: {
         static: {

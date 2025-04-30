@@ -7,7 +7,7 @@ export default defineConfig({
     plugins: [
         react({
             jsxRuntime: 'automatic',  // Automatic JSX runtime
-            include: [/\.jsx?$/, /\.js?$/],  // Support .js and .jsx files
+            include: [/\.jsx?$/, /\.js?$/, /\.tsx?$/, /\.ts?$/],  // Support for .jsx, .js, .tsx, and .ts files
         }),
         babel(),
         commonjs(),
