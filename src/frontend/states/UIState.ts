@@ -1,5 +1,8 @@
 import {makeAutoObservable, action} from "mobx";
 
+/**
+ *
+ */
 class UIState {
     private _flashingBarBlinking: boolean = false;
     private _currentPlayingBeatIndex: number | null = null;
@@ -18,6 +21,7 @@ class UIState {
         return this._flashingBarBlinking;
     }
 
+    //make beat element and flashing bar change their color and appear for a while, when the beat is playing
     playBeat(index: number) {
         this._currentPlayingBeatIndex = index;
         this._flashingBarBlinking = true;

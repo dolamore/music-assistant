@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys";
 import {setupAudioContextUnlocker} from "../utils/utils.js";
-import {ToggleCheckbox} from "./UtilityComponents.jsx";
+import {ToggleCheckbox} from "./UtilityComponents.tsx";
 
 export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
     return (

@@ -36,7 +36,7 @@ export class SoundSetting {
         return this._maxValue;
     }
 
-    get defaultValue(): number {
+    get defaultValue(): number | string {
         return this._defaultValue;
     }
 

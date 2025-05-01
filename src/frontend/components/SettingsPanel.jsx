@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
 import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
-import {InputField} from "./UtilityComponents.jsx";
+import {InputField} from "./UtilityComponents.tsx";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {

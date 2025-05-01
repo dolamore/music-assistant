@@ -37,10 +37,11 @@ export async function setupAudioContextUnlocker(): Promise<void> {
     await Tone.getContext().resume();
 }
 
-export function preventNonDigitInput(e: KeyboardEvent) {
+//TODO: проверить чтобы двойной пробел не создавал точку и тип e
+export function preventNonDigitInput(e: any) {
     const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
 
-    if (!/[0-9]/.test(e.key) && !allowedKeys.has(Number(e.code))) {
+    if (!/[0-9]/.test(e.key) && !allowedKeys.has(Number(e.keyCode))) {
         e.preventDefault();
     }
 }

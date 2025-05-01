@@ -1,8 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import { observer } from "mobx-react-lite";
-import {preventNonDigitInput} from "../utils/utils.ts";
+import {preventNonDigitInput} from "../utils/utils";
+import {
+    ChangingButtonInputType,
+    ControlsContainerInputType,
+    InputFieldInputType, ToggleCheckboxInputType
+} from "../models/ComponentsTypes";
 
-export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue, label}) => {
+export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, maxLimit, defaultValue, label}: ControlsContainerInputType): ReactElement => {
     return (
         <div className={`${id}-controls-container controls-container container`}>
             <label htmlFor={`${id}-input`}>{label}</label>
@@ -46,7 +51,7 @@ export const ControlsContainer = observer(({id, changeFunc, variable, minLimit, 
     )
 });
 
-export const ChangingButton = observer(({ id, onClick, disabled, label }) => (
+export const ChangingButton = observer(({ id, onClick, disabled, label }: ChangingButtonInputType): ReactElement => (
     <button
         id={id}
         onClick={onClick}
@@ -57,31 +62,37 @@ export const ChangingButton = observer(({ id, onClick, disabled, label }) => (
     </button>
 ));
 
-export const InputField = observer(({id, inputVar, changeHandler, defaultValue, minLimit, maxLimit}) => {
+export const InputField = observer(({id, inputVar, changeHandler, defaultValue, minLimit, maxLimit}: InputFieldInputType): ReactElement => {
+    //TODO: проверить почему перестало срабатывать и добавлять 0
     const [inputValue, setInputValue] = useState(inputVar);
 
     useEffect(() => {
         setInputValue(inputVar);
     }, [inputVar]);
 
-    const handleChange = (e) => {
-        let value = e.target.value;
+    //TODO: проверить тип e
+    const handleChange = (e: any) => {
+        console.log(e.target.value);
+        let value: string = e.target.value;
         // Remove leading zeros
         if (/^0\d+$/.test(value)) {
             value = value.replace(/^0+/, '');
         }
+
         // Limit the value to the allowable BPM range
-        const intValue = parseInt(value, 10);
+        let intValue: number = parseInt(value, 10);
         if (intValue > maxLimit) {
-            value = maxLimit;
+            intValue = maxLimit;
         } else if (intValue < minLimit) {
-            value = minLimit;
+            intValue = minLimit;
         }
-        setInputValue(value);
+
+        setInputValue(intValue);
     };
 
-    const handleBlur = () => {
-        const newValue = inputValue === '' ? defaultValue : Number(inputValue);
+    //TODO: проверить нужен ли здесь действительно String
+    const handleBlur: () => void = (): void => {
+        const newValue = String(inputValue) === '' ? defaultValue : Number(inputValue);
         changeHandler(newValue);
         setInputValue(newValue);
     };
@@ -98,7 +109,7 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
     );
 });
 
-export const ToggleCheckbox = observer(({id, checked, onChange, label}) => {
+export const ToggleCheckbox = observer(({id, checked, onChange, label}: ToggleCheckboxInputType): ReactElement => {
     return (
         <label>
             <input type="checkbox" id={id} checked={checked} onChange={onChange}/>

@@ -1,5 +1,9 @@
 import {makeAutoObservable} from "mobx";
 
+/**
+* Time Signature consists of numerator, which means the amount of beats, and denominator, which means the size of this beat
+* (e.g 4/4 means four beats with the note size 1/4)
+*/
 export default class TimeSignature {
     private _numerator: number;
     private _denominator: number;
