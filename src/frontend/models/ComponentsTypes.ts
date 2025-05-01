@@ -1,15 +1,10 @@
 import {MetronomeManager} from "../managers/MetronomeManager";
 import TimeSignature from "./TimeSignature";
-import {ReactElement} from "react";
 import Beat from "./Beat";
 import {UIState} from "../states/UIState";
 
-export type MetronomeChildrenType = {
-    children: ReactElement
-}
-
 export type MetronomeManagerInputType = {
-    metronomeManager: MetronomeManager
+    metronomeManager?: MetronomeManager
 }
 
 export type TimeSignatureInfoInputType = {
