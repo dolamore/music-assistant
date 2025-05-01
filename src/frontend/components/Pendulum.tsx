@@ -1,57 +1,59 @@
-import React, {useEffect, useRef} from "react";
+import React, {ReactElement, useEffect, useRef} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
+import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function Pendulum({metronomeManager}) {
-    const pendulumBarRef = useRef(null);
-    const pendulumRef = useRef(null);
+export default inject("metronomeManager")(observer(function Pendulum({metronomeManager}: MetronomeManagerInputType): ReactElement {
+    //TODO: проверить их типы
+    const pendulumBarRef: any = useRef(null);
+    const pendulumRef: any = useRef(null);
 
     useEffect(() => {
-        let animationFrameId;
-        let startTime = null;
+        let animationFrameId: number;
+        let startTime: number | null = null;
 
-        const animate = (timestamp) => {
+        const animate = (timestamp: number) => {
             if (!startTime) {
                 startTime = timestamp;
             }
 
-            // Получаем размеры для расчета максимального смещения
+            // get sizes for max offset
             const barWidth = pendulumBarRef.current?.clientWidth || 0;
             const pendulumWidth = pendulumRef.current?.clientWidth || 0;
             const maxPosition = (barWidth - pendulumWidth);
 
-            // Расчет времени на основе BPM
+            // calculate beat duration
             const beatDuration = 60 / metronomeManager.audioEngine.bpm; // Длительность одного удара в секундах
 
-            // Прошедшее время с момента запуска в секундах
+            // elapsed time starting from the beginning in seconds
             const elapsedTime = (timestamp - startTime) / 1000;
 
-            // Расчет фазы маятника (от 0 до 1) в текущий момент времени
+            // calculate current pendulum phase (0 to 1)
             const cycleDuration = beatDuration * 2; // Полный цикл (туда-обратно)
             const phase = (elapsedTime % cycleDuration) / cycleDuration;
 
-            // Преобразуем фазу в позицию (0 - 100%)
+            // phase to position in %
             let currentPosition;
             if (phase < 0.5) {
-                // Движение вправо (0 -> 100%)
+                // move to the right (0 -> 100)
                 currentPosition = phase * 2 * 100;
             } else {
-                // Движение влево (100% -> 0)
+                // move to the left (100 -> 0)
                 currentPosition = (1 - (phase - 0.5) * 2) * 100;
             }
 
-            // Применяем позицию
+            // apply position
             if (pendulumRef.current) {
                 const pixelPosition = (currentPosition / 100) * maxPosition;
                 pendulumRef.current.style.transform = `translateX(${pixelPosition}px)`;
             }
 
-            // Продолжаем анимацию
+            // keep animating
             animationFrameId = requestAnimationFrame(animate);
         };
 
         if (metronomeManager.isPlaying) {
-            startTime = null; // Сброс времени при каждом запуске
+            startTime = null; // reset time after every start
             animationFrameId = requestAnimationFrame(animate);
         } else if (pendulumRef.current) {
             pendulumRef.current.style.transform = 'translateX(0px)';

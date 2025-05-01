@@ -1,10 +1,11 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars.js";
 import {inject} from "mobx-react";
 import {ControlsContainer} from "./UtilityComponents.js";
+import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}) {
+export default inject("metronomeManager")(observer(function BpmControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
     const {bpm, handleBpmChange} = metronomeManager.audioEngine;
 
     return (

@@ -1,10 +1,12 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
-import {NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
+import {DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
 import {uiState} from "../states/UIState";
+import {BeatDropdownInputType, BeatRowInputType, MetronomeManagerInputType} from "../models/ComponentsTypes";
+import Note from "../models/Note";
 
-export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}) {
+export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}: MetronomeManagerInputType) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
     return (
         <div id="beat-container"
@@ -19,11 +21,11 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
     )
 }));
 
-const BeatRow = observer(({metronomeManager, index, uiState}) => {
+const BeatRow = observer(({metronomeManager, index, uiState}: BeatRowInputType) => {
         const beat = metronomeManager.beatBarsManager.beats[index];
         const isBeatPlaying = uiState.currentPlayingBeatIndex === index;
 
-        const handleClick = (e) => {
+        const handleClick = (e: any) => {
             const newSoundType = Number(e.target.dataset.sound) + 1;
             const newValue = beat.beatSound.chooseAnotherSound(newSoundType);
             beat.updateSoundSetting("soundType", newValue);
@@ -41,14 +43,13 @@ const BeatRow = observer(({metronomeManager, index, uiState}) => {
                 <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
             </div>
         )
-    })
-;
+    });
 
-const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
-    const handleChange = (e) => {
+const NoteSizeDropdown = observer(({metronomeManager, beat, index}: BeatDropdownInputType): ReactElement => {
+    const handleChange = (e: any) => {
         const targetValue = e.target.value;
         beat.noteSettings = NOTES.find(
-            noteObject => targetValue === noteObject.note);
+            noteObject => targetValue === noteObject.note) || new Note(DEFAULT_NOTE_SIZE, true);
         metronomeManager.updateMetronome();
     }
 
@@ -73,8 +74,8 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}) => {
     )
 });
 
-const NoteAmountDropdown = observer(({metronomeManager, beat, index}) => {
-    const handleChange = (e) => {
+const NoteAmountDropdown = observer(({metronomeManager, beat, index}: BeatDropdownInputType): ReactElement => {
+    const handleChange = (e: any) => {
         beat.noteAmount = Number(e.target.value);
 
         metronomeManager.updateMetronome();

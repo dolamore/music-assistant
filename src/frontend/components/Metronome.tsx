@@ -1,6 +1,6 @@
 import React from "react";
 
-function Metronome({children}) {
+function Metronome({children}: any) {
     return (
         <div>
             {children}

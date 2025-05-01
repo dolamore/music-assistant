@@ -10,8 +10,8 @@ import {SoundSetting} from "../models/SoundSetting";
 
 
 export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}: MetronomeManagerInputType): ReactElement {
-    const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
-    const numColumns = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
+    const indices: number[] = metronomeManager.beatBarsManager.beats.map((_, i: number): number => i);
+    const numColumns: number = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
     return (
         <div id="settings-panel"
              className={`${metronomeManager.elementsManager.isSettingsPanelVisible ? '' : 'hidden'}
@@ -21,7 +21,7 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
                 <div className="sounds-settings-labels">
                     <span>Beat</span>
                     <span>Oscillator</span>
-                    {DEFAULT_SOUND_SETTINGS.map(setting => (
+                    {DEFAULT_SOUND_SETTINGS.map((setting: SoundSetting): ReactElement => (
                         <span key={`${setting.key}-label`}>{setting.label}</span>
                     ))}
                 </div>
@@ -40,10 +40,12 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
 const SoundRow = observer(({metronomeManager, index}: SoundRowInputType) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
-    const handleSoundTypeChange = (e: any) => {
+    const handleSoundTypeChange = (e: any): void => {
         beat.updateSoundSetting('soundType', e.target.value)
     };
 
+
+//TODO: узнать надо ли реально везде писать тип
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>

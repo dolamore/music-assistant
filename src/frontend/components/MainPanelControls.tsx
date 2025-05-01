@@ -1,11 +1,12 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys";
 import {setupAudioContextUnlocker} from "../utils/utils.js";
-import {ToggleCheckbox} from "./UtilityComponents.tsx";
+import {ToggleCheckbox} from "./UtilityComponents";
+import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}) {
+export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
     return (
         <div className="main-panel-controls container">
             <StartStopButton metronomeManager={metronomeManager}/>
@@ -21,7 +22,7 @@ export default inject("metronomeManager")(observer(function MainPanelControls({m
 }));
 
 //TODO: перенести это в App и сделать разово появляющимся
-const StartStopButton = observer(({metronomeManager}) => {
+const StartStopButton = observer(({metronomeManager}: MetronomeManagerInputType): ReactElement => {
     const onClick = async () => {
         if (metronomeManager.isPlaying) {
             metronomeManager.stopMetronome();
@@ -45,7 +46,7 @@ const StartStopButton = observer(({metronomeManager}) => {
     );
 });
 
-const SettingsButton = observer(({metronomeManager}) => {
+const SettingsButton = observer(({metronomeManager}: MetronomeManagerInputType): ReactElement => {
     return (
         <button
             id="settings-button"

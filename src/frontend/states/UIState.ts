@@ -3,7 +3,7 @@ import {makeAutoObservable, action} from "mobx";
 /**
  *
  */
-class UIState {
+export class UIState {
     private _flashingBarBlinking: boolean = false;
     private _currentPlayingBeatIndex: number | null = null;
 
