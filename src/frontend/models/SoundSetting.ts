@@ -5,15 +5,15 @@ export class SoundSetting {
 
     private readonly _minValue: number | undefined;
     private readonly _maxValue: number | undefined;
-    private readonly _defaultValue: number;
+    private readonly _defaultValue: number | string;
 
-    constructor(key: string, label: string, value: number | string, defaultValue: number, min?: number, max?: number) {
+    constructor(key: string, label: string, value: number | string, min?: number, max?: number) {
         this._key = key;
         this._label = label;
         this._value = value;
         this._minValue = min;
         this._maxValue = max;
-        this._defaultValue = defaultValue;
+        this._defaultValue = value;
     }
 
     get key(): string {

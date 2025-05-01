@@ -8,7 +8,8 @@ export class SoundObj {
     public _label: string;
     public _soundIndex: number;
 
-    constructor(key: string, label: string, instrument: Instrument, soundIndex: number) {
+    //TODO: убрать если что создание саунд индекса
+    constructor(key: string, label: string, instrument: Instrument, soundIndex: number = 1) {
         this._key = key;
         this._label = label;
         this._instrument = instrument;
