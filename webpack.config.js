@@ -3,6 +3,7 @@ import {dirname} from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin'; // Импортируем плагин для HTML
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
+//TODO: проверить как перевести в ts
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 

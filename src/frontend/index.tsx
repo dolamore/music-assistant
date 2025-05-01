@@ -16,10 +16,8 @@ import SettingsPanel from "./components/SettingsPanel";
 import './styles/styles.css';
 
 //TODO: проверить что оно создаёт
-const newRoot = new HTMLElement();
-newRoot.setAttribute("id", "root");
 
-const rootElement: HTMLElement = document.getElementById("root") || newRoot;
+const rootElement: HTMLElement = document.getElementById("root") || new HTMLElement();
 const root: Root = ReactDOM.createRoot(rootElement);
 const metronomeManager = new MetronomeManager();
 
