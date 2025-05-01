@@ -20,27 +20,27 @@ export function handleVariableChange(newValue: any, variable: number, minLimit: 
     }
 }
 
-function gcd(a, b) {
+function gcd(a: number, b: number): number {
     return b === 0 ? a : gcd(b, a % b);
 }
 
-function lcm(a, b) {
+function lcm(a: number, b: number): number {
     return (a * b) / gcd(a, b);
 }
 
-export function lcmArray(arr) {
+export function lcmArray(arr: number[]): number {
     return arr.reduce((a, b) => lcm(a, b));
 }
 
-export async function setupAudioContextUnlocker() {
+export async function setupAudioContextUnlocker(): Promise<void> {
     await Tone.start();
     await Tone.getContext().resume();
 }
 
-export function preventNonDigitInput(e) {
+export function preventNonDigitInput(e: KeyboardEvent) {
     const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
 
-    if (!/[0-9]/.test(e.key) && !allowedKeys.has(e.keyCode)) {
+    if (!/[0-9]/.test(e.key) && !allowedKeys.has(Number(e.code))) {
         e.preventDefault();
     }
 }
