@@ -1,12 +1,15 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
 import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
-import {InputField} from "./UtilityComponents.tsx";
+import {InputField} from "./UtilityComponents";
+import {MetronomeManagerInputType, SoundRowInputType} from "../models/ComponentsTypes";
+import {SoundObj} from "../models/SoundObj";
+import {SoundSetting} from "../models/SoundSetting";
 
 
-export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}) {
+export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}: MetronomeManagerInputType): ReactElement {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
     const numColumns = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
     return (
@@ -31,13 +34,13 @@ export default inject("metronomeManager")(observer(function SettingsPanel({metro
             >Save
             </button>
         </div>
-    )                 // Сюда будет динамически добавляться содержимое через renderSoundSettings
+    )
 }));
 
-const SoundRow = observer(({metronomeManager, index}) => {
+const SoundRow = observer(({metronomeManager, index}: SoundRowInputType) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
-    const handleSoundTypeChange = (e) => {
+    const handleSoundTypeChange = (e: any) => {
         beat.updateSoundSetting('soundType', e.target.value)
     };
 
@@ -49,7 +52,7 @@ const SoundRow = observer(({metronomeManager, index}) => {
                 value={beat.beatSound.instrument.soundType}
                 onChange={handleSoundTypeChange}
             >
-                {DEFAULT_SOUNDS.map((sound) => (
+                {DEFAULT_SOUNDS.map((sound: SoundObj): ReactElement => (
                     <option
                         key={`${sound.key}`}
                         value={sound.key}
@@ -58,15 +61,15 @@ const SoundRow = observer(({metronomeManager, index}) => {
                     </option>
                 ))}
             </select>
-            {beat.beatSound.instrument.soundSettings.map(setting => (
+            {beat.beatSound.instrument.soundSettings.map((setting: SoundSetting): ReactElement => (
                 <InputField
                     key={setting.key}
                     id={`${setting.key}-${index}`}
-                    inputVar={setting.value}
+                    inputVar={Number(setting.value)}
                     changeHandler={beat.beatSound.instrument.updateSoundSetting.bind(beat.beatSound.instrument, setting.key)}
-                    defaultValue={setting.defaultValue}
-                    minLimit={setting.minValue}
-                    maxLimit={setting.maxValue}
+                    defaultValue={Number(setting.defaultValue)}
+                    minLimit={Number(setting.minValue)}
+                    maxLimit={Number(setting.maxValue)}
                 />
             ))}
         </div>

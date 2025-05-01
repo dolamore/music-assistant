@@ -81,6 +81,7 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
 
         // Limit the value to the allowable BPM range
         let intValue: number = parseInt(value, 10);
+
         if (intValue > maxLimit) {
             intValue = maxLimit;
         } else if (intValue < minLimit) {

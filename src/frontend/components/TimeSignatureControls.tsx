@@ -1,10 +1,11 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {inject} from "mobx-react";
 import {ChangingButton} from "./UtilityComponents.js";
 import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars/vars.js";
+import {MetronomeManagerInputType, TimeSignatureInfoInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}) {
+export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}: MetronomeManagerInputType) {
     return (
         <div className="time-signature-controls-container container">
             <BeatsControlGroup metronomeManager={metronomeManager}/>
@@ -14,7 +15,7 @@ export default inject("metronomeManager")(observer(function TimeSignatureControl
     );
 }));
 
-const BeatsControlGroup = observer(({metronomeManager}) => {
+const BeatsControlGroup = observer(({metronomeManager}: MetronomeManagerInputType): ReactElement => {
     const increaseBeats = () => {
         metronomeManager.beatBarsManager.increaseBeats();
     }
@@ -45,7 +46,7 @@ const BeatsControlGroup = observer(({metronomeManager}) => {
     );
 });
 
-const NotesControlGroup = observer(({metronomeManager}) => {
+const NotesControlGroup = observer(({metronomeManager}: MetronomeManagerInputType): ReactElement => {
     const decreaseNotes = () => {
         metronomeManager.beatBarsManager.decreaseNotes();
     }
@@ -74,7 +75,7 @@ const NotesControlGroup = observer(({metronomeManager}) => {
     );
 });
 
-const TimeSignatureInfo = observer(({timeSignature}) => {
+const TimeSignatureInfo = observer(({timeSignature}: TimeSignatureInfoInputType): ReactElement => {
     return (
         <div className="time-signature-info">
             <span>Time Signature:</span>

@@ -7,7 +7,7 @@ import BpmControls from "./components/BpmControls";
 import {MetronomeManager} from "./managers/MetronomeManager.js";
 import VisualCheckBoxControls from "./components/VisualsCheckBoxControls";
 import MainPanelControls from "./components/MainPanelControls";
-import TrainingSettings from "./components/TrainingSettings.jsx";
+import TrainingSettings from "./components/TrainingSettings.js";
 import TimeSignatureControls from "./components/TimeSignatureControls";
 import BeatBars from "./components/BeatBars";
 import FlashingBar from "./components/FlashingBar";

@@ -1,11 +1,19 @@
-import metronome from "../components/Metronome";
 import {MetronomeManager} from "../managers/MetronomeManager";
+import TimeSignature from "./TimeSignature";
 
 export type MetronomeManagerInputType = {
     metronomeManager: MetronomeManager
 }
 
-//TODO: проверить number или string переменные
+export type TimeSignatureInfoInputType = {
+    timeSignature: TimeSignature
+}
+
+export type SoundRowInputType = {
+    metronomeManager: MetronomeManager,
+    index: number
+}
+
 export type ControlsContainerInputType = {
     id: string,
     changeFunc: (newValue: number) => void
