@@ -1,6 +1,6 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {Provider} from "mobx-react";
-import ReactDOM from "react-dom/client";
+import ReactDOM, {createRoot, Root} from "react-dom/client";
 import Metronome from "./components/Metronome";
 import LoopCounter from "./components/LoopCounter";
 import BpmControls from "./components/BpmControls";
@@ -15,11 +15,15 @@ import Pendulum from "./components/Pendulum";
 import SettingsPanel from "./components/SettingsPanel";
 import './styles/styles.css';
 
-const rootElement = document.getElementById("root");
-const root = ReactDOM.createRoot(rootElement);
+//TODO: проверить что оно создаёт
+const newRoot = new HTMLElement();
+newRoot.setAttribute("id", "root");
+
+const rootElement: HTMLElement = document.getElementById("root") || newRoot;
+const root: Root = ReactDOM.createRoot(rootElement);
 const metronomeManager = new MetronomeManager();
 
-function App() {
+function App(): ReactElement {
     return (
         <Provider metronomeManager={metronomeManager}>
             <Metronome>
