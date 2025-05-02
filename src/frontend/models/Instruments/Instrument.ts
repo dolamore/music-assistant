@@ -32,7 +32,7 @@ export abstract class Instrument {
     }
 
     updateSoundSetting(key: string, value: number | string): void {
-        const setting = this._soundSettings.find(s => s.key === key);
-        handleVariableChange(value, setting, setting?.minValue, setting?.maxValue, (value: number) => setting?.setValue(value));
+        const setting = this._soundSettings.find(s => s.key === key)!;
+        handleVariableChange(value, setting.value, setting.minValue, setting.maxValue, (value: number) => setting?.setValue(value));
     }
 }

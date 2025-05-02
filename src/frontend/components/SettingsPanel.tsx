@@ -39,12 +39,10 @@ export default (observer(function SettingsPanel({metronomeManager}: MetronomeMan
 const SoundRow = observer(({metronomeManager, index}: SoundRowInputType) => {
     const beat = metronomeManager.beatBarsManager.beats[index];
 
-    const handleSoundTypeChange = (e: any): void => {
+    const handleSoundTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         beat.updateSoundSetting('soundType', e.target.value)
     };
 
-
-//TODO: узнать надо ли реально везде писать тип
     return (
         <div className="sound-row">
             <label htmlFor={`sound-${index}`}>Beat {index + 1}:</label>

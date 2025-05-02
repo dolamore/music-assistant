@@ -70,8 +70,7 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
         setInputValue(inputVar);
     }, [inputVar]);
 
-    //TODO: проверить тип e
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value: string = e.target.value;
         // Remove leading zeros
         if (/^0\d+$/.test(value)) {

@@ -24,8 +24,8 @@ const BeatRow = observer(({metronomeManager, index, uiState}: BeatRowInputType) 
     const beat = metronomeManager.beatBarsManager.beats[index];
     const isBeatPlaying = uiState.currentPlayingBeatIndex === index;
 
-    const handleClick = (e: any) => {
-        const newSoundType = Number(e.target.dataset.sound) + 1;
+    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+        const newSoundType = Number(e.currentTarget.dataset.sound) + 1;
         const newValue = beat.beatSound.chooseAnotherSound(newSoundType);
         beat.updateSoundSetting("soundType", newValue);
     }
@@ -45,7 +45,7 @@ const BeatRow = observer(({metronomeManager, index, uiState}: BeatRowInputType) 
 });
 
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}: BeatDropdownInputType): ReactElement => {
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const targetValue = e.target.value;
         beat.noteSettings = NOTES.find(
             noteObject => targetValue === noteObject.note) || new Note(DEFAULT_NOTE_SIZE, true);
@@ -74,7 +74,7 @@ const NoteSizeDropdown = observer(({metronomeManager, beat, index}: BeatDropdown
 });
 
 const NoteAmountDropdown = observer(({metronomeManager, beat, index}: BeatDropdownInputType): ReactElement => {
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         beat.noteAmount = Number(e.target.value);
 
         metronomeManager.updateMetronome();

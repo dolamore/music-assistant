@@ -1,4 +1,5 @@
 import * as Tone from "tone";
+import React from "react";
 
 export function handleVariableChange(newValue: any, variable: number, minLimit: number, maxLimit: number, varSetter: (value: number) => void) {
     if (/^0\d+$/.test(newValue)) {
@@ -38,10 +39,10 @@ export async function setupAudioContextUnlocker(): Promise<void> {
 }
 
 //TODO: проверить чтобы двойной пробел не создавал точку и тип e
-export function preventNonDigitInput(e: any) {
-    const allowedKeys = new Set([8, 46, 37, 39]); // Backspace, Delete, Left Arrow, Right Arrow
+export function preventNonDigitInput(e: React.KeyboardEvent<HTMLInputElement>): void {
+    const allowedKeys = new Set(["Backspace", "Delete", "ArrowLeft", "ArrowRight"]);
 
-    if (!/[0-9]/.test(e.key) && !allowedKeys.has(Number(e.keyCode))) {
+    if ((!/^[0-9]$/.test(e.key) && !allowedKeys.has(e.key)) || e.key === "." || e.key === " ") {
         e.preventDefault();
     }
 }
