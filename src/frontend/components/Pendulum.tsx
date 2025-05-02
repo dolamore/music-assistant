@@ -3,9 +3,9 @@ import {observer} from "mobx-react-lite";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
 export default (observer(function Pendulum({metronomeManager}: MetronomeManagerInputType): ReactElement {
-    //TODO: проверить их типы
-    const pendulumBarRef: any = useRef(null);
-    const pendulumRef: any = useRef(null);
+
+    const pendulumBarRef = useRef<HTMLDivElement | null>(null);
+    const pendulumRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         let animationFrameId: number;
