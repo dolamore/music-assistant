@@ -1,9 +1,8 @@
 import React, {ReactElement, useEffect, useRef} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function Pendulum({metronomeManager}: MetronomeManagerInputType): ReactElement {
+export default (observer(function Pendulum({metronomeManager}: MetronomeManagerInputType): ReactElement {
     //TODO: проверить их типы
     const pendulumBarRef: any = useRef(null);
     const pendulumRef: any = useRef(null);

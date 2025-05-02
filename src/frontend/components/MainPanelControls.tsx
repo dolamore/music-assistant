@@ -1,12 +1,11 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {useHotkeys} from "../hooks/useHotKeys";
 import {setupAudioContextUnlocker} from "../utils/utils.js";
 import {ToggleCheckbox} from "./UtilityComponents";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function MainPanelControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
+export default (observer(function MainPanelControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
     return (
         <div className="main-panel-controls container">
             <StartStopButton metronomeManager={metronomeManager}/>

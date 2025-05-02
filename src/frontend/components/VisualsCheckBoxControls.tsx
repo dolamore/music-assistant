@@ -1,10 +1,9 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {ToggleCheckbox} from "./UtilityComponents";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function VisualCheckBoxControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
+export default (observer(function VisualCheckBoxControls({metronomeManager}: MetronomeManagerInputType): ReactElement {
     return (
         <div className="checkbox-controls-container container">
             <ToggleCheckbox

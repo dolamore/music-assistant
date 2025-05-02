@@ -1,6 +1,5 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {DEFAULT_SOUND_SETTINGS} from "../vars/sound-settings/DEFAULT_SOUND_SETTINGS";
 import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
 import {InputField} from "./UtilityComponents";
@@ -9,7 +8,7 @@ import {SoundObj} from "../models/SoundObj";
 import {SoundSetting} from "../models/SoundSetting";
 
 
-export default inject("metronomeManager")(observer(function SettingsPanel({metronomeManager}: MetronomeManagerInputType): ReactElement {
+export default (observer(function SettingsPanel({metronomeManager}: MetronomeManagerInputType): ReactElement {
     const indices: number[] = metronomeManager.beatBarsManager.beats.map((_, i: number): number => i);
     const numColumns: number = Object.keys(DEFAULT_SOUND_SETTINGS).length + 1; // +1 for oscillator
     return (

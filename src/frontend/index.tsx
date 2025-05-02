@@ -1,5 +1,4 @@
 import React, {ReactElement} from "react";
-import {Provider} from "mobx-react";
 import ReactDOM, {Root} from "react-dom/client";
 import Metronome from "./components/Metronome";
 import LoopCounter from "./components/LoopCounter";
@@ -22,20 +21,18 @@ const metronomeManager = new MetronomeManager();
 
 function App(): ReactElement {
     return (
-        <Provider metronomeManager={metronomeManager}>
             <Metronome>
-                <BpmControls/>
-                <LoopCounter/>
-                <VisualCheckBoxControls/>
-                <MainPanelControls/>
-                <TrainingSettings/>
-                <TimeSignatureControls/>
-                <BeatBars/>
-                <FlashingBar/>
-                <Pendulum/>
-                <SettingsPanel/>
+                <BpmControls metronomeManager={metronomeManager}/>
+                <LoopCounter metronomeManager={metronomeManager}/>
+                <VisualCheckBoxControls metronomeManager={metronomeManager}/>
+                <MainPanelControls metronomeManager={metronomeManager}/>
+                <TrainingSettings metronomeManager={metronomeManager}/>
+                <TimeSignatureControls metronomeManager={metronomeManager}/>
+                <BeatBars metronomeManager={metronomeManager}/>
+                <FlashingBar metronomeManager={metronomeManager}/>
+                <Pendulum metronomeManager={metronomeManager}/>
+                <SettingsPanel metronomeManager={metronomeManager}/>
             </Metronome>
-        </Provider>
     );
 }
 

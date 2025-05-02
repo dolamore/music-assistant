@@ -1,12 +1,11 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
 import {uiState} from "../states/UIState";
 import {BeatDropdownInputType, BeatRowInputType, MetronomeManagerInputType} from "../models/ComponentsTypes";
 import Note from "../models/Note";
 
-export default inject("metronomeManager")(observer(function BeatBars({metronomeManager}: MetronomeManagerInputType) {
+export default (observer(function BeatBars({metronomeManager}: MetronomeManagerInputType) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
     return (
         <div id="beat-container"
@@ -22,28 +21,28 @@ export default inject("metronomeManager")(observer(function BeatBars({metronomeM
 }));
 
 const BeatRow = observer(({metronomeManager, index, uiState}: BeatRowInputType) => {
-        const beat = metronomeManager.beatBarsManager.beats[index];
-        const isBeatPlaying = uiState.currentPlayingBeatIndex === index;
+    const beat = metronomeManager.beatBarsManager.beats[index];
+    const isBeatPlaying = uiState.currentPlayingBeatIndex === index;
 
-        const handleClick = (e: any) => {
-            const newSoundType = Number(e.target.dataset.sound) + 1;
-            const newValue = beat.beatSound.chooseAnotherSound(newSoundType);
-            beat.updateSoundSetting("soundType", newValue);
-        }
+    const handleClick = (e: any) => {
+        const newSoundType = Number(e.target.dataset.sound) + 1;
+        const newValue = beat.beatSound.chooseAnotherSound(newSoundType);
+        beat.updateSoundSetting("soundType", newValue);
+    }
 
-        return (
-            <div className="beat-row">
-                <div
-                    className={`beat ${isBeatPlaying ? 'playing' : ''}`}
-                    data-beat={index}
-                    data-sound={beat.beatSound.soundIndex}
-                    onClick={handleClick}
-                ></div>
-                <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
-                <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
-            </div>
-        )
-    });
+    return (
+        <div className="beat-row">
+            <div
+                className={`beat ${isBeatPlaying ? 'playing' : ''}`}
+                data-beat={index}
+                data-sound={beat.beatSound.soundIndex}
+                onClick={handleClick}
+            ></div>
+            <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
+            <NoteAmountDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>
+        </div>
+    )
+});
 
 const NoteSizeDropdown = observer(({metronomeManager, beat, index}: BeatDropdownInputType): ReactElement => {
     const handleChange = (e: any) => {

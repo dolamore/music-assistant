@@ -72,7 +72,6 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
 
     //TODO: проверить тип e
     const handleChange = (e: any) => {
-        console.log(e.target.value);
         let value: string = e.target.value;
         // Remove leading zeros
         if (/^0\d+$/.test(value)) {

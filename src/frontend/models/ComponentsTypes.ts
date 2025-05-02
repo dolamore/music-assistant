@@ -3,9 +3,10 @@ import TimeSignature from "./TimeSignature";
 import Beat from "./Beat";
 import {UIState} from "../states/UIState";
 
+
 export type MetronomeManagerInputType = {
-    metronomeManager?: MetronomeManager
-}
+    metronomeManager: MetronomeManager;
+};
 
 export type TimeSignatureInfoInputType = {
     timeSignature: TimeSignature

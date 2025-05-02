@@ -1,12 +1,11 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {ControlsContainer} from "./UtilityComponents.js";
 import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars.js";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 import {TrainingModeManager} from "../managers/TrainingModeManager";
 
-export default inject("metronomeManager")(observer(function TrainingSettings({metronomeManager}: MetronomeManagerInputType): ReactElement {
+export default (observer(function TrainingSettings({metronomeManager}: MetronomeManagerInputType): ReactElement {
     const trainingModeManager: TrainingModeManager = metronomeManager.trainingModeManager;
     const {
         isTrainingMode, loopSkipProbability,

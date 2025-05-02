@@ -1,11 +1,10 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {inject} from "mobx-react";
 import {ChangingButton} from "./UtilityComponents.js";
 import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars/vars.js";
 import {MetronomeManagerInputType, TimeSignatureInfoInputType} from "../models/ComponentsTypes";
 
-export default inject("metronomeManager")(observer(function TimeSignatureControls({metronomeManager}: MetronomeManagerInputType) {
+export default (observer(function TimeSignatureControls({metronomeManager}: MetronomeManagerInputType) {
     return (
         <div className="time-signature-controls-container container">
             <BeatsControlGroup metronomeManager={metronomeManager}/>
