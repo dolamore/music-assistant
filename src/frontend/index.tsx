@@ -1,5 +1,5 @@
 import React, {ReactElement} from "react";
-import ReactDOM, {Root} from "react-dom/client";
+import ReactDOM from "react-dom/client";
 import Metronome from "./components/Metronome";
 import LoopCounter from "./components/LoopCounter";
 import BpmControls from "./components/BpmControls";
@@ -14,13 +14,14 @@ import Pendulum from "./components/Pendulum";
 import SettingsPanel from "./components/SettingsPanel";
 import './styles/styles.css';
 
-//TODO: проверить что оно создаёт
-const rootElement: HTMLElement = document.getElementById("root") || new HTMLElement();
-const root: Root = ReactDOM.createRoot(rootElement);
-const metronomeManager = new MetronomeManager();
+const rootElement = document.getElementById("root");
 
-function App(): ReactElement {
-    return (
+if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
+    const metronomeManager = new MetronomeManager();
+
+    function App(): ReactElement {
+        return (
             <Metronome>
                 <BpmControls metronomeManager={metronomeManager}/>
                 <LoopCounter metronomeManager={metronomeManager}/>
@@ -33,7 +34,10 @@ function App(): ReactElement {
                 <Pendulum metronomeManager={metronomeManager}/>
                 <SettingsPanel metronomeManager={metronomeManager}/>
             </Metronome>
-    );
-}
+        );
+    }
 
-root.render(<App/>);
+    root.render(<App/>);
+} else {
+    console.error("Root element not found");
+}
