@@ -20,7 +20,7 @@ export class MetronomeManager {
         this._isPlaying = false;
 
         this._beatBarsManager = new BeatBarsManager(this);
-        this._elementsManager = new ElementsManager(this);
+        this._elementsManager = new ElementsManager();
         this._trainingModeManager = new TrainingModeManager(this);
         this._visualEffectsManager = new VisualEffectsManager();
         this._audioEngine = new TonejsEngine(this);
@@ -34,10 +34,6 @@ export class MetronomeManager {
 
     get isPlaying() {
         return this._isPlaying;
-    }
-
-    set isPlaying(value) {
-        this._isPlaying = value;
     }
 
     get beatBarsManager() {

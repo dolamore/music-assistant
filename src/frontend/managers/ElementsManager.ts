@@ -1,24 +1,10 @@
 import {makeAutoObservable} from "mobx";
-import {MetronomeManager} from "./MetronomeManager";
-import {BeatBarsManager} from "./BeatBarsManager";
 
 export class ElementsManager {
     private _isSettingsPanelVisible: boolean = false;
-    private readonly _metronomeManager: MetronomeManager;
-    private readonly _beatBarsManager: BeatBarsManager;
 
-    constructor(metronomeManager: MetronomeManager) {
-        this._metronomeManager = metronomeManager;
-        this._beatBarsManager = metronomeManager.beatBarsManager;
+    constructor() {
         makeAutoObservable(this)
-    }
-
-    get metronomeManager(): MetronomeManager {
-        return this._metronomeManager;
-    }
-
-    get beatBarsManager(): BeatBarsManager {
-        return this._beatBarsManager;
     }
 
     get isSettingsPanelVisible() {

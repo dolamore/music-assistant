@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",  // Для совместимости с NestJS, ES2017 или выше
-    "module": "commonjs",  // NestJS использует CommonJS модули
+    "module": "ESNext",  // NestJS использует CommonJS модули
     "moduleResolution": "node",  // Разрешение модулей как в Node.js
     "jsx": "react-jsx",  // Если проект использует React
     "esModuleInterop": true,  // Для импорта CommonJS модулей в стиле ES6

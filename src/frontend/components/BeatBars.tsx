@@ -4,6 +4,7 @@ import {DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
 import {uiState} from "../states/UIState";
 import {BeatDropdownInputType, BeatRowInputType, MetronomeManagerInputType} from "../models/ComponentsTypes";
 import Note from "../models/Note";
+import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
 
 export default (observer(function BeatBars({metronomeManager}: MetronomeManagerInputType) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
@@ -35,7 +36,8 @@ const BeatRow = observer(({metronomeManager, index, uiState}: BeatRowInputType) 
             <div
                 className={`beat ${isBeatPlaying ? 'playing' : ''}`}
                 data-beat={index}
-                data-sound={beat.beatSound.soundIndex}
+                data-sound={DEFAULT_SOUNDS.findIndex(sound => sound.key === beat.beatSound.key)
+                }
                 onClick={handleClick}
             ></div>
             <NoteSizeDropdown metronomeManager={metronomeManager} beat={beat} index={index}/>

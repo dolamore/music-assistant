@@ -6,14 +6,12 @@ export class SoundObj {
     private _key: string;
     private readonly _instrument: Instrument;
     public _label: string;
-    public _soundIndex: number;
 
-    //TODO: убрать если что создание саунд индекса
-    constructor(key: string, label: string, instrument: Instrument, soundIndex: number = 1) {
+
+    constructor(key: string, label: string, instrument: Instrument) {
         this._key = key;
         this._label = label;
         this._instrument = instrument;
-        this._soundIndex = soundIndex;
 
         makeAutoObservable(this);
     }
@@ -30,14 +28,10 @@ export class SoundObj {
         return this._label;
     }
 
-    get soundIndex(): number {
-        return this._soundIndex;
-    }
-
     chooseAnotherSound(newSoundIndex: number): string {
-        this._soundIndex = (newSoundIndex) % DEFAULT_SOUNDS.length;
-        this._key = DEFAULT_SOUNDS[this._soundIndex].key;
-        this._label = DEFAULT_SOUNDS[this._soundIndex].label;
+        const soundIndex = (newSoundIndex) % DEFAULT_SOUNDS.length;
+        this._key = DEFAULT_SOUNDS[soundIndex].key;
+        this._label = DEFAULT_SOUNDS[soundIndex].label;
 
         return this._key
     }
