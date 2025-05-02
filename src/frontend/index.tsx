@@ -13,6 +13,7 @@ import FlashingBar from "./components/FlashingBar";
 import Pendulum from "./components/Pendulum";
 import SettingsPanel from "./components/SettingsPanel";
 import './styles/styles.css';
+import {AudioContextProvider} from "./components/AudioContextProvider";
 
 const rootElement = document.getElementById("root");
 
@@ -22,6 +23,7 @@ if (rootElement) {
 
     function App(): ReactElement {
         return (
+            <AudioContextProvider>
             <Metronome>
                 <BpmControls metronomeManager={metronomeManager}/>
                 <LoopCounter metronomeManager={metronomeManager}/>
@@ -34,6 +36,7 @@ if (rootElement) {
                 <Pendulum metronomeManager={metronomeManager}/>
                 <SettingsPanel metronomeManager={metronomeManager}/>
             </Metronome>
+            </AudioContextProvider>
         );
     }
 

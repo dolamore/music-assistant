@@ -20,13 +20,11 @@ export default (observer(function MainPanelControls({metronomeManager}: Metronom
     );
 }));
 
-//TODO: перенести это в App и сделать разово появляющимся
 const StartStopButton = observer(({metronomeManager}: MetronomeManagerInputType): ReactElement => {
-    const onClick = async () => {
+    const onClick = () => {
         if (metronomeManager.isPlaying) {
             metronomeManager.stopMetronome();
         } else {
-            await setupAudioContextUnlocker();
             metronomeManager.startMetronome();
         }
     };
