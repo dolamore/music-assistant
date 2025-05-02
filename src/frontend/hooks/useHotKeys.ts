@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-export const  useHotkeys = (keyBindings) => {
+export const  useHotkeys = (keyBindings: KeyBinding) => {
     useEffect(() => {
-        const handleKeyDown = (event) => {
+        const handleKeyDown = (event: globalThis.KeyboardEvent) => {
             const { key, shiftKey, altKey, ctrlKey, metaKey } = event;
 
             const modifierKey = [
@@ -26,3 +26,9 @@ export const  useHotkeys = (keyBindings) => {
         };
     }, [keyBindings]);
 };
+
+type KeyBinding = {
+    [keyCombo: string]: () => void;
+};
+
+

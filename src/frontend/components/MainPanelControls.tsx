@@ -32,7 +32,7 @@ const StartStopButton = observer(({metronomeManager}: MetronomeManagerInputType)
     };
 
     useHotkeys({
-        " ": onClick,
+        " ": onClick
     });
 
     return (
