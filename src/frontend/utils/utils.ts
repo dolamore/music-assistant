@@ -38,10 +38,10 @@ export async function setupAudioContextUnlocker(): Promise<void> {
     await Tone.getContext().resume();
 }
 
-//TODO: проверить чтобы двойной пробел не создавал точку и тип e
+//TODO: как разберусь с инпутами, решить вопрос ctrl+c и точки после двойного пробела
 export function preventNonDigitInput(e: React.KeyboardEvent<HTMLInputElement>): void {
     const allowedKeys = new Set(["Backspace", "Delete", "ArrowLeft", "ArrowRight"]);
-
+    
     if ((!/^[0-9]$/.test(e.key) && !allowedKeys.has(e.key)) || e.key === "." || e.key === " ") {
         e.preventDefault();
     }

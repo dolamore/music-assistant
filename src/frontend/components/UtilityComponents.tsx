@@ -63,8 +63,7 @@ export const ChangingButton = observer(({ id, onClick, disabled, label }: Changi
 ));
 
 export const InputField = observer(({id, inputVar, changeHandler, defaultValue, minLimit, maxLimit}: InputFieldInputType): ReactElement => {
-    //TODO: проверить почему перестало срабатывать и добавлять 0
-    const [inputValue, setInputValue] = useState(inputVar);
+    const [inputValue, setInputValue] = useState<number | string>(inputVar);
 
     useEffect(() => {
         setInputValue(inputVar);
@@ -72,9 +71,17 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value: string = e.target.value;
+
+        if (value === '') {
+            setInputValue("")
+            return;
+        }
+
+
         // Remove leading zeros
         if (/^0\d+$/.test(value)) {
             value = value.replace(/^0+/, '');
+            e.target.value = String(value);
         }
 
         // Limit the value to the allowable BPM range
@@ -89,9 +96,8 @@ export const InputField = observer(({id, inputVar, changeHandler, defaultValue, 
         setInputValue(intValue);
     };
 
-    //TODO: проверить нужен ли здесь действительно String
     const handleBlur: () => void = (): void => {
-        const newValue = String(inputValue) === '' ? defaultValue : Number(inputValue);
+        const newValue = inputValue === '' ? defaultValue : Number(inputValue);
         changeHandler(newValue);
         setInputValue(newValue);
     };
