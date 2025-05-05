@@ -1,4 +1,4 @@
-import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars.js";
+import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 import {makeAutoObservable} from "mobx";
 import {handleVariableChange} from "../utils/utils";
 import {MetronomeManager} from "./MetronomeManager";

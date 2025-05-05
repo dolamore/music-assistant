@@ -1,7 +1,7 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {ControlsContainer} from "./UtilityComponents.js";
-import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars.js";
+import {ControlsContainer} from "./UtilityComponents";
+import {DEFAULT_LOOP_SKIP_PROBABILITY, DEFAULT_NOTE_SKIP_PROBABILITY} from "../vars/vars";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 import {TrainingModeManager} from "../managers/TrainingModeManager";
 

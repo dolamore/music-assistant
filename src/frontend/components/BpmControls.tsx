@@ -1,7 +1,7 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars.js";
-import {ControlsContainer} from "./UtilityComponents.js";
+import {BPM_MAX_LIMIT, BPM_MIN_LIMIT, DEFAULT_INITIAL_BPM} from "../vars/vars";
+import {ControlsContainer} from "./UtilityComponents";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 
 export default (observer(function BpmControls({metronomeManager}: MetronomeManagerInputType): ReactElement {

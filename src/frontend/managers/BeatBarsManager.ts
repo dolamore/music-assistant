@@ -8,7 +8,7 @@ import {
 import {makeAutoObservable} from "mobx";
 import Beat from "../models/Beat";
 import {createDefaultSoundObject} from "../vars/sounds/DEFAULT_SOUNDS";
-import {lcmArray} from "../utils/utils.js";
+import {lcmArray} from "../utils/utils";
 import {MetronomeManager} from "./MetronomeManager";
 import {SoundObj} from "../models/SoundObj";
 import Note from "../models/Note";

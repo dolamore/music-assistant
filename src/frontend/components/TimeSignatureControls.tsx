@@ -1,7 +1,7 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {ChangingButton} from "./UtilityComponents.js";
-import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars/vars.js";
+import {ChangingButton} from "./UtilityComponents";
+import {MAX_BEATS_AMOUNT, MIN_BEATS_AMOUNT} from "../vars/vars";
 import {MetronomeManagerInputType, TimeSignatureInfoInputType} from "../models/ComponentsTypes";
 
 export default (observer(function TimeSignatureControls({metronomeManager}: MetronomeManagerInputType) {

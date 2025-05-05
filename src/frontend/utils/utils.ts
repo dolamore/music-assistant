@@ -38,7 +38,6 @@ export async function setupAudioContextUnlocker(): Promise<void> {
     await Tone.getContext().resume();
 }
 
-//TODO: как разберусь с инпутами, решить вопрос ctrl+c и точки после двойного пробела
 export function preventNonDigitInput(e: React.KeyboardEvent<HTMLInputElement>): void {
     const allowedKeys = new Set(["Backspace", "Delete", "ArrowLeft", "ArrowRight"]);
     

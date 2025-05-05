@@ -1,7 +1,6 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
 import {useHotkeys} from "../hooks/useHotKeys";
-import {setupAudioContextUnlocker} from "../utils/utils.js";
 import {ToggleCheckbox} from "./UtilityComponents";
 import {MetronomeManagerInputType} from "../models/ComponentsTypes";
 

@@ -5,7 +5,7 @@ import {TrainingModeManager} from "../managers/TrainingModeManager";
 
 export abstract class AudioEngine {
 
-    public _bpm: number | string = DEFAULT_INITIAL_BPM;
+    public _bpm: number = DEFAULT_INITIAL_BPM;
     protected readonly _metronomeManager: MetronomeManager;
     protected readonly _trainingModeManager: TrainingModeManager;
 
@@ -24,16 +24,11 @@ export abstract class AudioEngine {
         return this._metronomeManager;
     }
 
-    get bpm(): any {
+    get bpm(): number {
         return this._bpm;
     }
 
-    setBpm(value: any) {
-        this._bpm = value;
-    }
-
-
-
+    abstract setBpm(value: number): void;
     abstract handleBpmChange(newBpm: number): void;
     abstract startPlaying(): void;
     abstract stopPlaying(): void;

@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {observer} from "mobx-react-lite";
-import {DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars/vars.js";
+import {DEFAULT_NOTE_SIZE, NOTE_AMOUNTS, NOTES} from "../vars/vars";
 import {uiState} from "../states/UIState";
 import {BeatDropdownInputType, BeatRowInputType, MetronomeManagerInputType} from "../models/ComponentsTypes";
 import Note from "../models/Note";

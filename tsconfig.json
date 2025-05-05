@@ -15,7 +15,11 @@
     "checkJs": false,  // Не проверять файлы .js на ошибки TypeScript
     "resolveJsonModule": true,  // Разрешение работы с JSON модулями
     "noEmit": false,  // Не отключать вывод компилятора (оставим для использования с Vite)
-    "skipDefaultLibCheck": true  // Пропуск проверки стандартных библиотек
+    "skipDefaultLibCheck": true,  // Пропуск проверки стандартных библиотек
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*", "src/*"]
+    }
   },
   "include": [
     "src/**/*"  // Указание, что все файлы внутри папки src должны быть обработаны
