@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { SoundSetting } from "../SoundSetting";
 import { handleVariableChange } from "../../utils/utils";
 
@@ -27,11 +27,7 @@ export abstract class Instrument {
     return this._soundSettings;
   }
 
-  set soundSettings(value: SoundSetting[]) {
-    this._soundSettings = value;
-  }
-
-  updateSoundSetting(key: string, value: number | string): void {
+  updateSoundSetting(key: string, value: number): void {
     const setting = this._soundSettings.find((s) => s.key === key)!;
     handleVariableChange(
       value,
