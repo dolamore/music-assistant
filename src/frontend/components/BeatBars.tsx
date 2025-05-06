@@ -5,6 +5,8 @@ import {uiState} from "../states/UIState";
 import {BeatDropdownInputType, BeatRowInputType, MetronomeManagerInputType} from "../models/ComponentsTypes";
 import Note from "../models/Note";
 import {DEFAULT_SOUNDS} from "../vars/sounds/DEFAULT_SOUNDS";
+import metronome from "frontend/components/Metronome";
+import {MetronomeManager} from "frontend/managers/MetronomeManager";
 
 export default (observer(function BeatBars({metronomeManager}: MetronomeManagerInputType) {
     const indices = metronomeManager.beatBarsManager.beats.map((_, i) => i);
