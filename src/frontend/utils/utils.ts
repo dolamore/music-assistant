@@ -1,14 +1,13 @@
 import * as Tone from "tone";
 import React from "react";
 
-export function handleVariableChange(newValue: any, variable: number, minLimit: number, maxLimit: number, varSetter: (value: number) => void) {
-    if (/^0\d+$/.test(newValue)) {
-        newValue = newValue.replace(/^0+/, '');
-    }
-
-    if (isNaN(newValue) || newValue === '') {
-        return;
-    }
+export function handleVariableChange(
+    newValue: number,
+    variable: number,
+    minLimit: number,
+    maxLimit: number,
+    varSetter: (value: number) => void,
+) {
     if (variable === newValue) {
         return;
     }
@@ -38,10 +37,21 @@ export async function setupAudioContextUnlocker(): Promise<void> {
     await Tone.getContext().resume();
 }
 
-export function preventNonDigitInput(e: React.KeyboardEvent<HTMLInputElement>): void {
-    const allowedKeys = new Set(["Backspace", "Delete", "ArrowLeft", "ArrowRight"]);
-    
-    if ((!/^[0-9]$/.test(e.key) && !allowedKeys.has(e.key)) || e.key === "." || e.key === " ") {
+export function preventNonDigitInput(
+    e: React.KeyboardEvent<HTMLInputElement>,
+): void {
+    const allowedKeys = new Set([
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+    ]);
+
+    if (
+        (!/^[0-9]$/.test(e.key) && !allowedKeys.has(e.key)) ||
+        e.key === "." ||
+        e.key === " "
+    ) {
         e.preventDefault();
     }
 }

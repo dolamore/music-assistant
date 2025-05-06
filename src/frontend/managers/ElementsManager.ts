@@ -1,17 +1,17 @@
-import {makeAutoObservable} from "mobx";
+import { makeAutoObservable } from "mobx";
 
 export class ElementsManager {
-    private _isSettingsPanelVisible: boolean = false;
+  private _isSettingsPanelVisible: boolean = false;
 
-    constructor() {
-        makeAutoObservable(this)
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    get isSettingsPanelVisible() {
-        return this._isSettingsPanelVisible;
-    }
+  get isSettingsPanelVisible() {
+    return this._isSettingsPanelVisible;
+  }
 
-    toggleSettingsPanel(): void {
-        this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
-    }
+  toggleSettingsPanel(): void {
+    this._isSettingsPanelVisible = !this._isSettingsPanelVisible;
+  }
 }
