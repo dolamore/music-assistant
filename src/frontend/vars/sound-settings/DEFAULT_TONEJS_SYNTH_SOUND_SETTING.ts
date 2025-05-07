@@ -1,11 +1,12 @@
-export const DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS = [
-    {key: 'frequency', value: 440, label: "Frequency", minValue: 0, maxValue: 1000},
-    {key: 'detune', value: 0, label: "Detune"},
-    {key: 'phase', value: 0, label: "Phase"},
-    {key: 'volume', value: 0, label: "Volume"},
-    {key: 'attack', value: 0.001, label: "Attack"},
-    {key: 'decay', value: 0.1, label: "Decay"},
-    {key: 'sustain', value: 0, label: "Sustain"},
-    {key: 'release', value: 0.1, label: "Release"},
+import { SoundSetting } from "../../models/SoundSetting";
+
+export const DEFAULT_TONEJS_SYNTH_SOUND_SETTINGS: SoundSetting[] = [
+  new SoundSetting("frequency", "Frequency", 440, 0, 20000),
+  new SoundSetting("detune", "Detune", 0, -1200, 1200),
+  new SoundSetting("phase", "Phase", 0, 0, 360),
+  new SoundSetting("volume", "Volume", 0, -60, 0),
+  new SoundSetting("attack", "Attack", 0.001, 0.001, 10),
+  new SoundSetting("decay", "Decay", 0.1, 0.001, 10),
+  new SoundSetting("sustain", "Sustain", 0, 0, 1),
+  new SoundSetting("release", "Release", 0.1, 0.001, 10),
 ];
-//TODO: проверить значения min, max

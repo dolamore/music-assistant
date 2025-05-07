@@ -1,37 +1,57 @@
-import {fileURLToPath} from 'url';
-import {dirname} from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin'; // Импортируем плагин для HTML
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
+// Получение __dirname в ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
-    entry: './src/frontend/index.jsx',
+    entry: './src/frontend/index.tsx',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: './'
+        publicPath: '/'
     },
     devtool: 'source-map',
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                '@babel/preset-env',
+                                '@babel/preset-react',
+                                '@babel/preset-typescript'
+                            ],
+                            plugins: [
+                                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                                ['@babel/plugin-proposal-class-properties', { loose: true }]
+                            ]
+                        }
+                    },
+                    'ts-loader'
+                ]
+            },
+            {
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env', '@babel/preset-react'],
-                    },
-                },
-            },
-            {
-                test: /\.ts?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                        plugins: [
+                            ['@babel/plugin-proposal-decorators', { legacy: true }],
+                            ['@babel/plugin-proposal-class-properties', { loose: true }]
+                        ]
+                    }
+                }
             },
             {
                 test: /\.css$/,
@@ -41,33 +61,35 @@ export default {
                         : 'style-loader',
                     'css-loader'
                 ]
-            },
-        ],
+            }
+        ]
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.tsx', '.ts'],
-        enforceExtension: false,
-
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+        alias: {
+            'react': path.resolve(__dirname, 'node_modules/react')
+        }
     },
     devServer: {
         static: {
-            directory: path.join(__dirname, 'dist'),
+            directory: path.join(__dirname, 'dist')
         },
         port: 3000,
-        hot: true, // Включает Hot Module Replacement (HMR)
-        liveReload: true, // Включает live reload (если HMR не работает)
+        hot: true,
+        liveReload: true,
+        historyApiFallback: true
     },
     optimization: {
-        minimize: true, // Минимизация для продакшн
+        minimize: true
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './index.html',  // Указываем исходный HTML-файл
+            template: './index.html',
             filename: 'index.html',
-            inject: 'body',// Генерируемый файл
+            inject: 'body'
         }),
         new MiniCssExtractPlugin({
-            filename: 'styles.css',
-        }),
-    ],
+            filename: 'styles.css'
+        })
+    ]
 };
