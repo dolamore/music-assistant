@@ -12,7 +12,6 @@ export class TonejsEngine extends AudioEngine {
   private _loop: Tone.Loop;
   private _beatSequence: Beat[] = [];
   private _count: number = 0;
-  public _loopCount: number = 0;
   private _currentStep: number = 0;
   private _skipper: number = 0;
 
@@ -25,17 +24,11 @@ export class TonejsEngine extends AudioEngine {
     Tone.getTransport().bpm.value = Number(this._bpm) * 3;
 
     makeObservable(this, {
-      _loopCount: observable,
-      loopCount: computed,
       getMetronomeLoopCallback: action,
       stopPlaying: action,
 
       setBpm: override,
     });
-  }
-
-  get loopCount(): number {
-    return this._loopCount;
   }
 
   setBpm(bpm: number): void {
