@@ -2,14 +2,6 @@ import '@testing-library/jest-dom';
 import { configure } from 'mobx';
 
 if (typeof window !== 'undefined') {
-    window.matchMedia = window.matchMedia || function() {
-        return {
-            matches: false,
-            addEventListener: () => {},
-            removeEventListener: () => {},
-        };
-    };
-
     window.requestAnimationFrame = callback => {
         return setTimeout(callback, 0);
     };

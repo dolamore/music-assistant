@@ -1,16 +1,18 @@
-module.exports = {
+export default {
     testEnvironment: 'jsdom',
     setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     },
     transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
+        '^.+\\.(ts|tsx)$': ['ts-jest', {
+            useESM: true,
+        }],
     },
-    moduleFileExtensions: ['ts', 'tsx', 'json'],
-
+    extensionsToTreatAsEsm: ['.ts', '.tsx'], // Удалили .mjs
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'mjs', 'json'],
     testMatch: [
-        '**/test/**/*.+(ts|tsx)',
+        '**/test/**/*.test.+(ts|tsx)',
     ],
     collectCoverageFrom: [
         'src/**/*.{ts,tsx}',
@@ -24,5 +26,4 @@ module.exports = {
             statements: 50,
         },
     },
-
 };
