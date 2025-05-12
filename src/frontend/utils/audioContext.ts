@@ -10,8 +10,7 @@ async function setupAudioContextUnlocker(): Promise<void> {
   isAudioContextUnlocked = true;
 }
 
+// Хук должен возвращать саму функцию, которую можно вызвать
 export function useAudioContextUnlocker() {
-  return async () => {
-    await setupAudioContextUnlocker();
-  };
+  return setupAudioContextUnlocker;
 }

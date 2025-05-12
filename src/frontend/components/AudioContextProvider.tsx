@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAudioContextUnlocker } from "../utils/audioContext";
 
 export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+                                                                                children,
+                                                                              }) => {
   const unlockAudioContext = useAudioContextUnlocker();
+  const [isAudioContextUnlocked, setIsAudioContextUnlocked] = useState(false);
 
   useEffect(() => {
+    if (isAudioContextUnlocked) return;
+
     const userInteractionEvents = [
       "click",
       "touchstart",
@@ -17,8 +20,8 @@ export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const handleUserInteraction = async () => {
       await unlockAudioContext();
+      setIsAudioContextUnlocked(true);
 
-      // Удаляем слушатели после первого взаимодействия
       userInteractionEvents.forEach((eventName) => {
         window.removeEventListener(eventName, handleUserInteraction);
       });
@@ -33,7 +36,7 @@ export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
         window.removeEventListener(eventName, handleUserInteraction);
       });
     };
-  }, [unlockAudioContext]);
+  }, [isAudioContextUnlocked, unlockAudioContext]);
 
   return <>{children}</>;
 };

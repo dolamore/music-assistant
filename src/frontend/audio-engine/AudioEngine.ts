@@ -26,6 +26,10 @@ export abstract class AudioEngine {
         return this._loopCount;
     }
 
+    set loopCount(value: number) {
+        this._loopCount = value;
+    }
+
     get metronomeManager(): MetronomeManager {
         return this._metronomeManager;
     }
