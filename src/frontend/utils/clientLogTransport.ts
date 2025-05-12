@@ -1,99 +1,99 @@
-import { createLogger, format, transports } from 'winston';
+import axios from 'axios';
 
-// Простой логгер без сложной конфигурации
-export const logger = createLogger({
-    level: 'debug', // Всегда логируем все уровни для простоты
-    format: format.combine(
-        format.timestamp(),
-        format.errors({ stack: true }),
-        format.json()
-    ),
-    transports: [
-        new transports.Console({
-            format: format.combine(
-                format.colorize(),
-                format.printf(({ level, message, timestamp, stack, ...meta }) => {
-                    const metaStr = Object.keys(meta).length
-                        ? `\nMetadata: ${JSON.stringify(meta, null, 2)}`
-                        : '';
-                    return `${timestamp} ${level}: ${message}${stack ? `\n${stack}` : ''}${metaStr}`;
-                })
-            )
-        })
-    ]
-});
+// Буфер для временного хранения логов перед отправкой
+let logBuffer: Array<{
+    level: string;
+    message: string;
+    meta?: object;
+    timestamp: string;
+}> = [];
 
-// Простой интерфейс для использования в компонентах
-export const appLogger = {
-    error: (message: string, meta?: object) => {
-        logger.error(message, meta);
-        storeErrorForSync(message, meta);
-    },
-    warn: (message: string, meta?: object) => {
-        logger.warn(message, meta);
-    },
-    info: (message: string, meta?: object) => {
-        logger.info(message, meta);
-    },
-    debug: (message: string, meta?: object) => {
-        logger.debug(message, meta);
-    }
-};
+// URL API для отправки логов
+const LOG_API_URL = '/api/logs'; // Замените на ваш реальный URL
 
-// Сохраняем ошибки в localStorage
-function storeErrorForSync(message: string, meta?: object) {
+// Флаг отправки (чтобы избежать параллельных отправок)
+let isSending = false;
+
+// Максимальное количество логов в буфере перед принудительной отправкой
+const MAX_BUFFER_SIZE = 10;
+
+// Тайм-аут для периодической отправки (в мс)
+const FLUSH_INTERVAL = 10000; // 10 секунд
+
+// Инициализация периодической отправки
+let flushInterval: ReturnType<typeof setInterval> | null = null;
+
+/**
+ * Инициализация транспорта для отправки логов
+ */
+export function initRemoteLogTransport() {
+    // Восстанавливаем сохраненные логи из localStorage, если есть
     try {
-        const errors = JSON.parse(localStorage.getItem('app_errors') || '[]');
-        errors.push({
-            timestamp: new Date().toISOString(),
-            message,
-            meta,
-            userAgent: navigator.userAgent,
-            url: window.location.href
+        const savedLogs = localStorage.getItem('pending_logs');
+        if (savedLogs) {
+            logBuffer = JSON.parse(savedLogs);
+            console.info(`Восстановлено ${logBuffer.length} логов из хранилища`);
+        }
+    } catch (e) {
+        console.error('Ошибка при восстановлении логов из localStorage:', e);
+    }
+
+    // Устанавливаем интервал для периодической отправки
+    flushInterval = setInterval(flushLogs, FLUSH_INTERVAL);
+
+    // Отправляем логи при закрытии страницы
+    window.addEventListener('beforeunload', () => {
+        // Сохраняем неотправленные логи в localStorage
+        localStorage.setItem('pending_logs', JSON.stringify(logBuffer));
+
+        // Попытка отправить логи синхронно перед закрытием
+        if (logBuffer.length > 0 && navigator.sendBeacon) {
+            navigator.sendBeacon(LOG_API_URL, JSON.stringify(logBuffer));
+        }
+    });
+
+    // Отправляем логи, когда возвращается онлайн
+    window.addEventListener('online', flushLogs);
+}
+
+/**
+ * Отправка всех накопленных логов на сервер
+ */
+export async function flushLogs(): Promise<void> {
+    // Если буфер пуст или отправка уже идет, выходим
+    if (logBuffer.length === 0 || isSending || !navigator.onLine) {
+        return;
+    }
+
+    // Ставим флаг отправки
+    isSending = true;
+
+    // Копируем буфер и очищаем его
+    const logsToSend = [...logBuffer];
+    logBuffer = [];
+
+    try {
+        // Отправляем логи на сервер
+        await axios.post(LOG_API_URL, logsToSend, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
-        // Храним только последние 50 ошибок
-        const trimmedErrors = errors.slice(-50);
-        localStorage.setItem('app_errors', JSON.stringify(trimmedErrors));
-    } catch (e) {
-        console.error('Не удалось сохранить ошибку в localStorage:', e);
+        // Очищаем сохраненные логи в localStorage после успешной отправки
+        localStorage.removeItem('pending_logs');
+
+        console.info(`Успешно отправлено ${logsToSend.length} логов на сервер`);
+    } catch (error) {
+        console.error('Ошибка при отправке логов на сервер:', error);
+
+        // Возвращаем логи обратно в буфер в случае ошибки
+        logBuffer = [...logsToSend, ...logBuffer];
+
+        // Сохраняем неотправленные логи в localStorage
+        localStorage.setItem('pending_logs', JSON.stringify(logBuffer));
+    } finally {
+        // Снимаем флаг отправки
+        isSending = false;
     }
-}
-
-// Функция для выгрузки логов ошибок
-export function downloadErrorLogs() {
-    try {
-        const errors = JSON.parse(localStorage.getItem('app_errors') || '[]');
-        if (errors.length === 0) {
-            console.info('Нет ошибок для выгрузки');
-            return;
-        }
-
-        const blob = new Blob([JSON.stringify(errors, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `app-errors-${new Date().toISOString()}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    } catch (e) {
-        console.error('Не удалось выгрузить логи ошибок:', e);
-    }
-}
-
-// Получить логи из хранилища
-export function getStoredErrorLogs() {
-    try {
-        return JSON.parse(localStorage.getItem('app_errors') || '[]');
-    } catch (e) {
-        console.error('Не удалось получить логи ошибок:', e);
-        return [];
-    }
-}
-
-// Очистить логи
-export function clearStoredErrorLogs() {
-    localStorage.setItem('app_errors', '[]');
 }
