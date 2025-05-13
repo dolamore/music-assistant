@@ -135,7 +135,7 @@ describe("AudioContextProvider", () => {
         const events = [
             { name: "click", action: () => fireEvent.click(screen.getByTestId("test-child")) },
             { name: "touchstart", action: () => fireEvent.touchStart(screen.getByTestId("test-child")) },
-            { name: "keydown", action: () => fireEvent.keyDown(screen.getByTestId("test-child"), { key: "Enter" }) },
+            { name: "keydown", action: () => fireEvent.keyDown(screen.getByTestId("test-child"), { key: "Space" }) },
             { name: "mousedown", action: () => fireEvent.mouseDown(screen.getByTestId("test-child")) },
             { name: "pointerdown", action: () => fireEvent.pointerDown(screen.getByTestId("test-child")) },
         ];

@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAudioContextUnlocker } from "../utils/audioContext";
 
+const userInteractionEvents = [
+  "click",
+  "touchstart",
+  "keydown",
+  "mousedown",
+  "pointerdown",
+];
+
 export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
                                                                                 children,
                                                                               }) => {
@@ -11,13 +19,6 @@ export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
     await unlockAudioContext();
     setIsAudioContextUnlocked(true);
 
-    const userInteractionEvents = [
-      "click",
-      "touchstart",
-      "keydown",
-      "mousedown",
-      "pointerdown",
-    ];
 
     userInteractionEvents.forEach((eventName) => {
       window.removeEventListener(eventName, handleUserInteraction);
@@ -26,14 +27,6 @@ export const AudioContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (isAudioContextUnlocked) return;
-
-    const userInteractionEvents = [
-      "click",
-      "touchstart",
-      "keydown",
-      "mousedown",
-      "pointerdown",
-    ];
 
     userInteractionEvents.forEach((eventName) => {
       window.addEventListener(eventName, handleUserInteraction);
