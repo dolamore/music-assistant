@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {render, screen, act} from '@testing-library/react';
-import LoopCounter from '../../../src/frontend/components/LoopCounter';
+import LoopCounter from '../../../../src/frontend/components/LoopCounter';
 import {describe, expect, it} from '@jest/globals';
 import {observable} from 'mobx';
-import {MetronomeManager} from '../../../src/frontend/managers/MetronomeManager';
+import {MetronomeManager} from '../../../../src/frontend/managers/MetronomeManager';
 
 describe('LoopCounter', () => {
     it('renders and updates when loopCount changes', () => {

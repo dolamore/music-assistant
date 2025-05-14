@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import * as Tone from "tone";
-import { useAudioContextUnlocker } from "../../../src/frontend/utils/audioContext";
-import { AudioContextProvider } from "../../../src/frontend/components/AudioContextProvider";
+import { useAudioContextUnlocker } from "../../../../src/frontend/utils/audioContext";
+import { AudioContextProvider } from "../../../../src/frontend/components/AudioContextProvider";
 
-jest.mock("../../../src/frontend/utils/audioContext", () => ({
+jest.mock("../../../../src/frontend/utils/audioContext", () => ({
     useAudioContextUnlocker: jest.fn(),
 }));
 

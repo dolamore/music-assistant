@@ -1,6 +1,6 @@
 export default {
     testEnvironment: 'jsdom',
-    setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
+    setupFilesAfterEnv: ['<rootDir>/tests/unit-tests/setupTests.ts'],
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     },
@@ -12,7 +12,7 @@ export default {
     extensionsToTreatAsEsm: ['.ts', '.tsx'], // Удалили .mjs
     moduleFileExtensions: ['ts', 'tsx', 'js', 'mjs', 'json'],
     testMatch: [
-        '**/tests/**/*.test.+(ts|tsx)',
+        '**/tests/unit-tests/**/*.test.+(ts|tsx)',
     ],
     collectCoverageFrom: [
         'src/**/*.{ts,tsx}',
