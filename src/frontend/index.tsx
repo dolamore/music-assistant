@@ -14,6 +14,7 @@ import Pendulum from "./components/Pendulum";
 import SettingsPanel from "./components/SettingsPanel";
 import "./styles/styles.css";
 import { AudioContextProvider } from "./components/AudioContextProvider";
+import * as Tone from "tone";
 
 const rootElement = document.getElementById("root");
 
@@ -41,6 +42,7 @@ if (rootElement) {
   }
 
   root.render(<App />);
+  console.log(Tone.getContext().state);
 } else {
   console.error("Root element not found");
 }
