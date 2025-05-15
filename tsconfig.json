@@ -17,6 +17,10 @@
     "noEmit": false,  // Не отключать вывод компилятора (оставим для использования с Vite)
     "skipDefaultLibCheck": true,  // Пропуск проверки стандартных библиотек
     "baseUrl": ".",
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "paths": {
       "*": ["*", "src/*"]
     }
