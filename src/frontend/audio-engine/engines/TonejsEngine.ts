@@ -31,6 +31,10 @@ export class TonejsEngine extends AudioEngine {
     });
   }
 
+  get beatSequence(): Beat[] {
+    return this._beatSequence;
+  }
+
   setBpm(bpm: number): void {
     this._bpm = bpm;
     this._transport.bpm.value = bpm * 3;
