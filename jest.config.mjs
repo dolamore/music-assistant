@@ -3,13 +3,14 @@ export default {
     setupFilesAfterEnv: ['<rootDir>/tests/unit-tests/setupTests.ts'],
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+        '^tone$': '<rootDir>/__mocks__/tone.ts',
     },
     transform: {
         '^.+\\.(ts|tsx)$': ['ts-jest', {
             useESM: true,
         }],
     },
-    extensionsToTreatAsEsm: ['.ts', '.tsx'], // Удалили .mjs
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'mjs', 'json'],
     testMatch: [
         '**/tests/unit-tests/**/*.test.+(ts|tsx)',
@@ -26,4 +27,4 @@ export default {
             statements: 50,
         },
     },
-};
+}

@@ -24,7 +24,7 @@ describe('BeatBars', () => {
 
         render(<BeatBars metronomeManager={mockMetronomeManager}/>);
 
-        expect(mockMetronomeManager.audioEngine.beatSequence[0].noteSettings.note).toEqual("4n");
+        expect((mockMetronomeManager.audioEngine as TonejsEngine).beatSequence[0].noteSettings.note).toEqual("4n");
         await act(async () => {
             fireEvent.click(screen.getByTestId("note-amount-dropdown-0"));
         });
