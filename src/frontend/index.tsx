@@ -22,7 +22,7 @@ if (rootElement) {
     const metronomeManager = new MetronomeManager();
 
     //TODO: сделать доступным только для тестов
-    window.__METRONOME_MANAGER__ = metronomeManager || {};
+    window.__METRONOME_MANAGER__ = metronomeManager;
 
 
     function App(): ReactElement {
@@ -45,7 +45,6 @@ if (rootElement) {
     }
 
     root.render(<App/>);
-    console.log(window.__METRONOME_MANAGER__);
 } else {
     console.error("Root element not found");
 }
