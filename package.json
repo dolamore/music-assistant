@@ -4,7 +4,7 @@
   "type": "module",
   "main": "electron/main.mjs",
   "scripts": {
-    "test": "NODE_OPTIONS='--no-deprecation' jest",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -14,6 +14,7 @@
     "build": "vite build",
     "start": "npm run build:prod && electron .",
     "start:ci": "vite --host localhost --port 3001",
+    "test: unit": "NODE_OPTIONS='--no-deprecation' jest",
     "test:e2e": "playwright test",
     "test:e2e:report": "playwright test --reporter=html"
   },
