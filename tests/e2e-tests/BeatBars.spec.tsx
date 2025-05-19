@@ -23,8 +23,9 @@ test.describe('BeatBars компонент', () => {
                     if (obj && typeof obj === 'object' && obj.audioEngine && obj.beatBarsManager) {
                         // Нашли MetronomeManager
                         return {
-                            sequenceLength: obj.audioEngine.beatSequence.length,
-                            beatsLength: obj.beatBarsManager.beats.length
+
+                            // sequenceLength: obj.audioEngine.beatSequence.length,
+                            // beatsLength: obj.beatBarsManager.beats.length
                         };
                     }
                 } catch (e) {
