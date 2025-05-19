@@ -1,16 +1,14 @@
 import {test, expect} from '@playwright/test';
-import * as Tone from "tone";
 
 test.describe('Tone.js AudioContext Functionality', () => {
 
     test.beforeEach(async ({page}) => {
-        await page.goto('http://localhost:3001');
+        await page.goto('/');
 
         await page.waitForSelector('#root', {state: 'visible'});
     });
 
     test('should unlock Tone.js AudioContext after user interaction', async ({page}) => {
-        // Проверяем начальное состояние AudioContext
         const initialState = await page.evaluate(() => {
             try {
                 const audioContext = new AudioContext();

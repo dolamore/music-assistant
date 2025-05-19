@@ -9,6 +9,21 @@ export enum ToneOscillatorType {
   sawtooth = 'sawtooth'
 }
 
+class ToneLoop {
+  callback: (time: number) => void;
+  interval: string;
+
+  constructor(callback: (time: number) => void, interval: string) {
+    this.callback = callback;
+    this.interval = interval;
+  }
+
+  start = jest.fn();
+  stop = jest.fn();
+  dispose = jest.fn();
+}
+
+
 // Создание основного объекта Tone
 const Tone = {
   getContext: jest.fn().mockReturnValue({
@@ -24,7 +39,7 @@ const Tone = {
     dispose: jest.fn(),
     volume: { value: 0 },
     detune: { value: 0 },
-    oscillator: { 
+    oscillator: {
       type: 'sine',
       frequency: { value: 440 },
       phase: 0
@@ -43,7 +58,7 @@ const Tone = {
     triggerRelease: jest.fn(),
     dispose: jest.fn(),
     volume: { value: 0 },
-    oscillator: { 
+    oscillator: {
       type: 'sine',
       frequency: { value: 440 },
       phase: 0
@@ -62,7 +77,7 @@ const Tone = {
     triggerRelease: jest.fn(),
     dispose: jest.fn(),
     volume: { value: 0 },
-    oscillator: { 
+    oscillator: {
       type: 'sine',
       frequency: { value: 440 },
       phase: 0
@@ -81,7 +96,7 @@ const Tone = {
     triggerRelease: jest.fn(),
     dispose: jest.fn(),
     volume: { value: 0 },
-    oscillator: { 
+    oscillator: {
       type: 'sine',
       frequency: { value: 440 },
       phase: 0
