@@ -3,8 +3,8 @@ services:
   metronome:
     build: .
     ports:
-      - "3001"  # Замените на нужный порт
+      - "3001:3001"
     volumes:
       - ./playwright-report:/app/playwright-report
     command: >
-      sh -c "npm run dev & sleep 10 && npm run test"
+      sh -c "npm run dev & npx wait-on http://localhost:3001 && npm run test"
