@@ -11,7 +11,5 @@ async function setupAudioContextUnlocker(): Promise<void> {
 }
 
 export function useAudioContextUnlocker() {
-  return async () => {
-    await setupAudioContextUnlocker();
-  };
+  return setupAudioContextUnlocker;
 }

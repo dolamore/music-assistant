@@ -54,6 +54,6 @@ export default class Beat {
       );
       this._beatSound.chooseAnotherSound(newSoundIndex);
     }
-    this._beatSound.instrument.updateSoundSetting(key, value);
+    this._beatSound.instrument.updateSoundSetting(key, Number(value));
   }
 }

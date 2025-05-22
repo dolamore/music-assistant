@@ -38,7 +38,7 @@ const StartStopButton = observer(
     });
 
     return (
-      <button id="start-stop-button" onClick={onClick}>
+      <button id="start-stop-button" onClick={onClick} data-testid="start-stop-button">
         {metronomeManager.isPlaying ? "Stop" : "Start"}
       </button>
     );

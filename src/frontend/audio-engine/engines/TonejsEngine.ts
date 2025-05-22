@@ -1,7 +1,7 @@
 import * as Tone from "tone";
 import { AudioEngine } from "../AudioEngine";
 import { MetronomeManager } from "../../managers/MetronomeManager";
-import { action, computed, makeObservable, observable, override } from "mobx";
+import { action, makeObservable, override } from "mobx";
 import { BPM_MAX_LIMIT, BPM_MIN_LIMIT } from "../../vars/vars";
 import { uiState } from "../../states/UIState";
 import Beat from "../../models/Beat";
@@ -12,7 +12,6 @@ export class TonejsEngine extends AudioEngine {
   private _loop: Tone.Loop;
   private _beatSequence: Beat[] = [];
   private _count: number = 0;
-  public _loopCount: number = 0;
   private _currentStep: number = 0;
   private _skipper: number = 0;
 
@@ -25,8 +24,6 @@ export class TonejsEngine extends AudioEngine {
     Tone.getTransport().bpm.value = Number(this._bpm) * 3;
 
     makeObservable(this, {
-      _loopCount: observable,
-      loopCount: computed,
       getMetronomeLoopCallback: action,
       stopPlaying: action,
 
@@ -34,8 +31,8 @@ export class TonejsEngine extends AudioEngine {
     });
   }
 
-  get loopCount(): number {
-    return this._loopCount;
+  get beatSequence(): Beat[] {
+    return this._beatSequence;
   }
 
   setBpm(bpm: number): void {

@@ -17,6 +17,7 @@ export default observer(function BeatBars({
   return (
     <div
       id="beat-container"
+      data-testid="beat-container"
       className={`beat-container
                          container
                          ${!metronomeManager.visualEffectsManager.areBeatBarsVisible ? "hidden" : ""}`}
@@ -45,9 +46,13 @@ const BeatRow = observer(
     };
 
     return (
-      <div className="beat-row">
+      <div
+          className="beat-row"
+          data-testid={`beat-row-${index}`}
+      >
         <div
           className={`beat ${isBeatPlaying ? "playing" : ""}`}
+          data-testid={`beat-${index}`}
           data-beat={index}
           data-sound={DEFAULT_SOUNDS.findIndex(
             (sound) => sound.key === beat.beatSound.key,
@@ -84,6 +89,7 @@ const NoteSizeDropdown = observer(
     return (
       <select
         id={`note-size-dropdown-${index}`}
+        data-testid={`note-size-dropdown-${index}`}
         className="note-size-dropdown"
         onChange={handleChange}
         value={currentValue}
@@ -109,6 +115,7 @@ const NoteAmountDropdown = observer(
     return (
       <select
         id={`note-amount-dropdown-${index}`}
+        data-testid={`note-amount-dropdown-${index}`}
         className="note-amount-dropdown"
         onChange={handleChange}
         value={beat.noteAmount}

@@ -17,12 +17,17 @@
     "noEmit": false,  // Не отключать вывод компилятора (оставим для использования с Vite)
     "skipDefaultLibCheck": true,  // Пропуск проверки стандартных библиотек
     "baseUrl": ".",
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "paths": {
       "*": ["*", "src/*"]
     }
   },
   "include": [
-    "src/**/*"  // Указание, что все файлы внутри папки src должны быть обработаны
+    "src/**/*",
+    "*.d.ts"
   ],
   "exclude": [
     "node_modules",  // Исключаем node_modules
