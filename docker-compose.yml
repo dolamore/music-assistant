@@ -1,4 +1,3 @@
-version: '3'
 services:
   metronome:
     build: .
@@ -7,4 +6,4 @@ services:
     volumes:
       - ./playwright-report:/app/playwright-report
     command: >
-      sh -c "npm run dev & npx wait-on http://localhost:3001 && npm run test"
+      sh -c "npm run dev & npx wait-on -е 20000 http://localhost:3001 && npm run test"
