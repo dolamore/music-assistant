@@ -2,10 +2,10 @@ node_modules
 dist
 .Rhistory
 .idea
+coverage
 
 # Playwright
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-coverage
