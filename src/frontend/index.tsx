@@ -21,7 +21,7 @@ if (rootElement) {
     const root = ReactDOM.createRoot(rootElement);
     const metronomeManager = new MetronomeManager();
 
-    //TODO: сделать доступным только для тестов
+    //TODO: make this being available for testing environment only
     window.__METRONOME_MANAGER__ = metronomeManager;
 
 

@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Проверка кода
+      - name: code checkout
         uses: actions/checkout@v4
 
-      - name: Настройка Docker
+      - name: Docker setup
         uses: docker/setup-buildx-action@v3
 
-      - name: Сборка и запуск тестов
+      - name: build and run tess
         run: |
           docker build -t metronome-test .
           docker compose up --abort-on-container-exit
 
-      - name: Сохранение отчетов Playwright
+      - name: save test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
