@@ -9,6 +9,7 @@
     "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "dev": "vite",
+    "dev:docker": "docker compose up metronome -d",
     "dev:webpack": "webpack serve --mode development",
     "build:prod": "NODE_ENV=production webpack --mode production",
     "build": "vite build",
