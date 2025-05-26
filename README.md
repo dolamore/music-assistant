@@ -205,11 +205,11 @@ testing setup includes both unit and end-to-end (E2E) tests.
   ```sh
   docker compose --profile test up --abort-on-container-exit
   ```
-  
+
 ### Additional Notes
 - Tests are automatically run on each push via GitHub Actions.
 - E2E tests use Chromium in a headless Docker container.
-- Use 
+- Use
    ```sh
   npm run test:watch
   ```
