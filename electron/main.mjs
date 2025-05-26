@@ -22,7 +22,7 @@ app.on('ready', async () => {
     // Uncomment the following line to open DevTools
     mainWindow.webContents.openDevTools();
 
-    const indexPath = path.join(__dirname,"..", 'dist', 'index.html');
+    const indexPath = path.join(__dirname, '../index-electron.html');
 
     await mainWindow.loadFile(indexPath);
 });

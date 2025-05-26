@@ -95,7 +95,7 @@ export class TrainingModeManager {
   ): void {
     if (type === ProbabilityType.LOOP) {
       handleVariableChange(
-        newValue,
+        Number(newValue),
         currentProbability,
         0,
         100,
@@ -103,7 +103,7 @@ export class TrainingModeManager {
       );
     } else {
       handleVariableChange(
-        newValue,
+        Number(newValue),
         currentProbability,
         0,
         100,
