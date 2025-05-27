@@ -36,6 +36,8 @@ A web-based drummer assistant that helps user to practice rhythms and improve ti
 
 Here's what I plan to implement in future updates:
 
+- Add user registration and login, allowing users to save their settings and achievements
+- Add speed up to the training mode
 - Add support for polyrhythms.
 - Add rudiments practice task generator.
 - Gamify the process with an achievement and a level system
